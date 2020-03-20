@@ -1,0 +1,4 @@
+rootProject.name='Ponyo'
+include ':app'
+include ':ponyo'
+include ':ponyo-log'
