@@ -15,16 +15,14 @@ internal object LogFormatter {
     var jsonFormatter: JsonFormatter? = null
 
     fun object2String(obj: Any?): String {
-        return obj?.let {
-            when (it) {
-                it.javaClass.isArray -> array2String(it)
-                is Throwable -> throwable2String(it)
-                is Bundle -> bundle2String(it)
-                is Intent -> intent2String(it)
-                else -> object2Json(it)
-            }
-        } ?: run {
-            "null"
+        obj ?: return "null"
+        return when (obj) {
+            is CharSequence -> obj.toString()
+            is Throwable -> throwable2String(obj)
+            is Bundle -> bundle2String(obj)
+            is Intent -> intent2String(obj)
+            obj.javaClass.isArray -> array2String(obj)
+            else -> object2Json(obj)
         }
     }
 
@@ -197,17 +195,11 @@ internal object LogFormatter {
     }
 
     private fun object2Json(obj: Any): String {
-        if (obj is CharSequence) {
-            return obj.toString()
-        }
-        return jsonFormatter?.run {
-            try {
-                val json = toJson(obj)
-                formatJson(json)
-            } catch (t: Throwable) {
-                obj.toString()
-            }
-        } ?: run {
+        jsonFormatter ?: return obj.toString()
+        return try {
+            val json = jsonFormatter!!.toJson(obj)
+            formatJson(json)
+        } catch (t: Throwable) {
             obj.toString()
         }
     }
@@ -235,7 +227,6 @@ internal object LogFormatter {
 
     private fun array2String(obj: Any): String {
         return when (obj) {
-            is Array<*> -> obj.contentDeepToString()
             is BooleanArray -> obj.contentToString()
             is ByteArray -> obj.contentToString()
             is CharArray -> obj.contentToString()
@@ -244,11 +235,12 @@ internal object LogFormatter {
             is IntArray -> obj.contentToString()
             is LongArray -> obj.contentToString()
             is ShortArray -> obj.contentToString()
+            is Array<*> -> obj.contentDeepToString()
             else -> obj.toString()
         }
     }
 
-    fun getFullStackTrace(t: Throwable?): String {
+    private fun getFullStackTrace(t: Throwable?): String {
         fun getStackFrameList(throwable: Throwable): List<String> {
             val sw = StringWriter()
             val pw = PrintWriter(sw, true)
@@ -283,6 +275,7 @@ internal object LogFormatter {
                 wrapperFrameIndex--
             }
         }
+
         var throwable = t
         val throwableList = ArrayList<Throwable>()
         while (throwable != null && !throwableList.contains(throwable)) {

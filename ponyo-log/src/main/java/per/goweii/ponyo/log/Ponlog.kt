@@ -31,33 +31,56 @@ object Ponlog {
     var filter: Int = ALL
     var maxLogLength: Int = 4 * 1024
 
-    inline fun v(tag: String? = null, msg: () -> Any?) {
+    inline fun v(
+        tag: String? = null,
+        msg: () -> Any?
+    ) {
         log(VERBOSE, tag, msg)
     }
 
-    inline fun d(tag: String? = null, msg: () -> Any?) {
+    inline fun d(
+        tag: String? = null,
+        msg: () -> Any?
+    ) {
         log(DEBUG, tag, msg)
     }
 
-    inline fun i(tag: String? = null, msg: () -> Any?) {
+    inline fun i(
+        tag: String? = null,
+        msg: () -> Any?
+    ) {
         log(INFO, tag, msg)
     }
 
-    inline fun w(tag: String? = null, msg: () -> Any?) {
+    inline fun w(
+        tag: String? = null,
+        msg: () -> Any?
+    ) {
         log(WARN, tag, msg)
     }
 
-    inline fun e(tag: String? = null, msg: () -> Any?) {
+    inline fun e(
+        tag: String? = null,
+        msg: () -> Any?
+    ) {
         log(ERROR, tag, msg)
     }
 
-    inline fun log(@Level level: Int, tag: String? = null, msg: () -> Any?) {
+    inline fun log(
+        @Level level: Int,
+        tag: String? = null,
+        msg: () -> Any?
+    ) {
         if (level and filter != 0) {
             log(level, tag, msg.invoke())
         }
     }
 
-    fun log(@Level level: Int, tag: String? = null, msg: Any?) {
+    fun log(
+        @Level level: Int,
+        tag: String? = null,
+        msg: Any?
+    ) {
         println(toPriority(level), tag, msg)
     }
 
@@ -83,7 +106,8 @@ object Ponlog {
 
     private fun println(priority: Int, tag: String?, logBody: LogBody, content: String) {
         val t = tag ?: logBody.className
-        val msg = "${logBody.className}.${logBody.methodName}(${logBody.fileName}:${logBody.lineNumber})-> $content"
+        val msg =
+            "${logBody.className}.${logBody.methodName}(${logBody.fileName}:${logBody.lineNumber})-> $content"
         Log.println(priority, t, msg)
     }
 
