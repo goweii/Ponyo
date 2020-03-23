@@ -30,7 +30,6 @@ object Ponlog {
 
     var filter: Int = ALL
     var maxLogLength: Int = 4 * 1024
-    var printStackTrace: Boolean = false
 
     inline fun v(tag: String? = null, msg: () -> Any?) {
         log(VERBOSE, tag, msg)
@@ -67,7 +66,7 @@ object Ponlog {
         tag: String?,
         contents: Any?
     ) {
-        val logBody: LogBody? = if (printStackTrace) LogBody.build() else null
+        val logBody = LogBody.build(javaClass)
         val formatContent = LogFormatter.object2String(contents)
         if (formatContent.length > maxLogLength) {
             for (i in 0..formatContent.length / maxLogLength) {
@@ -82,11 +81,9 @@ object Ponlog {
         }
     }
 
-    private fun println(priority: Int, tag: String?, logBody: LogBody?, content: String) {
-        val t = tag ?: logBody?.className ?: "unknown"
-        val msg = logBody?.let {
-            "(${it.fileName}:${it.lineNumber}).${it.methodName}()-> $content"
-        } ?: content
+    private fun println(priority: Int, tag: String?, logBody: LogBody, content: String) {
+        val t = tag ?: logBody.className
+        val msg = "${logBody.className}.${logBody.methodName}(${logBody.fileName}:${logBody.lineNumber})-> $content"
         Log.println(priority, t, msg)
     }
 
