@@ -10,18 +10,15 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
         tv_print_log.setOnClickListener {
             LogInnerClass().log()
         }
     }
 
-    private fun log() {
-        Ponlog.v("MainActivityTag") { "ponlog print msg" }
-    }
-
-    inner class LogInnerClass() {
+    inner class LogInnerClass {
         fun log() {
-            Ponlog.v("MainActivityTag") { "ponlog print msg" }
+            Ponlog.d("Intent") { intent }
         }
     }
 }
