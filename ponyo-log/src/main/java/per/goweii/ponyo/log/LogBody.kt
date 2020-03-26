@@ -35,20 +35,9 @@ data class LogBody private constructor(
 
         private val StackTraceElement.simpleClassName: String
             get() {
-                return className.takeIf {
-                    it.contains(".")
-                }?.split(".")?.dropLastWhile {
-                    it.isEmpty()
-                }?.takeIf {
-                    it.isNotEmpty()
-                }?.last()?.run {
-                    val index = lastIndexOf('$')
-                    if (index != -1) {
-                        substring(index + 1)
-                    } else {
-                        this
-                    }
-                } ?: className
+                val i = className.indexOf(".")
+                if (i == -1) return className
+                return className.substring(i)
             }
     }
 }
