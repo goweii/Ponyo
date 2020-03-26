@@ -4,7 +4,7 @@ import android.app.Activity
 import android.app.Application
 import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
-import java.lang.StringBuilder
+import kotlin.text.StringBuilder
 
 object ActivityStack : Application.ActivityLifecycleCallbacks {
     private var activityStackUpdateListeners = arrayListOf<() -> Unit>()
@@ -19,42 +19,41 @@ object ActivityStack : Application.ActivityLifecycleCallbacks {
         activityStackUpdateListeners.remove(listener)
     }
 
-    fun copyStack(): String {
-        fun space(count: Int): String {
-            val sb = StringBuilder()
-            for (i in 0 until count) {
-                sb.append("\t\t")
-            }
-            return sb.toString()
-        }
-        fun getFragStack(fragmentInfo: FragmentInfo, step: Int, isLast: Boolean): String {
-            val sb = StringBuilder()
-            sb.append(space(step))
-            if (isLast) {
-                sb.append("└")
-            } else {
-                sb.append("├")
-            }
-            sb.append(fragmentInfo.fragment.toString() + "\n")
+    fun copyStack(): StringBuilder {
+        fun getFragStack(fragmentInfo: FragmentInfo, isLast: Boolean, prefix: StringBuilder): StringBuilder {
+            val sbf = StringBuilder()
+            sbf.append(prefix)
+            if (!isLast) sbf.append("├")
+            else sbf.append("└")
+            sbf.append(fragmentInfo.fragment.toString())
+            sbf.append("\n")
             fragmentInfo.fragmentStack.fragmentInfos.forEachIndexed { i, info ->
-                sb.append(getFragStack(info, step + 1, i == fragmentInfo.fragmentStack.fragmentInfos.size - 1))
+                val prefix2 = StringBuilder(prefix)
+                if (!isLast) prefix2.append("│")
+                else prefix2.append("  ")
+                prefix2.append(" ")
+                val lastf = i == fragmentInfo.fragmentStack.fragmentInfos.size - 1
+                sbf.append(getFragStack(info, lastf, prefix2))
             }
-            return sb.toString()
+            return sbf
         }
-        val sb = StringBuilder()
+        val sba = StringBuilder()
         activityInfos.forEachIndexed { ai, activityInfo ->
-            sb.append(space(0))
-            if (ai == activityInfos.size - 1) {
-                sb.append("└")
-            } else {
-                sb.append("├")
-            }
-            sb.append(activityInfo.activity.toString() + "\n")
+            val lasta = ai == activityInfos.size - 1
+            if (!lasta) sba.append("├")
+            else sba.append("└")
+            sba.append(activityInfo.activity.toString())
+            sba.append("\n")
             activityInfo.fragmentStack.fragmentInfos.forEachIndexed { fi, fragmentInfo ->
-                sb.append(getFragStack(fragmentInfo, 1, fi == activityInfo.fragmentStack.fragmentInfos.size - 1))
+                val prefix1 = StringBuilder()
+                if (!lasta) prefix1.append("│")
+                else prefix1.append("  ")
+                prefix1.append(" ")
+                val lastf = fi == activityInfo.fragmentStack.fragmentInfos.size - 1
+                sba.append(getFragStack(fragmentInfo, lastf, prefix1))
             }
         }
-        return sb.toString()
+        return sba
     }
 
     private fun notifyStackUpdate() {
