@@ -23,23 +23,35 @@ object ActivityStack : Application.ActivityLifecycleCallbacks {
         fun space(count: Int): String {
             val sb = StringBuilder()
             for (i in 0 until count) {
-                sb.append(" ")
+                sb.append("\t\t")
             }
             return sb.toString()
         }
-        fun getFragStack(fragmentInfo: FragmentInfo, step: Int): String {
+        fun getFragStack(fragmentInfo: FragmentInfo, step: Int, isLast: Boolean): String {
             val sb = StringBuilder()
-            sb.append(space(step) + fragmentInfo.fragment.toString() + "\n")
-            for (info in fragmentInfo.fragmentStack.fragmentInfos) {
-                sb.append(getFragStack(info, step + 1))
+            sb.append(space(step))
+            if (isLast) {
+                sb.append("└")
+            } else {
+                sb.append("├")
+            }
+            sb.append(fragmentInfo.fragment.toString() + "\n")
+            fragmentInfo.fragmentStack.fragmentInfos.forEachIndexed { i, info ->
+                sb.append(getFragStack(info, step + 1, i == fragmentInfo.fragmentStack.fragmentInfos.size - 1))
             }
             return sb.toString()
         }
         val sb = StringBuilder()
-        for (activityInfo in activityInfos) {
-            sb.append(space(0) + activityInfo.activity.toString() + "\n")
-            for (fragmentInfo in activityInfo.fragmentStack.fragmentInfos) {
-                sb.append(getFragStack(fragmentInfo, 1))
+        activityInfos.forEachIndexed { ai, activityInfo ->
+            sb.append(space(0))
+            if (ai == activityInfos.size - 1) {
+                sb.append("└")
+            } else {
+                sb.append("├")
+            }
+            sb.append(activityInfo.activity.toString() + "\n")
+            activityInfo.fragmentStack.fragmentInfos.forEachIndexed { fi, fragmentInfo ->
+                sb.append(getFragStack(fragmentInfo, 1, fi == activityInfo.fragmentStack.fragmentInfos.size - 1))
             }
         }
         return sb.toString()
