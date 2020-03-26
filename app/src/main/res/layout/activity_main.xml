@@ -13,21 +13,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="print log"
-        android:textAllCaps="false"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textAllCaps="false" />
 
     <Button
         android:id="@+id/tv_time_monitor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Time Monitor"
-        android:textAllCaps="false"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textAllCaps="false" />
+
+    <Button
+        android:id="@+id/tv_activity_stack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Activity Stack"
+        android:textAllCaps="false" />
 
 </LinearLayout>

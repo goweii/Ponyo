@@ -1,5 +1,6 @@
 package per.goweii.android.ponyo
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import kotlinx.android.synthetic.main.activity_main.*
@@ -24,6 +25,9 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             TimeMonitor.end("TimeMonitor")
+        }
+        tv_activity_stack.setOnClickListener {
+            startActivity(Intent(this@MainActivity, ActiStackActivity::class.java))
         }
     }
 }
