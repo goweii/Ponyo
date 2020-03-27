@@ -18,5 +18,5 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.2.0'
     api project(":ponyo-log")
     api project(":ponyo-timemonitor")
-    api project(":ponyo-activitystack")
+    api project(':ponyo-appstack')
 }
