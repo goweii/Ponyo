@@ -19,7 +19,8 @@
             <TextView
                 android:id="@+id/tv_activity_stack_log"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:typeface="monospace" />
 
         </androidx.core.widget.NestedScrollView>
 
