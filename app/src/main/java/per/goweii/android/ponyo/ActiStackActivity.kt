@@ -1,4 +1,4 @@
-package per.goweii.ponyo
+package per.goweii.android.ponyo
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -17,7 +17,10 @@ class ActiStackActivity : AppCompatActivity() {
 
         supportFragmentManager.apply {
             beginTransaction().apply {
-                replace(R.id.fl_container, ActiStackFragment())
+                replace(
+                    R.id.fl_container,
+                    ActiStackFragment()
+                )
             }.commit()
         }
     }
