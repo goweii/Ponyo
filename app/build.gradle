@@ -6,7 +6,7 @@ android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
     defaultConfig {
-        applicationId "per.goweii.android.ponyo"
+        applicationId "per.goweii.ponyo"
         minSdkVersion 19
         targetSdkVersion 29
         versionCode 1

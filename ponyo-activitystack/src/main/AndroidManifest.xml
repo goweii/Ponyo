@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="per.goweii.android.ponyo.activitystack">
+    package="per.goweii.ponyo.activitystack">
     <application>
         <provider
             android:authorities="${applicationId}.ponyo.activitystack.initprovider"

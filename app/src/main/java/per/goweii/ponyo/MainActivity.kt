@@ -1,4 +1,4 @@
-package per.goweii.android.ponyo
+package per.goweii.ponyo
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity

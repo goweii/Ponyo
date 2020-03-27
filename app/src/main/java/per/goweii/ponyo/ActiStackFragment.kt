@@ -1,4 +1,4 @@
-package per.goweii.android.ponyo
+package per.goweii.ponyo
 
 import android.graphics.Color
 import android.os.Bundle
