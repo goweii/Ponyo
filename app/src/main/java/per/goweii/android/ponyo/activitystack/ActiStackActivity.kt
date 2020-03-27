@@ -6,15 +6,13 @@ import kotlinx.android.synthetic.main.activity_acti_stack.*
 import per.goweii.android.ponyo.R
 import per.goweii.ponyo.activitystack.ActivityStack
 
-class ActiStackActivity : AppCompatActivity() {
+class ActiStackActivity : AppCompatActivity(), () -> Unit {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_acti_stack)
 
-        ActivityStack.registerStackUpdateListener {
-            tv_activity_stack_log.text = ActivityStack.copyStack()
-        }
+        ActivityStack.registerStackUpdateListener(this)
 
         supportFragmentManager.apply {
             beginTransaction().apply {
@@ -24,5 +22,14 @@ class ActiStackActivity : AppCompatActivity() {
                 )
             }.commit()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        ActivityStack.unregisterStackUpdateListener(this)
+    }
+
+    override fun invoke() {
+        tv_activity_stack_log.text = ActivityStack.copyStack()
     }
 }

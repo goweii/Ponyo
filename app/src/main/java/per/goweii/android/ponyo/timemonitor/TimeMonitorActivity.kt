@@ -9,7 +9,7 @@ import per.goweii.ponyo.log.LogPrinter
 import per.goweii.ponyo.log.Ponlog
 import per.goweii.ponyo.timemonitor.TimeMonitor
 
-class TimeMonitorActivity : AppCompatActivity() {
+class TimeMonitorActivity : AppCompatActivity(), LogPrinter {
 
     private val tvLogBoard by lazy { tv_log_board }
     private val logStringBuilder = StringBuilder()
@@ -19,21 +19,26 @@ class TimeMonitorActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_time_monitor)
         TM.START_ACTIVITY.record("setContentView")
-        Ponlog.addLogPrinter(object : LogPrinter {
-            override fun print(level: Ponlog.Level, tag: String, msg: String) {
-                if (logStringBuilder.isNotEmpty()) {
-                    logStringBuilder.append("\n")
-                }
-                logStringBuilder.append("[${level.name}]$tag:$msg")
-                tvLogBoard.text = logStringBuilder
-            }
-        })
+        Ponlog.addLogPrinter(this)
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
         TM.START_ACTIVITY.record("onWindowFocusChanged=$hasFocus")
         TM.START_ACTIVITY.end()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Ponlog.removeLogPrinter(this)
+    }
+
+    override fun print(level: Ponlog.Level, tag: String, msg: String) {
+        if (logStringBuilder.isNotEmpty()) {
+            logStringBuilder.append("\n")
+        }
+        logStringBuilder.append("[${level.name}]$tag:$msg")
+        tvLogBoard.text = logStringBuilder
     }
 }
 

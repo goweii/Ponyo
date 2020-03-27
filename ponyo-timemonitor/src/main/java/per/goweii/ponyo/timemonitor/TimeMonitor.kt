@@ -49,35 +49,35 @@ object TimeMonitor {
     }
 
     private fun formatTimeLine(tagLine: String, list: List<TimeCost>): String {
-        var l1 = 0
+        var l_tag = 0
         list.forEach {
             val l = it.tag.length
-            if (l > l1) {
-                l1 = l
+            if (l > l_tag) {
+                l_tag = l
             }
         }
-        val l2 = 13
-        val l3 = 9
-        val l4 = 8
+        val l_timestamp = 13
+        val l_totalCost = 9
+        val l_stepCost = 8
         val sb = StringBuilder()
-            .append("one time monitor has ended and all records printed as follows")
-            .append("\n┌").append("─".r(n = l1 + l2 + l3 + l4 + 3)).append("┐")
-            .append("\n│").append(" ".r(tagLine, l1 + l2 + l3 + l4 + 3, "")).append("│")
-            .append("\n├").append("─".r(n = l1)).append("┬").append("─".r(n = l2)).append("┬")
-            .append("─".r(n = l3)).append("┬").append("─".r(n = l4)).append("┤")
-            .append("\n│").append(" ".r("tag", l1, "")).append("│")
-            .append(" ".r("timestamp", l2, "")).append("│").append(" ".r("totalCost", l3, ""))
-            .append("│").append(" ".r("stepCost", l4, "")).append("│")
-            .append("\n├").append("─".r(n = l1)).append("┼").append("─".r(n = l2)).append("┼")
-            .append("─".r(n = l3)).append("┼").append("─".r(n = l4)).append("┤")
+            .append("One time monitor has ended and all records printed as follows")
+            .append("\n┌").append("─".r(n = l_tag + l_timestamp + l_totalCost + l_stepCost + 3)).append("┐")
+            .append("\n│").append(" ".r(tagLine, l_tag + l_timestamp + l_totalCost + l_stepCost + 3, "")).append("│")
+            .append("\n├").append("─".r(n = l_tag)).append("┬").append("─".r(n = l_timestamp)).append("┬")
+            .append("─".r(n = l_totalCost)).append("┬").append("─".r(n = l_stepCost)).append("┤")
+            .append("\n│").append(" ".r("tag", l_tag, "")).append("│")
+            .append(" ".r("timestamp", l_timestamp, "")).append("│").append(" ".r("totalCost", l_totalCost, ""))
+            .append("│").append(" ".r("stepCost", l_stepCost, "")).append("│")
+            .append("\n├").append("─".r(n = l_tag)).append("┼").append("─".r(n = l_timestamp)).append("┼")
+            .append("─".r(n = l_totalCost)).append("┼").append("─".r(n = l_stepCost)).append("┤")
         list.forEach {
-            sb.append("\n│").append(" ".r(it.tag, l1, "")).append("│")
-                .append(" ".r("", l2, "${it.timestamp}")).append("│")
-                .append(" ".r("", l3, "${it.totalCost}")).append("│")
-                .append(" ".r("", l4, "${it.stepCost}")).append("│")
+            sb.append("\n│").append(" ".r(it.tag, l_tag, "")).append("│")
+                .append(" ".r("", l_timestamp, "${it.timestamp}")).append("│")
+                .append(" ".r("", l_totalCost, "${it.totalCost}")).append("│")
+                .append(" ".r("", l_stepCost, "${it.stepCost}")).append("│")
         }
-        sb.append("\n└").append("─".r(n = l1)).append("┴").append("─".r(n = l2)).append("┴")
-            .append("─".r(n = l3)).append("┴").append("─".r(n = l4)).append("┘")
+        sb.append("\n└").append("─".r(n = l_tag)).append("┴").append("─".r(n = l_timestamp)).append("┴")
+            .append("─".r(n = l_totalCost)).append("┴").append("─".r(n = l_stepCost)).append("┘")
         return sb.toString()
     }
 

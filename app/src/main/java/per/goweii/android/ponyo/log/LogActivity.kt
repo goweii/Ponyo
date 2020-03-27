@@ -8,7 +8,7 @@ import per.goweii.android.ponyo.R
 import per.goweii.ponyo.log.LogPrinter
 import per.goweii.ponyo.log.Ponlog
 
-class LogActivity : AppCompatActivity() {
+class LogActivity : AppCompatActivity(), LogPrinter {
 
     private val tvLogBoard by lazy { tv_log_board }
     private val logStringBuilder = StringBuilder()
@@ -17,18 +17,23 @@ class LogActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_log)
 
-        Ponlog.addLogPrinter(object : LogPrinter {
-            override fun print(level: Ponlog.Level, tag: String, msg: String) {
-                if (logStringBuilder.isNotEmpty()) {
-                    logStringBuilder.append("\n")
-                }
-                logStringBuilder.append("[${level.name}]$tag:$msg")
-                tvLogBoard.text = logStringBuilder
-            }
-        })
+        Ponlog.addLogPrinter(this)
 
         tv_print_log.setOnClickListener {
             Ponlog.d("Intent") { intent }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Ponlog.removeLogPrinter(this)
+    }
+
+    override fun print(level: Ponlog.Level, tag: String, msg: String) {
+        if (logStringBuilder.isNotEmpty()) {
+            logStringBuilder.append("\n")
+        }
+        logStringBuilder.append("[${level.name}]$tag:$msg")
+        tvLogBoard.text = logStringBuilder
     }
 }
