@@ -1,8 +1,9 @@
-package per.goweii.android.ponyo
+package per.goweii.android.ponyo.activitystack
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_acti_stack.*
+import per.goweii.android.ponyo.R
 import per.goweii.ponyo.activitystack.ActivityStack
 
 class ActiStackActivity : AppCompatActivity() {

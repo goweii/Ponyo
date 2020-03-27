@@ -4,11 +4,10 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import kotlinx.android.synthetic.main.activity_main.*
+import per.goweii.android.ponyo.activitystack.ActiStackActivity
 import per.goweii.android.ponyo.log.LogActivity
 import per.goweii.android.ponyo.timemonitor.TM
 import per.goweii.android.ponyo.timemonitor.TimeMonitorActivity
-import per.goweii.ponyo.log.Ponlog
-import per.goweii.ponyo.timemonitor.TimeMonitor
 
 class MainActivity : AppCompatActivity() {
 

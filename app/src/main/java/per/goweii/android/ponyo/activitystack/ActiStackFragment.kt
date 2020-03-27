@@ -1,4 +1,4 @@
-package per.goweii.android.ponyo
+package per.goweii.android.ponyo.activitystack
 
 import android.graphics.Color
 import android.os.Bundle
@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_acti_stack.*
+import per.goweii.android.ponyo.R
 import kotlin.random.Random
 
 class ActiStackFragment: Fragment() {
@@ -25,7 +26,8 @@ class ActiStackFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
         view.setBackgroundColor(Color.rgb(Random.nextInt(255), Random.nextInt(255), Random.nextInt(255)))
         tv_add.setOnClickListener {
-            val actiStackFragment = ActiStackFragment()
+            val actiStackFragment =
+                ActiStackFragment()
             actiStackFragments.add(actiStackFragment)
             childFragmentManager.apply {
                 beginTransaction().apply {

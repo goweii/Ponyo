@@ -18,7 +18,7 @@
         </activity>
         <activity android:name=".log.LogActivity" />
         <activity android:name=".timemonitor.TimeMonitorActivity" />
-        <activity android:name=".ActiStackActivity" />
+        <activity android:name=".activitystack.ActiStackActivity" />
     </application>
 
 </manifest>
