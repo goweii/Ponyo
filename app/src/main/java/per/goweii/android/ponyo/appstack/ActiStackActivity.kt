@@ -1,4 +1,4 @@
-package per.goweii.android.ponyo.activitystack
+package per.goweii.android.ponyo.appstack
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

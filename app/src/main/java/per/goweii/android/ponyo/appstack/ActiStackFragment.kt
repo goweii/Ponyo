@@ -1,4 +1,4 @@
-package per.goweii.android.ponyo.activitystack
+package per.goweii.android.ponyo.appstack
 
 import android.graphics.Color
 import android.os.Bundle
