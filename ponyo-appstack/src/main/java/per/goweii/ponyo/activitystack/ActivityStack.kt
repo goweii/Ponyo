@@ -23,14 +23,14 @@ object ActivityStack : Application.ActivityLifecycleCallbacks {
         fun getFragStack(fragmentInfo: FragmentInfo, isLast: Boolean, prefix: StringBuilder): StringBuilder {
             val sbf = StringBuilder()
             sbf.append(prefix)
-            if (!isLast) sbf.append("├")
-            else sbf.append("└")
+            if (!isLast) sbf.append("|—")
+            else sbf.append("\\—")
             sbf.append(fragmentInfo.fragment.toString())
             sbf.append("\n")
             fragmentInfo.fragmentStack.fragmentInfos.forEachIndexed { i, info ->
                 val prefix2 = StringBuilder(prefix)
-                if (!isLast) prefix2.append("│")
-                else prefix2.append("  ")
+                if (!isLast) prefix2.append("|")
+                else prefix2.append(" ")
                 prefix2.append(" ")
                 val lastf = i == fragmentInfo.fragmentStack.fragmentInfos.size - 1
                 sbf.append(getFragStack(info, lastf, prefix2))
@@ -40,14 +40,14 @@ object ActivityStack : Application.ActivityLifecycleCallbacks {
         val sba = StringBuilder()
         activityInfos.forEachIndexed { ai, activityInfo ->
             val lasta = ai == activityInfos.size - 1
-            if (!lasta) sba.append("├")
-            else sba.append("└")
+            if (!lasta) sba.append("|—")
+            else sba.append("\\—")
             sba.append(activityInfo.activity.toString())
             sba.append("\n")
             activityInfo.fragmentStack.fragmentInfos.forEachIndexed { fi, fragmentInfo ->
                 val prefix1 = StringBuilder()
-                if (!lasta) prefix1.append("│")
-                else prefix1.append("  ")
+                if (!lasta) prefix1.append("|")
+                else prefix1.append(" ")
                 prefix1.append(" ")
                 val lastf = fi == activityInfo.fragmentStack.fragmentInfos.size - 1
                 sba.append(getFragStack(fragmentInfo, lastf, prefix1))

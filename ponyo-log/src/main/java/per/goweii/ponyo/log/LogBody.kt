@@ -35,9 +35,9 @@ data class LogBody private constructor(
 
         private val StackTraceElement.simpleClassName: String
             get() {
-                val i = className.indexOf(".")
+                val i = className.lastIndexOf(".")
                 if (i == -1) return className
-                return className.substring(i)
+                return className.substring(i + 1)
             }
     }
 }

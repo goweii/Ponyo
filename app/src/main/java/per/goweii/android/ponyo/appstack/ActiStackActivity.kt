@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_acti_stack.*
 import per.goweii.android.ponyo.R
 import per.goweii.ponyo.activitystack.ActivityStack
+import per.goweii.ponyo.log.Ponlog
 
 class ActiStackActivity : AppCompatActivity(), () -> Unit {
 
@@ -31,5 +32,6 @@ class ActiStackActivity : AppCompatActivity(), () -> Unit {
 
     override fun invoke() {
         tv_activity_stack_log.text = ActivityStack.copyStack()
+        Ponlog.d { "\n" + ActivityStack.copyStack() }
     }
 }

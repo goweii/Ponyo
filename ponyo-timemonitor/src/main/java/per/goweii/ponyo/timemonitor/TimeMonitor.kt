@@ -2,6 +2,7 @@ package per.goweii.ponyo.timemonitor
 
 import per.goweii.ponyo.log.Ponlog
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.math.max
 
 object TimeMonitor {
     private val timeMap = ConcurrentHashMap<String, MutableList<TimeCost>>()
@@ -49,35 +50,39 @@ object TimeMonitor {
     }
 
     private fun formatTimeLine(tagLine: String, list: List<TimeCost>): String {
-        var l_tag = 0
+        val column_tag = "tag"
+        val column_timestamp = "timestamp"
+        val column_total_cost = "total cost"
+        val column_step_cost = "step cost"
+        var l_tag = column_tag.length
+        var l_timestamp = column_timestamp.length
+        var l_total_cost = column_total_cost.length
+        var l_step_cost = column_step_cost.length
         list.forEach {
-            val l = it.tag.length
-            if (l > l_tag) {
-                l_tag = l
-            }
+            l_tag = max(l_tag, it.tag.length)
+            l_timestamp = max(l_timestamp, it.timestamp.toString().length)
+            l_total_cost = max(l_total_cost, it.totalCost.toString().length)
+            l_step_cost = max(l_step_cost, it.stepCost.toString().length)
         }
-        val l_timestamp = 13
-        val l_totalCost = 9
-        val l_stepCost = 8
         val sb = StringBuilder()
             .append("One time monitor has ended and all records printed as follows")
-            .append("\n┌").append("─".r(n = l_tag + l_timestamp + l_totalCost + l_stepCost + 3)).append("┐")
-            .append("\n│").append(" ".r(tagLine, l_tag + l_timestamp + l_totalCost + l_stepCost + 3, "")).append("│")
-            .append("\n├").append("─".r(n = l_tag)).append("┬").append("─".r(n = l_timestamp)).append("┬")
-            .append("─".r(n = l_totalCost)).append("┬").append("─".r(n = l_stepCost)).append("┤")
-            .append("\n│").append(" ".r("tag", l_tag, "")).append("│")
-            .append(" ".r("timestamp", l_timestamp, "")).append("│").append(" ".r("totalCost", l_totalCost, ""))
-            .append("│").append(" ".r("stepCost", l_stepCost, "")).append("│")
-            .append("\n├").append("─".r(n = l_tag)).append("┼").append("─".r(n = l_timestamp)).append("┼")
-            .append("─".r(n = l_totalCost)).append("┼").append("─".r(n = l_stepCost)).append("┤")
+            .append("\n+").append("-".r(n = l_tag + l_timestamp + l_total_cost + l_step_cost + 3)).append("+")
+            .append("\n|").append(" ".r(tagLine, l_tag + l_timestamp + l_total_cost + l_step_cost + 3, "")).append("|")
+            .append("\n+").append("-".r(n = l_tag)).append("+").append("-".r(n = l_timestamp)).append("+")
+            .append("-".r(n = l_total_cost)).append("+").append("-".r(n = l_step_cost)).append("+")
+            .append("\n|").append(" ".r(column_tag, l_tag, "")).append("|")
+            .append(" ".r(column_timestamp, l_timestamp, "")).append("|").append(" ".r(column_total_cost, l_total_cost, ""))
+            .append("|").append(" ".r(column_step_cost, l_step_cost, "")).append("|")
+            .append("\n+").append("-".r(n = l_tag)).append("+").append("-".r(n = l_timestamp)).append("+")
+            .append("-".r(n = l_total_cost)).append("+").append("-".r(n = l_step_cost)).append("+")
         list.forEach {
-            sb.append("\n│").append(" ".r(it.tag, l_tag, "")).append("│")
-                .append(" ".r("", l_timestamp, "${it.timestamp}")).append("│")
-                .append(" ".r("", l_totalCost, "${it.totalCost}")).append("│")
-                .append(" ".r("", l_stepCost, "${it.stepCost}")).append("│")
+            sb.append("\n|").append(" ".r(it.tag, l_tag, "")).append("|")
+                .append(" ".r("", l_timestamp, "${it.timestamp}")).append("|")
+                .append(" ".r("", l_total_cost, "${it.totalCost}")).append("|")
+                .append(" ".r("", l_step_cost, "${it.stepCost}")).append("|")
         }
-        sb.append("\n└").append("─".r(n = l_tag)).append("┴").append("─".r(n = l_timestamp)).append("┴")
-            .append("─".r(n = l_totalCost)).append("┴").append("─".r(n = l_stepCost)).append("┘")
+        sb.append("\n+").append("-".r(n = l_tag)).append("+").append("-".r(n = l_timestamp)).append("+")
+            .append("-".r(n = l_total_cost)).append("+").append("-".r(n = l_step_cost)).append("+")
         return sb.toString()
     }
 
@@ -90,7 +95,7 @@ object TimeMonitor {
     }
 
     private fun log(str: String) {
-        Ponlog.d("TimeMonitor") { str }
+        Ponlog.d { str }
     }
 
 }
