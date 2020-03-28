@@ -1,4 +1,4 @@
-package per.goweii.ponyo.activitystack
+package per.goweii.ponyo.appstack
 
 import android.app.Activity
 import android.app.Application

@@ -1,9 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="per.goweii.ponyo.activitystack">
+    package="per.goweii.ponyo.appstack">
     <application>
         <provider
-            android:authorities="${applicationId}.ponyo.activitystack.initprovider"
-            android:name=".InitProvider"
+            android:authorities="${applicationId}.ponyo.appstack.initprovider"
+            android:name="per.goweii.ponyo.appstack.InitProvider"
             android:exported="false" />
     </application>
 </manifest>

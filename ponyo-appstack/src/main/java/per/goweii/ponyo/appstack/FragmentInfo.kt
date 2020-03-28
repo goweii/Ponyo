@@ -1,4 +1,4 @@
-package per.goweii.ponyo.activitystack
+package per.goweii.ponyo.appstack
 
 import androidx.fragment.app.Fragment
 

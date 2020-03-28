@@ -1,0 +1,13 @@
+apply plugin: 'maven'
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            pom.groupId = "per.goweii.ponyo"
+            pom.artifactId = "ponyo"
+            pom.version = "1.0.0"
+            pom.packaging = 'aar'
+            repository(url: uri("C:\\Android\\Repositories"))
+        }
+    }
+}

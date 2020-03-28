@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_acti_stack.*
 import per.goweii.android.ponyo.R
-import per.goweii.ponyo.activitystack.ActivityStack
+import per.goweii.ponyo.appstack.ActivityStack
 import per.goweii.ponyo.log.Ponlog
 
 class ActiStackActivity : AppCompatActivity(), () -> Unit {

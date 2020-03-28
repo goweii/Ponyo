@@ -1,7 +1,18 @@
 package per.goweii.ponyo
 
-/**
- * 日志打印
- */
+import android.app.Application
+
 object Ponyo {
+
+    private lateinit var application: Application
+
+    fun attach(app: Application) = apply {
+        application = app
+    }
+
+    fun showFloat(iconResId: Int) {
+        FloatManager(application)
+            .icon(iconResId)
+            .show()
+    }
 }
