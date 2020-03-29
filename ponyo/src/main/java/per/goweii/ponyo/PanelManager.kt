@@ -1,22 +1,16 @@
 package per.goweii.ponyo
 
 import android.animation.Animator
-import android.animation.TypeEvaluator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
 import android.os.Build
-import android.util.AttributeSet
-import android.util.TypedValue
 import android.view.*
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.DecelerateInterpolator
-import android.widget.FrameLayout
 import android.widget.ImageView
-import androidx.appcompat.widget.AppCompatImageView
 import per.goweii.ponyo.log.Ponlog
-import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.pow
 
@@ -212,8 +206,8 @@ class PanelManager(private val context: Context) {
 
     private val zoomAnimator: ValueAnimator by lazy {
         ValueAnimator.ofFloat(0F, 1F).apply {
-            interpolator = DecelerateInterpolator()
-            duration = 350L
+            interpolator = AccelerateDecelerateInterpolator()
+            duration = 400L
             addListener(object : Animator.AnimatorListener {
                 override fun onAnimationRepeat(animation: Animator) {
                 }
