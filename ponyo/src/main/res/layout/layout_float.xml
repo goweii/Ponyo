@@ -1,27 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <FrameLayout
-        android:id="@+id/fl_float"
-        android:layout_width="48dp"
-        android:layout_height="48dp">
+    <View
+        android:id="@+id/bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#cc000000" />
 
-        <TextView
-            android:id="@+id/tv_panel"
+    <FrameLayout
+        android:id="@+id/wrapper"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#FFFFFF"
+        tools:ignore="UselessParent">
+
+        <per.goweii.ponyo.IconView
+            android:id="@+id/icon"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:background="#FFFFFF"
-            android:gravity="center"
-            android:text="Ponyo悬浮面板" />
+            android:scaleType="centerCrop"
+            tools:ignore="ContentDescription" />
 
-        <ImageView
-            android:id="@+id/iv_icon"
+        <FrameLayout
+            android:id="@+id/panel"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center" />
+            android:background="#FFFFFF"
+            android:gravity="center">
+
+        </FrameLayout>
 
     </FrameLayout>
 

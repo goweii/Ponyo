@@ -1,49 +1,45 @@
 package per.goweii.ponyo
 
-import android.animation.Animator
-import android.animation.TypeEvaluator
-import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
 import android.os.Build
 import android.util.TypedValue
 import android.view.*
-import android.view.animation.AccelerateDecelerateInterpolator
-import android.widget.FrameLayout
+import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
+import android.widget.Scroller
 import per.goweii.ponyo.log.Ponlog
+import kotlin.math.abs
+import kotlin.math.atan2
+import kotlin.math.max
 import kotlin.math.min
-import kotlin.math.pow
 
 /**
  * @author CuiZhen
  * @date 2020/3/28
  */
-class FloatManager(private val context: Context) {
+class FloatManager(private val context: Context) : GestureDetector.OnGestureListener {
 
-    enum class State {
-        FLOAT, DRAGGING, FLING, PANEL, ZOOMING_TO_FLOAT, ZOOMING_TO_PANEL
+    private val panelManager: PanelManager by lazy {
+        PanelManager(context)
     }
 
-    private val panelRectF: RectF by lazy {
-        RectF(0F, 0F, floatView.measuredWidth.toFloat(), floatView.measuredHeight.toFloat())
+    private val fenceRect: RectF by lazy {
+        val rect = Rect()
+        windowManager.defaultDisplay.getRectSize(rect)
+        RectF(rect)
     }
-    private val floatRectF: RectF by lazy {
-        val defSize = TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP,
-            48F,
-            context.resources.displayMetrics
-        )
-        RectF(0F, 0F, defSize, defSize)
-    }
+    private val defSize = TypedValue.applyDimension(
+        TypedValue.COMPLEX_UNIT_DIP,
+        48F,
+        context.resources.displayMetrics
+    ).toInt()
     private val windowManager: WindowManager =
         context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     @SuppressLint("RtlHardcoded")
     private val windowParams: WindowManager.LayoutParams =
         WindowManager.LayoutParams().apply {
-            windowAnimations = 0
-            rotationAnimation = 0
             type = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
             } else {
@@ -52,252 +48,299 @@ class FloatManager(private val context: Context) {
             format = PixelFormat.RGBA_8888
             gravity = Gravity.TOP or Gravity.LEFT
             flags = WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or
-                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
-                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE or
-                    WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
-            width = WindowManager.LayoutParams.MATCH_PARENT
-            height = WindowManager.LayoutParams.MATCH_PARENT
-            x = 0
-            y = 0
+                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+            width = defSize
+            height = defSize
+            x = fenceRect.width().toInt() - width
+            y = ((fenceRect.height() - height) * 0.6F).toInt()
         }
 
-    private val floatView: View by lazy {
-        LayoutInflater.from(context).inflate(R.layout.layout_float, null).apply {
-            setOnTouchListener { _, event ->
-                if (event.x >= floatWrapper.left && event.x <= floatWrapper.right &&
-                    event.y >= floatWrapper.top && event.y <= floatWrapper.bottom
-                ) {
-                    floatWrapper.performClick()
-                }
-                true
-            }
-        }
+    private val gestureDetector: GestureDetector by lazy {
+        GestureDetector(context, this)
     }
-    private val floatIcon: ImageView by lazy {
-        floatView.findViewById<ImageView>(R.id.iv_icon).apply {
+    private val scroller: Scroller by lazy {
+        Scroller(context, DecelerateInterpolator())
+    }
+    private val velocityTracker: VelocityTracker by lazy {
+        VelocityTracker.obtain()
+    }
+    private val dragPath: Path = Path()
+
+    private val floatView: ImageView by lazy {
+        ImageView(context).apply {
             scaleType = ImageView.ScaleType.CENTER_CROP
-            alpha = 1F
-        }
-    }
-    private val floatPanel: View by lazy {
-        floatView.findViewById<View>(R.id.tv_panel).apply {
-            alpha = 0F
-        }
-    }
-    private val floatWrapper: FrameLayout by lazy {
-        floatView.findViewById<FrameLayout>(R.id.fl_float).apply {
+            elevation = TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                0F,
+                context.resources.displayMetrics
+            )
             clipToOutline = true
             outlineProvider = object : ViewOutlineProvider() {
                 override fun getOutline(view: View, outline: Outline) {
-                    val f = 1F - (view.layoutParams.width.toFloat() - floatRectF.width()) /
-                            (panelRectF.width() - floatRectF.width())
-                    val radius =
-                        (min(
-                            view.layoutParams.width,
-                            view.layoutParams.height
-                        ).toFloat() / 2F) * f
+                    val radius = (min(
+                        this@FloatManager.floatView.measuredWidth,
+                        this@FloatManager.floatView.measuredHeight
+                    ).toFloat() / 2F)
                     outline.setRoundRect(
-                        0, 0, view.layoutParams.width, view.layoutParams.height,
+                        0,
+                        0,
+                        this@FloatManager.floatView.measuredWidth,
+                        this@FloatManager.floatView.measuredHeight,
                         radius
                     )
                 }
             }
-            setOnClickListener {
-                onFloatIconClicked()
+            viewTreeObserver.addOnGlobalLayoutListener {
+                this@FloatManager.computeScroll()
             }
-            viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
-                override fun onPreDraw(): Boolean {
-                    viewTreeObserver.removeOnPreDrawListener(this)
-                    panelRectF.set(
-                        0F, 0F,
-                        floatView.measuredWidth.toFloat(),
-                        floatView.measuredHeight.toFloat()
-                    )
-                    val width = floatRectF.width()
-                    val height = floatRectF.height()
-                    floatRectF.left = 0F
-                    floatRectF.top = context.resources.displayMetrics.heightPixels * 0.6F
-                    floatRectF.right = floatRectF.left + width
-                    floatRectF.bottom = floatRectF.top + height
-                    updateToRectF(floatRectF)
-                    return true
+            setOnTouchListener { _, event ->
+                event.setLocation(event.rawX, event.rawY)
+                val consumed = gestureDetector.onTouchEvent(event)
+                Ponlog.d { "onTouch=$consumed" }
+                when (event.action) {
+                    MotionEvent.ACTION_UP -> onUp(event)
                 }
-            })
+                consumed
+            }
         }
     }
 
     private var state: State = State.FLOAT
+    private var dragStartX = 0f
+    private var dragStartY = 0f
+    private var dragStartEventX = 0f
+    private var dragStartEventY = 0f
+
+    enum class State {
+        FLOAT, DRAGGING, FLING
+    }
 
     fun icon(resId: Int) = apply {
-        floatIcon.setImageResource(resId)
+        this.floatView.setImageResource(resId)
+        panelManager.icon(resId)
+    }
+
+    fun isShown() = this.floatView.isAttachedToWindow
+
+    fun expand() {
+        if (!panelManager.isShown()) {
+            panelManager.show(currRectF())
+        }
+    }
+
+    fun collapse() {
+        if (panelManager.isShown()) {
+            panelManager.dismiss(currRectF())
+        }
     }
 
     fun show() {
-        if (floatView.isAttachedToWindow) return
+        if (isShown()) return
         try {
-            windowManager.addView(floatView, windowParams)
+            windowManager.addView(this.floatView, windowParams)
         } catch (e: Exception) {
-            Ponlog.e { e }
         }
     }
 
     fun dismiss() {
-        if (!floatView.isAttachedToWindow) return
+        if (!isShown()) return
         try {
-            windowManager.removeView(floatView)
+            windowManager.removeView(this.floatView)
         } catch (e: Exception) {
-            Ponlog.e { e }
         }
     }
 
     fun update() {
-        if (!floatView.isAttachedToWindow) return
+        if (!isShown()) return
         try {
-            windowManager.updateViewLayout(floatView, windowParams)
+            windowManager.updateViewLayout(this.floatView, windowParams)
         } catch (e: Exception) {
-            Ponlog.e { e }
         }
     }
 
-    private fun onFloatIconClicked() {
+    private fun updateLocation(x: Int, y: Int) {
+        val inx = x >= fenceRect.left && x <= fenceRect.right
+        val iny = y >= fenceRect.top && x <= fenceRect.bottom
+        if (inx || iny) {
+            windowParams.x = x.range(fenceRect.left.toInt(), fenceRect.right.toInt())
+            windowParams.y = y.range(fenceRect.top.toInt(), fenceRect.bottom.toInt())
+        } else {
+            scroller.abortAnimation()
+        }
+    }
+
+    private fun Int.range(from: Int, to: Int) = when {
+        this < from -> from
+        this > to -> to
+        else -> this
+    }
+
+    override fun onDown(e: MotionEvent): Boolean {
+        Ponlog.d { "onDown" }
+        scroller.abortAnimation()
+        return true
+    }
+
+    private fun onUp(e: MotionEvent) {
+        Ponlog.d { "onUp" }
+        if (state != State.DRAGGING) {
+            return
+        }
+        state = State.FLING
+        velocityTracker.computeCurrentVelocity(
+            1000,
+            max(fenceRect.width(), fenceRect.height()).toFloat()
+        )
+        val vx = velocityTracker.xVelocity
+        val vy = velocityTracker.yVelocity
+        velocityTracker.clear()
+        onDragEnd(vx, vy)
+        return
+    }
+
+    override fun onShowPress(e: MotionEvent) {
+        Ponlog.d { "onShowPress" }
+    }
+
+    override fun onSingleTapUp(e: MotionEvent): Boolean {
+        Ponlog.d { "onSingleTapUp" }
         when (state) {
             State.FLOAT -> {
-                state = State.ZOOMING_TO_PANEL
-                startZooming2Panel()
+                if (panelManager.isShown()) {
+                    collapse()
+                } else {
+                    expand()
+                }
             }
             State.FLING -> {
-                state = State.ZOOMING_TO_PANEL
-                startZooming2Panel()
             }
             State.DRAGGING -> {
-                state = State.ZOOMING_TO_PANEL
-                startZooming2Panel()
-            }
-            State.PANEL -> {
-                state = State.ZOOMING_TO_FLOAT
-                startZooming2Float()
-            }
-            State.ZOOMING_TO_FLOAT -> {
-                state = State.ZOOMING_TO_PANEL
-                startZooming2Panel()
-            }
-            State.ZOOMING_TO_PANEL -> {
-                state = State.ZOOMING_TO_FLOAT
-                startZooming2Float()
             }
         }
+        return true
     }
 
-    private val evaluator = object : TypeEvaluator<RectF> {
-        private val currValue = RectF()
-        override fun evaluate(f: Float, sv: RectF, ev: RectF): RectF {
-            val sf = when {
-                ev.width() > sv.width() -> f.acce()
-                ev.width() < sv.width() -> f.dece()
-                else -> f
+    private fun currRectF(): RectF = RectF(
+        windowParams.x.toFloat(),
+        windowParams.y.toFloat(),
+        windowParams.x.toFloat() + windowParams.width.toFloat(),
+        windowParams.y.toFloat() + windowParams.height.toFloat()
+    )
+
+    override fun onScroll(
+        e1: MotionEvent, e2: MotionEvent, distanceX: Float, distanceY: Float
+    ): Boolean {
+        Ponlog.d { "onScroll[$distanceX,$distanceY]" }
+        velocityTracker.addMovement(e2)
+        val touchX = e2.rawX
+        val touchY = e2.rawY
+        when (state) {
+            State.FLOAT -> {
+                state = State.DRAGGING
+                dragStartEventX = touchX
+                dragStartEventY = touchY
+                onDragStart()
             }
-            val cx = sv.centerX() + (ev.centerX() - sv.centerX()) * sf
-            val cy = sv.centerY() + (ev.centerY() - sv.centerY()) * sf
-            val w = sv.width() + (ev.width() - sv.width()) * f
-            val h = sv.height() + (ev.height() - sv.height()) * f
-            val l = cx - w / 2F
-            val t = cy - h / 2F
-            currValue.set(l, t, l + w, t + h)
-            return currValue
-        }
-    }
-
-    private fun Float.acce() = -this.pow(2F) + 2F * this
-
-    private fun Float.dece() = 1F - (1F - this).pow(0.5F)
-
-    private val zoomAnimator: ValueAnimator by lazy {
-        ValueAnimator.ofObject(evaluator, RectF(), RectF()).apply {
-            interpolator = AccelerateDecelerateInterpolator()
-            duration = 500L
-            addListener(object : Animator.AnimatorListener {
-                override fun onAnimationRepeat(animation: Animator) {
-                }
-
-                override fun onAnimationEnd(animation: Animator) {
-                    when (state) {
-                        State.ZOOMING_TO_FLOAT -> {
-                            endZooming2Float()
-                        }
-                        State.ZOOMING_TO_PANEL -> {
-                            endZooming2Panel()
-                        }
-                        else -> {
-                            // ignore
-                        }
-                    }
-                }
-
-                override fun onAnimationCancel(animation: Animator) {
-                }
-
-                override fun onAnimationStart(animation: Animator) {
-                }
-            })
-            addUpdateListener {
-                onZooming(it.animatedValue as RectF)
+            State.DRAGGING -> {
+                val dargX = touchX - dragStartEventX
+                val dargY = touchY - dragStartEventY
+                onDragging(dargX, dargY)
+            }
+            State.FLING -> {
+                state = State.DRAGGING
+                dragStartEventX = touchX
+                dragStartEventY = touchY
+                onDragStart()
             }
         }
+        return true
     }
 
-    private fun currFraction(): Float {
-        return 1F - (floatWrapper.layoutParams.width.toFloat() - floatRectF.width()) /
-                (panelRectF.width() - floatRectF.width())
+    override fun onLongPress(e: MotionEvent) {
+        Ponlog.d { "onLongPress" }
     }
 
-    private fun onZooming(currRectF: RectF) {
-        floatWrapper.updateToRectF(currRectF)
-        val f = currFraction().dece()
-        floatIcon.alpha = f
-        floatPanel.alpha = 1F - f
+    override fun onFling(
+        e1: MotionEvent,
+        e2: MotionEvent,
+        velocityX: Float,
+        velocityY: Float
+    ): Boolean {
+        Ponlog.d { "onFling[$velocityX,$velocityY]" }
+        return false
     }
 
-    private fun startZooming2Panel() {
-        val startRectF = floatWrapper.toRectF()
-        val endRectF = RectF(panelRectF)
-        if (startRectF.width() == floatRectF.width() && startRectF.height() == floatRectF.height()) {
-            floatRectF.set(startRectF)
+    private fun onDragStart() {
+        Ponlog.d { "onDragStart" }
+        dragStartX = windowParams.x.toFloat()
+        dragStartY = windowParams.y.toFloat()
+        dragPath.reset()
+        dragPath.rewind()
+        dragPath.moveTo(windowParams.x.toFloat(), windowParams.y.toFloat())
+    }
+
+    private fun onDragging(moveX: Float, moveY: Float) {
+        Ponlog.d { "onDragging[$moveX,$moveY]" }
+        val x = dragStartX + moveX
+        val y = dragStartY + moveY
+        val cX: Float = (x + windowParams.x) / 2f
+        val cY: Float = (y + windowParams.y) / 2f
+        dragPath.quadTo(dragStartX, dragStartY, cX, cY)
+        updateLocation(x.toInt(), y.toInt())
+        update()
+    }
+
+    private fun onDragEnd(velocityX: Float, velocityY: Float) {
+        Ponlog.d { "onDragEnd[$velocityX,$velocityY]" }
+        val startX: Float = windowParams.x.toFloat()
+        val startY: Float = windowParams.y.toFloat()
+        val startCenterX = startX + this.floatView.width / 2f
+        val startCenterY = startY + this.floatView.height / 2f
+        val endX: Float
+        endX = if (startCenterX < fenceRect.width() / 2f) {
+            0f
+        } else {
+            fenceRect.width() - this.floatView.width.toFloat()
         }
-        zoomAnimator.setObjectValues(startRectF, endRectF)
-        zoomAnimator.start()
-    }
-
-    private fun endZooming2Panel() {
-        state = State.PANEL
-    }
-
-    private fun startZooming2Float() {
-        val startRectF = floatWrapper.toRectF()
-        val endRectF = RectF(floatRectF)
-        zoomAnimator.setObjectValues(startRectF, endRectF)
-        zoomAnimator.start()
-    }
-
-    private fun endZooming2Float() {
-        state = State.FLOAT
-    }
-
-    private fun View.toRectF(): RectF = (this.layoutParams as ViewGroup.MarginLayoutParams).let {
-        RectF(
-            it.leftMargin.toFloat(),
-            it.topMargin.toFloat(),
-            it.leftMargin.toFloat() + width.toFloat(),
-            it.topMargin.toFloat() + height.toFloat()
+        val endY: Float
+        endY = if (velocityX == 0f && velocityY == 8f) {
+            startY
+        } else {
+            val dx = endX - startX
+            val dy = abs(dx) * (velocityY / abs(velocityX))
+            startY + dy
+        }
+        val pm = PathMeasure(dragPath, false)
+        val pos = FloatArray(2)
+        val tan = FloatArray(2)
+        pm.getPosTan(pm.length, pos, tan)
+        val degrees = (atan2(
+            tan[1].toDouble(),
+            tan[0].toDouble()
+        ) * 180f / Math.PI).toFloat()
+        Ponlog.d { "onDragEnd degrees=$degrees" }
+        Ponlog.d { "onDragEnd end[$endX,$endY]" }
+        scroller.startScroll(
+            startX.toInt(),
+            startY.toInt(),
+            (endX - startX).toInt(),
+            (startY - startY).toInt()
         )
+        computeScroll()
     }
 
-    private fun View.updateToRectF(rectF: RectF) {
-        val lp = layoutParams as ViewGroup.MarginLayoutParams
-        lp.width = rectF.width().toInt()
-        lp.height = rectF.height().toInt()
-        lp.leftMargin = rectF.left.toInt()
-        lp.topMargin = rectF.top.toInt()
-        requestLayout()
+    private fun computeScroll() {
+        if (state != State.FLING) {
+            return
+        }
+        if (scroller.computeScrollOffset()) {
+            val x = scroller.currX.toFloat()
+            val y = scroller.currY.toFloat()
+            updateLocation(x.toInt(), y.toInt())
+            update()
+        } else {
+            state = State.FLOAT
+        }
     }
 
 }
