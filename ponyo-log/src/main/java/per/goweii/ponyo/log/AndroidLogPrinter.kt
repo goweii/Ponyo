@@ -3,8 +3,12 @@ package per.goweii.ponyo.log
 import android.util.Log
 
 class AndroidLogPrinter : LogPrinter {
-    override fun print(level: Ponlog.Level, tag: String, msg: String) {
-        Log.println(level.priority, tag, msg)
+    override fun print(level: Ponlog.Level, tag: String, body: LogBody, msg: String) {
+        Log.println(
+            level.priority,
+            tag,
+            "${body.className}.${body.methodName}(${body.fileName}:${body.lineNumber}):$msg"
+        )
     }
 
     private val Ponlog.Level.priority: Int

@@ -5,8 +5,10 @@ import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_log.*
 import kotlinx.android.synthetic.main.activity_main.tv_print_log
 import per.goweii.android.ponyo.R
+import per.goweii.ponyo.log.LogBody
 import per.goweii.ponyo.log.LogPrinter
 import per.goweii.ponyo.log.Ponlog
+import kotlin.random.Random
 
 class LogActivity : AppCompatActivity(), LogPrinter {
 
@@ -20,7 +22,13 @@ class LogActivity : AppCompatActivity(), LogPrinter {
         Ponlog.addLogPrinter(this)
 
         tv_print_log.setOnClickListener {
-            Ponlog.d("Intent") { intent }
+            when (Random.nextInt(5)) {
+                0 -> Ponlog.e("Intent") { intent }
+                1 -> Ponlog.w("Intent") { intent }
+                2 -> Ponlog.i("Intent") { intent }
+                3 -> Ponlog.d("Intent") { intent }
+                4 -> Ponlog.v("Intent") { intent }
+            }
         }
     }
 
@@ -29,7 +37,7 @@ class LogActivity : AppCompatActivity(), LogPrinter {
         Ponlog.removeLogPrinter(this)
     }
 
-    override fun print(level: Ponlog.Level, tag: String, msg: String) {
+    override fun print(level: Ponlog.Level, tag: String, body: LogBody, msg: String) {
         if (logStringBuilder.isNotEmpty()) {
             logStringBuilder.append("\n")
         }

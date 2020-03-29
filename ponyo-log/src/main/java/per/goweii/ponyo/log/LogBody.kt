@@ -1,6 +1,7 @@
 package per.goweii.ponyo.log
 
 data class LogBody private constructor(
+    val timestamp: Long,
     val threadName: String,
     val fileName: String,
     val className: String,
@@ -25,12 +26,13 @@ data class LogBody private constructor(
                     }
                 }
             }
+            val timestamp = System.currentTimeMillis()
             val threadName = Thread.currentThread().name
             val fileName = caller?.fileName ?: "Unknown"
             val className = caller?.simpleClassName ?: "Unknown"
             val methodName = caller?.methodName ?: "unknown"
             val lineNumber = caller?.lineNumber ?: -1
-            return LogBody(threadName, fileName, className, methodName, lineNumber)
+            return LogBody(timestamp, threadName, fileName, className, methodName, lineNumber)
         }
 
         private val StackTraceElement.simpleClassName: String

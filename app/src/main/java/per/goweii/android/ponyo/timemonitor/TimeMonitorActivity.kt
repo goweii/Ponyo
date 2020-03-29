@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_log.*
 import kotlinx.android.synthetic.main.activity_main.tv_print_log
 import per.goweii.android.ponyo.R
+import per.goweii.ponyo.log.LogBody
 import per.goweii.ponyo.log.LogPrinter
 import per.goweii.ponyo.log.Ponlog
 import per.goweii.ponyo.timemonitor.TimeMonitor
@@ -33,7 +34,7 @@ class TimeMonitorActivity : AppCompatActivity(), LogPrinter {
         Ponlog.removeLogPrinter(this)
     }
 
-    override fun print(level: Ponlog.Level, tag: String, msg: String) {
+    override fun print(level: Ponlog.Level, tag: String, body: LogBody, msg: String) {
         if (logStringBuilder.isNotEmpty()) {
             logStringBuilder.append("\n")
         }

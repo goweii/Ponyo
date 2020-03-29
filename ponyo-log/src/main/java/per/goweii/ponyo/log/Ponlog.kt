@@ -98,11 +98,9 @@ object Ponlog {
     }
 
     private fun print(level: Level, tag: String, body: LogBody, msg: String) {
-        val logMsg =
-            "${body.className}.${body.methodName}(${body.fileName}:${body.lineNumber}):$msg"
-        androidLogPrinter.print(level, tag, logMsg)
+        androidLogPrinter.print(level, tag, body, msg)
         logPrinterList.forEach {
-            it.print(level, tag, logMsg)
+            it.print(level, tag, body, msg)
         }
     }
 

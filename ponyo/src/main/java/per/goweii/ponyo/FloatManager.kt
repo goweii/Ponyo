@@ -9,7 +9,6 @@ import android.view.*
 import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
 import android.widget.Scroller
-import per.goweii.ponyo.log.Ponlog
 import kotlin.math.abs
 import kotlin.math.atan2
 import kotlin.math.max
@@ -19,7 +18,7 @@ import kotlin.math.min
  * @author CuiZhen
  * @date 2020/3/28
  */
-class FloatManager(private val context: Context) : GestureDetector.OnGestureListener {
+internal class FloatManager(private val context: Context) : GestureDetector.OnGestureListener {
 
     private val panelManager: PanelManager by lazy {
         PanelManager(context)
@@ -96,7 +95,6 @@ class FloatManager(private val context: Context) : GestureDetector.OnGestureList
             setOnTouchListener { _, event ->
                 event.setLocation(event.rawX, event.rawY)
                 val consumed = gestureDetector.onTouchEvent(event)
-                Ponlog.d { "onTouch=$consumed" }
                 when (event.action) {
                     MotionEvent.ACTION_UP -> onUp(event)
                 }
@@ -177,13 +175,11 @@ class FloatManager(private val context: Context) : GestureDetector.OnGestureList
     }
 
     override fun onDown(e: MotionEvent): Boolean {
-        Ponlog.d { "onDown" }
         scroller.abortAnimation()
         return true
     }
 
     private fun onUp(e: MotionEvent) {
-        Ponlog.d { "onUp" }
         if (state != State.DRAGGING) {
             return
         }
@@ -200,11 +196,9 @@ class FloatManager(private val context: Context) : GestureDetector.OnGestureList
     }
 
     override fun onShowPress(e: MotionEvent) {
-        Ponlog.d { "onShowPress" }
     }
 
     override fun onSingleTapUp(e: MotionEvent): Boolean {
-        Ponlog.d { "onSingleTapUp" }
         toggle()
         return true
     }
@@ -219,7 +213,6 @@ class FloatManager(private val context: Context) : GestureDetector.OnGestureList
     override fun onScroll(
         e1: MotionEvent, e2: MotionEvent, distanceX: Float, distanceY: Float
     ): Boolean {
-        Ponlog.d { "onScroll[$distanceX,$distanceY]" }
         velocityTracker.addMovement(e2)
         val touchX = e2.rawX
         val touchY = e2.rawY
@@ -246,7 +239,6 @@ class FloatManager(private val context: Context) : GestureDetector.OnGestureList
     }
 
     override fun onLongPress(e: MotionEvent) {
-        Ponlog.d { "onLongPress" }
     }
 
     override fun onFling(
@@ -255,12 +247,10 @@ class FloatManager(private val context: Context) : GestureDetector.OnGestureList
         velocityX: Float,
         velocityY: Float
     ): Boolean {
-        Ponlog.d { "onFling[$velocityX,$velocityY]" }
         return false
     }
 
     private fun onDragStart() {
-        Ponlog.d { "onDragStart" }
         dragStartX = windowParams.x.toFloat()
         dragStartY = windowParams.y.toFloat()
         dragPath.reset()
@@ -269,7 +259,6 @@ class FloatManager(private val context: Context) : GestureDetector.OnGestureList
     }
 
     private fun onDragging(moveX: Float, moveY: Float) {
-        Ponlog.d { "onDragging[$moveX,$moveY]" }
         val x = dragStartX + moveX
         val y = dragStartY + moveY
         val cX: Float = (x + windowParams.x) / 2f
@@ -280,7 +269,6 @@ class FloatManager(private val context: Context) : GestureDetector.OnGestureList
     }
 
     private fun onDragEnd(velocityX: Float, velocityY: Float) {
-        Ponlog.d { "onDragEnd[$velocityX,$velocityY]" }
         val startX: Float = windowParams.x.toFloat()
         val startY: Float = windowParams.y.toFloat()
         val startCenterX = startX + this.floatView.width / 2f
@@ -307,8 +295,6 @@ class FloatManager(private val context: Context) : GestureDetector.OnGestureList
             tan[1].toDouble(),
             tan[0].toDouble()
         ) * 180f / Math.PI).toFloat()
-        Ponlog.d { "onDragEnd degrees=$degrees" }
-        Ponlog.d { "onDragEnd end[$endX,$endY]" }
         scroller.startScroll(
             startX.toInt(),
             startY.toInt(),

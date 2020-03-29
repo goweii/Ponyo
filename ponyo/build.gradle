@@ -3,6 +3,7 @@ apply from: "../basic.gradle"
 apply from: "../maven.gradle"
 
 dependencies {
+    implementation rootProject.ext.dependencies.recyclerview
     api project(":ponyo-log")
     api project(":ponyo-timemonitor")
     api project(':ponyo-appstack')

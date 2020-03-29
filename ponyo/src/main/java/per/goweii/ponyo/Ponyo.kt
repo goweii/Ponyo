@@ -3,7 +3,6 @@ package per.goweii.ponyo
 import android.app.Application
 import per.goweii.ponyo.appstack.ActivityStack
 import per.goweii.ponyo.appstack.OnAppStateChangeListener
-import per.goweii.ponyo.log.Ponlog
 
 object Ponyo : OnAppStateChangeListener {
 
@@ -21,19 +20,15 @@ object Ponyo : OnAppStateChangeListener {
     }
 
     override fun onStart() {
-        Ponlog.d { "onStart" }
     }
 
     override fun onResume() {
-        Ponlog.d { "onResume" }
     }
 
     override fun onPause() {
-        Ponlog.d { "onPause" }
         floatManager?.collapse()
     }
 
     override fun onStop() {
-        Ponlog.d { "onStop" }
     }
 }

@@ -8,9 +8,8 @@ import android.graphics.*
 import android.os.Build
 import android.view.*
 import android.view.animation.AccelerateDecelerateInterpolator
-import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
-import per.goweii.ponyo.log.Ponlog
+import androidx.recyclerview.widget.RecyclerView
 import kotlin.math.min
 import kotlin.math.pow
 
@@ -18,7 +17,7 @@ import kotlin.math.pow
  * @author CuiZhen
  * @date 2020/3/28
  */
-class PanelManager(private val context: Context) {
+internal class PanelManager(private val context: Context) {
 
     enum class State {
         FLOAT, PANEL
@@ -53,6 +52,8 @@ class PanelManager(private val context: Context) {
 
     private val floatView: View by lazy {
         LayoutInflater.from(context).inflate(R.layout.layout_float, null).apply {
+            val rv_log = findViewById<RecyclerView>(R.id.rv_log)
+            LogManager.attachTo(rv_log)
         }
     }
     private val floatWrapper: View by lazy {
@@ -111,7 +112,6 @@ class PanelManager(private val context: Context) {
         try {
             windowManager.addView(floatView, windowParams)
         } catch (e: Exception) {
-            Ponlog.e { e }
         }
     }
 
@@ -121,7 +121,6 @@ class PanelManager(private val context: Context) {
         try {
             windowManager.removeView(floatView)
         } catch (e: Exception) {
-            Ponlog.e { e }
         }
     }
 
