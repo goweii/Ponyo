@@ -39,6 +39,7 @@ class LogAdapter(
         private val tv_log_tag by lazy { itemView.findViewById<TextView>(R.id.tv_log_tag) }
         private val tv_log_msg by lazy { itemView.findViewById<TextView>(R.id.tv_log_msg) }
 
+        @SuppressLint("SetTextI18n")
         fun bindData(data: LogManager.Log) {
             val color = when (data.level) {
                 Ponlog.Level.ERROR -> itemView.context.resources.getColor(R.color.colorLogError)
@@ -49,8 +50,8 @@ class LogAdapter(
             }
             tv_log_tag.setTextColor(color)
             tv_log_msg.setTextColor(color)
-            tv_log_tag.text = "[${data.level.name}] ${simpleDateFormat.format(data.body.timestamp)} ${data.tag}"
-            tv_log_msg.text = "${data.msg}"
+            tv_log_tag.text = "${simpleDateFormat.format(data.body.timestamp)} ${data.level.name}/${data.tag} ${data.body.className}.${data.body.methodName}(${data.body.fileName}:${data.body.lineNumber}) ${data.body.threadName}"
+            tv_log_msg.text = data.msg
         }
     }
 

@@ -27,10 +27,50 @@
 
     </HorizontalScrollView>
 
-    <Button
-        android:id="@+id/tv_print_log"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Print"
-        android:textAllCaps="false" />
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/tv_print_error"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Error"
+            android:textAllCaps="false" />
+
+        <Button
+            android:id="@+id/tv_print_warn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Warn"
+            android:textAllCaps="false" />
+
+        <Button
+            android:id="@+id/tv_print_info"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Info"
+            android:textAllCaps="false" />
+
+        <Button
+            android:id="@+id/tv_print_debug"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Debug"
+            android:textAllCaps="false" />
+
+        <Button
+            android:id="@+id/tv_print_visible"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Visible"
+            android:textAllCaps="false" />
+
+    </LinearLayout>
 </LinearLayout>
