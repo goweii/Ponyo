@@ -123,15 +123,15 @@ class FloatManager(private val context: Context) : GestureDetector.OnGestureList
     fun isShown() = this.floatView.isAttachedToWindow
 
     fun expand() {
-        if (!panelManager.isShown()) {
-            panelManager.show(currRectF())
-        }
+        panelManager.show(currRectF())
     }
 
     fun collapse() {
-        if (panelManager.isShown()) {
-            panelManager.dismiss(currRectF())
-        }
+        panelManager.dismiss(currRectF())
+    }
+
+    fun toggle() {
+        panelManager.toggle(currRectF())
     }
 
     fun show() {
@@ -164,6 +164,7 @@ class FloatManager(private val context: Context) : GestureDetector.OnGestureList
         if (inx || iny) {
             windowParams.x = x.range(fenceRect.left.toInt(), fenceRect.right.toInt())
             windowParams.y = y.range(fenceRect.top.toInt(), fenceRect.bottom.toInt())
+            panelManager.update(currRectF())
         } else {
             scroller.abortAnimation()
         }
@@ -204,19 +205,7 @@ class FloatManager(private val context: Context) : GestureDetector.OnGestureList
 
     override fun onSingleTapUp(e: MotionEvent): Boolean {
         Ponlog.d { "onSingleTapUp" }
-        when (state) {
-            State.FLOAT -> {
-                if (panelManager.isShown()) {
-                    collapse()
-                } else {
-                    expand()
-                }
-            }
-            State.FLING -> {
-            }
-            State.DRAGGING -> {
-            }
-        }
+        toggle()
         return true
     }
 

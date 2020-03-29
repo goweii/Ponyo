@@ -11,6 +11,7 @@ import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.*
 import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.appcompat.widget.AppCompatImageView
@@ -26,7 +27,7 @@ import kotlin.math.pow
 class PanelManager(private val context: Context) {
 
     enum class State {
-        FLOAT, PANEL, ZOOMING_TO_FLOAT, ZOOMING_TO_PANEL
+        FLOAT, PANEL
     }
 
     private val panelRectF: RectF by lazy {
@@ -94,10 +95,9 @@ class PanelManager(private val context: Context) {
         floatIcon.setImageResource(resId)
     }
 
-    fun isShown() = this.floatView.isAttachedToWindow
-
-    fun show(rectF: RectF) {
-        floatRectF.set(rectF)
+    private fun attach() {
+        floatView.visibility = View.INVISIBLE
+        floatView.alpha = 0F
         floatView.viewTreeObserver.addOnPreDrawListener(object :
             ViewTreeObserver.OnPreDrawListener {
             override fun onPreDraw(): Boolean {
@@ -114,22 +114,11 @@ class PanelManager(private val context: Context) {
                 return true
             }
         })
-        attach()
-    }
-
-    private fun attach() {
-        floatView.visibility = View.INVISIBLE
-        floatView.alpha = 0F
         try {
             windowManager.addView(floatView, windowParams)
         } catch (e: Exception) {
             Ponlog.e { e }
         }
-    }
-
-    fun dismiss(rectF: RectF) {
-        floatRectF.set(rectF)
-        startZooming2Float()
     }
 
     private fun detach() {
@@ -142,22 +131,78 @@ class PanelManager(private val context: Context) {
         }
     }
 
-    private val evaluator = object : TypeEvaluator<RectF> {
-        private val currValue = RectF()
-        override fun evaluate(f: Float, sv: RectF, ev: RectF): RectF {
-            val sf = when {
-                ev.width() > sv.width() -> f.acce()
-                ev.width() < sv.width() -> f.dece()
-                else -> f
+    fun show(rectF: RectF) {
+        floatRectF.set(rectF)
+        if (!floatView.isAttachedToWindow) {
+            attach()
+        } else {
+            if (zoomAnimator.isRunning) {
+                when (state) {
+                    State.FLOAT -> {
+                        state = State.PANEL
+                        zoomAnimator.reverse()
+                    }
+                    State.PANEL -> {
+                    }
+                }
+            } else {
+                attach()
             }
-            val cx = sv.centerX() + (ev.centerX() - sv.centerX()) * sf
-            val cy = sv.centerY() + (ev.centerY() - sv.centerY()) * sf
-            val w = sv.width() + (ev.width() - sv.width()) * f
-            val h = sv.height() + (ev.height() - sv.height()) * f
-            val l = cx - w / 2F
-            val t = cy - h / 2F
-            currValue.set(l, t, l + w, t + h)
-            return currValue
+        }
+    }
+
+    fun dismiss(rectF: RectF) {
+        floatRectF.set(rectF)
+        if (floatView.isAttachedToWindow) {
+            if (zoomAnimator.isRunning) {
+                when (state) {
+                    State.FLOAT -> {
+                    }
+                    State.PANEL -> {
+                        state = State.FLOAT
+                        zoomAnimator.reverse()
+                    }
+                }
+            } else {
+                startZooming2Float()
+            }
+        }
+    }
+
+    fun toggle(rectF: RectF) {
+        floatRectF.set(rectF)
+        if (!floatView.isAttachedToWindow) {
+            attach()
+        } else {
+            if (zoomAnimator.isRunning) {
+                state = when (state) {
+                    State.FLOAT -> {
+                        State.PANEL
+                    }
+                    State.PANEL -> {
+                        State.FLOAT
+                    }
+                }
+                zoomAnimator.reverse()
+            } else {
+                startZooming2Float()
+            }
+        }
+    }
+
+    fun update(rectF: RectF) {
+        floatRectF.set(rectF)
+        if (floatView.isAttachedToWindow) {
+            if (zoomAnimator.isRunning) {
+                when (state) {
+                    State.FLOAT -> {
+                        endRectF.set(floatRectF)
+                    }
+                    State.PANEL -> {
+                        startRectF.set(floatRectF)
+                    }
+                }
+            }
         }
     }
 
@@ -166,25 +211,20 @@ class PanelManager(private val context: Context) {
     private fun Float.dece() = 1F - (1F - this).pow(0.5F)
 
     private val zoomAnimator: ValueAnimator by lazy {
-        ValueAnimator.ofObject(evaluator, RectF(), RectF()).apply {
-            interpolator = AccelerateDecelerateInterpolator()
-            duration = 500L
+        ValueAnimator.ofFloat(0F, 1F).apply {
+            interpolator = DecelerateInterpolator()
+            duration = 350L
             addListener(object : Animator.AnimatorListener {
                 override fun onAnimationRepeat(animation: Animator) {
                 }
 
                 override fun onAnimationEnd(animation: Animator) {
                     when (state) {
-                        State.ZOOMING_TO_FLOAT -> {
+                        State.FLOAT -> {
                             endZooming2Float()
-                            floatView.visibility = View.INVISIBLE
-                            floatView.alpha = 0F
                         }
-                        State.ZOOMING_TO_PANEL -> {
+                        State.PANEL -> {
                             endZooming2Panel()
-                        }
-                        else -> {
-                            // ignore
                         }
                     }
                 }
@@ -198,46 +238,57 @@ class PanelManager(private val context: Context) {
                 }
             })
             addUpdateListener {
-                onZooming(it.animatedValue as RectF)
+                val f = it.animatedValue as Float
+                onZooming(f, startRectF, endRectF)
             }
         }
     }
 
-    private fun onZooming(currRectF: RectF) {
-        floatWrapper.updateToRectF(currRectF)
-        val f = (currRectF.width() - floatRectF.width()) / (panelRectF.width() - floatRectF.width())
-        floatBg.alpha = (f).dece()
-        floatIcon.alpha = (1F - f).dece()
-        floatPanel.alpha = f.dece()
+    private val startRectF: RectF = RectF()
+    private val endRectF: RectF = RectF()
+
+    private fun onZooming(f: Float, sv: RectF, ev: RectF) {
+        val sf = when {
+            ev.width() > sv.width() -> f.acce()
+            ev.width() < sv.width() -> f.dece()
+            else -> f
+        }
+        val cx = sv.centerX() + (ev.centerX() - sv.centerX()) * sf
+        val cy = sv.centerY() + (ev.centerY() - sv.centerY()) * sf
+        val w = sv.width() + (ev.width() - sv.width()) * f
+        val h = sv.height() + (ev.height() - sv.height()) * f
+        val l = cx - w / 2F
+        val t = cy - h / 2F
+        val currValue = RectF(l, t, l + w, t + h)
+        floatWrapper.updateToRectF(currValue)
+        val p = (currValue.width() - floatRectF.width()) / (panelRectF.width() - floatRectF.width())
+        floatBg.alpha = p.acce()
+        floatIcon.alpha = (1F - p).dece()
+        floatPanel.alpha = p.dece()
     }
 
     private fun startZooming2Panel() {
-        state = State.ZOOMING_TO_PANEL
-        val startRectF = floatWrapper.toRectF()
-        val endRectF = RectF(panelRectF)
-        if (startRectF.width() == floatRectF.width() && startRectF.height() == floatRectF.height()) {
-            floatRectF.set(startRectF)
-        }
-        zoomAnimator.setObjectValues(startRectF, endRectF)
+        state = State.PANEL
+        startRectF.set(floatWrapper.toRectF())
+        endRectF.set(panelRectF)
         zoomAnimator.start()
     }
 
     private fun endZooming2Panel() {
-        state = State.PANEL
         floatView.visibility = View.VISIBLE
         floatView.alpha = 1F
     }
 
     private fun startZooming2Float() {
-        state = State.ZOOMING_TO_FLOAT
-        val startRectF = floatWrapper.toRectF()
-        val endRectF = RectF(floatRectF)
-        zoomAnimator.setObjectValues(startRectF, endRectF)
+        state = State.FLOAT
+        startRectF.set(floatWrapper.toRectF())
+        endRectF.set(floatRectF)
         zoomAnimator.start()
     }
 
     private fun endZooming2Float() {
-        state = State.FLOAT
+        floatView.visibility = View.INVISIBLE
+        floatView.alpha = 0F
         detach()
     }
 
