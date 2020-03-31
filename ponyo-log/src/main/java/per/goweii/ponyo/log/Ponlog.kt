@@ -10,7 +10,10 @@ object Ponlog {
         VERBOSE(1 shl 4),
     }
 
-    private var filter: Int = setLevel(Level.ERROR, Level.WARN, Level.INFO, Level.DEBUG, Level.VERBOSE)
+    private var filter: Int = setLevel(
+        Level.ERROR, Level.WARN, Level.INFO, Level.DEBUG, Level.VERBOSE
+    )
+    private val bridgeCls = mutableListOf<Class<*>>()
     private var perLogMaxLength: Int = 4 * 1024
     private val androidLogPrinter: LogPrinter = AndroidLogPrinter()
     private val logPrinterList = mutableListOf<LogPrinter>()
@@ -33,6 +36,14 @@ object Ponlog {
 
     fun containLevel(level: Level): Boolean {
         return level.value and filter != 0
+    }
+
+    fun addBridgeClass(vararg cls: Class<*>) {
+        bridgeCls.addAll(cls)
+    }
+
+    fun removeBridgeClass(vararg cls: Class<*>) {
+        bridgeCls.removeAll(cls)
     }
 
     fun setPerLogMaxLength(perLogMaxLength: Int) {
@@ -82,7 +93,7 @@ object Ponlog {
     }
 
     private fun print(level: Level, tag: String?, msg: Any?) {
-        val logBody = LogBody.build(javaClass)
+        val logBody = LogBody.build(javaClass, bridgeCls)
         val logTag = tag ?: logBody.className
         val logMsg = LogFormatter.object2String(msg)
         if (logMsg.length > perLogMaxLength) {

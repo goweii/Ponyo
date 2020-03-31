@@ -9,15 +9,17 @@ data class LogBody private constructor(
     val lineNumber: Int
 ) {
     companion object {
-        fun build(logCls: Class<*>): LogBody {
+        fun build(
+            logCls: Class<*>,
+            bridgeCls: List<Class<*>>
+        ): LogBody {
             val stackTrace = Thread.currentThread().stackTrace
             var caller: StackTraceElement? = null
             var find = false
             for (i in 1 until stackTrace.size) {
                 val stackTraceElement = stackTrace[i]
-                val cls1 = stackTraceElement.className
-                val cls2 = logCls.name
-                if (cls1 == cls2) {
+                val clsName = stackTraceElement.className
+                if (clsName == logCls.name || isBridgeCls(clsName, bridgeCls)) {
                     find = true
                 } else {
                     if (find) {
@@ -33,6 +35,17 @@ data class LogBody private constructor(
             val methodName = caller?.methodName ?: "unknown"
             val lineNumber = caller?.lineNumber ?: -1
             return LogBody(timestamp, threadName, fileName, className, methodName, lineNumber)
+        }
+
+        private fun isBridgeCls(clsName: String, bridgeCls: List<Class<*>>): Boolean {
+            var find = false
+            bridgeCls.forEach {
+                if (clsName == it.name) {
+                    find = true
+                    return@forEach
+                }
+            }
+            return find
         }
 
         private val StackTraceElement.simpleClassName: String
