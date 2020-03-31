@@ -18,16 +18,11 @@ import kotlin.math.min
  * @author CuiZhen
  * @date 2020/3/28
  */
-internal class FloatManager(private val context: Context) : GestureDetector.OnGestureListener {
+internal class FloatManager(private val context: Context) : GestureDetector.OnGestureListener,
+    ViewTreeObserver.OnGlobalLayoutListener {
 
     private val panelManager: PanelManager by lazy {
-        PanelManager(context).apply {
-            onDetachListener {
-                if (toDismiss) {
-                    dismiss()
-                }
-            }
-        }
+        PanelManager(context)
     }
 
     private val fenceRect: RectF by lazy {
@@ -95,9 +90,6 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
                     )
                 }
             }
-            viewTreeObserver.addOnGlobalLayoutListener {
-                this@FloatManager.computeScroll()
-            }
             setOnTouchListener { _, event ->
                 event.setLocation(event.rawX, event.rawY)
                 val consumed = gestureDetector.onTouchEvent(event)
@@ -114,8 +106,6 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
     private var dragStartY = 0f
     private var dragStartEventX = 0f
     private var dragStartEventY = 0f
-
-    private var toDismiss = false
 
     enum class State {
         FLOAT, DRAGGING, FLING
@@ -142,14 +132,16 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
 
     fun show() {
         if (isShown()) return
-        toDismiss = false
         attach()
     }
 
     fun dismiss() {
         if (!isShown()) return
         if (panelManager.isShown()) {
-            toDismiss = true
+            panelManager.onDetachListener {
+                panelManager.onDetachListener(null)
+                detach()
+            }
             collapse()
         } else {
             detach()
@@ -158,6 +150,7 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
 
     fun attach() {
         if (isShown()) return
+        floatView.viewTreeObserver.addOnGlobalLayoutListener(this)
         try {
             windowManager.addView(this.floatView, windowParams)
         } catch (e: Exception) {
@@ -166,6 +159,7 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
 
     fun detach() {
         if (!isShown()) return
+        floatView.viewTreeObserver.removeOnGlobalLayoutListener(this)
         try {
             windowManager.removeView(this.floatView)
         } catch (e: Exception) {
@@ -325,6 +319,10 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
             (endX - startX).toInt(),
             (startY - startY).toInt()
         )
+        computeScroll()
+    }
+
+    override fun onGlobalLayout() {
         computeScroll()
     }
 

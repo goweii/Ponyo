@@ -4,7 +4,9 @@ import android.animation.Animator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.*
+import android.graphics.Outline
+import android.graphics.PixelFormat
+import android.graphics.RectF
 import android.os.Build
 import android.view.*
 import android.view.animation.AccelerateDecelerateInterpolator
@@ -143,11 +145,11 @@ internal class PanelManager(private val context: Context) {
         }
     }
 
-    fun onAttachListener(listener: () -> Unit) {
+    fun onAttachListener(listener: (() -> Unit)? = null) {
         onAttachListener = listener
     }
 
-    fun onDetachListener(listener: () -> Unit) {
+    fun onDetachListener(listener: (() -> Unit)? = null) {
         onDetachListener = listener
     }
 
