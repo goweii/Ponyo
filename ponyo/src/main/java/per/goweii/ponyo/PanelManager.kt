@@ -93,6 +93,10 @@ internal class PanelManager(private val context: Context) {
     private fun attach() {
         floatView.visibility = View.INVISIBLE
         floatView.alpha = 0F
+        floatIcon.visibility = View.INVISIBLE
+        floatIcon.alpha = 0F
+        floatPanel.visibility = View.INVISIBLE
+        floatPanel.alpha = 0F
         floatView.viewTreeObserver.addOnPreDrawListener(object :
             ViewTreeObserver.OnPreDrawListener {
             override fun onPreDraw(): Boolean {
@@ -102,9 +106,11 @@ internal class PanelManager(private val context: Context) {
                     floatView.width.toFloat(),
                     floatView.height.toFloat()
                 )
-                floatWrapper.updateToRectF(floatRectF)
+                updateToRectF(floatRectF)
+                floatIcon.visibility = View.INVISIBLE
+                floatIcon.alpha = 0F
+                floatPanel.visibility = View.INVISIBLE
                 floatPanel.alpha = 0F
-                floatIcon.alpha = 1F
                 startZooming2Panel()
                 return true
             }
@@ -228,6 +234,8 @@ internal class PanelManager(private val context: Context) {
                 override fun onAnimationStart(animation: Animator) {
                     floatView.visibility = View.VISIBLE
                     floatView.alpha = 1F
+                    floatIcon.visibility = View.VISIBLE
+                    floatPanel.visibility = View.VISIBLE
                 }
             })
             addUpdateListener {
@@ -253,16 +261,27 @@ internal class PanelManager(private val context: Context) {
         val l = cx - w / 2F
         val t = cy - h / 2F
         val currValue = RectF(l, t, l + w, t + h)
-        floatWrapper.updateToRectF(currValue)
+        updateToRectF(currValue)
         val p = (currValue.width() - floatRectF.width()) / (panelRectF.width() - floatRectF.width())
         floatBg.alpha = p.acce()
-        floatIcon.alpha = (1F - p).dece()
-        floatPanel.alpha = p.dece()
+        val minp = 0.2F
+        val maxp = 0.5F
+        val np = when {
+            p < minp -> 0F
+            p > maxp -> 1F
+            else -> (p - minp) / (maxp - minp)
+        }
+        floatIcon.alpha = (1F - np).dece()
+        floatPanel.alpha = np.dece()
     }
 
     private fun startZooming2Panel() {
+        floatIcon.visibility = View.VISIBLE
+        floatIcon.alpha = 1F
+        floatPanel.visibility = View.INVISIBLE
+        floatPanel.alpha = 0F
         state = State.PANEL
-        startRectF.set(floatWrapper.toRectF())
+        startRectF.set(toRectF())
         endRectF.set(panelRectF)
         zoomAnimator.start()
     }
@@ -270,11 +289,19 @@ internal class PanelManager(private val context: Context) {
     private fun endZooming2Panel() {
         floatView.visibility = View.VISIBLE
         floatView.alpha = 1F
+        floatIcon.visibility = View.INVISIBLE
+        floatIcon.alpha = 0F
+        floatPanel.visibility = View.VISIBLE
+        floatPanel.alpha = 1F
     }
 
     private fun startZooming2Float() {
+        floatIcon.visibility = View.INVISIBLE
+        floatIcon.alpha = 0F
+        floatPanel.visibility = View.VISIBLE
+        floatPanel.alpha = 1F
         state = State.FLOAT
-        startRectF.set(floatWrapper.toRectF())
+        startRectF.set(toRectF())
         endRectF.set(floatRectF)
         zoomAnimator.start()
     }
@@ -282,25 +309,29 @@ internal class PanelManager(private val context: Context) {
     private fun endZooming2Float() {
         floatView.visibility = View.INVISIBLE
         floatView.alpha = 0F
+        floatIcon.visibility = View.VISIBLE
+        floatIcon.alpha = 1F
+        floatPanel.visibility = View.INVISIBLE
+        floatPanel.alpha = 0F
         detach()
     }
 
-    private fun View.toRectF(): RectF = let {
-        RectF(
-            it.left.toFloat(),
-            it.top.toFloat(),
-            it.right.toFloat(),
-            it.bottom.toFloat()
-        )
-    }
+    private fun toRectF(): RectF = RectF(
+        floatWrapper.left.toFloat(),
+        floatWrapper.top.toFloat(),
+        floatWrapper.right.toFloat(),
+        floatWrapper.bottom.toFloat()
+    )
 
-    private fun View.updateToRectF(rectF: RectF) {
-        layout(
+    private fun updateToRectF(rectF: RectF) {
+        floatWrapper.layout(
             rectF.left.toInt(),
             rectF.top.toInt(),
             rectF.right.toInt(),
             rectF.bottom.toInt()
         )
+        floatPanel.scrollX = rectF.left.toInt()
+        floatPanel.scrollY = rectF.top.toInt()
         val sx = rectF.width() / panelRectF.width()
         val sy = rectF.height() / panelRectF.height()
         val s = min(sx, sy)
