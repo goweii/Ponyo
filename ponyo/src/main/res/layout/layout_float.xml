@@ -31,20 +31,66 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#FFFFFF"
+            android:fitsSystemWindows="true"
             android:gravity="center">
 
-            <HorizontalScrollView
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_log"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:paddingTop="50dp"
+                tools:itemCount="10"
+                tools:listitem="@layout/item_log" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_log"
-                    android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="#99ffffff"
+                android:orientation="horizontal"
+                android:paddingTop="30dp">
+
+                <CheckBox
+                    android:id="@+id/cb_v"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    tools:itemCount="10"
-                    tools:listitem="@layout/item_log"/>
+                    android:layout_weight="1"
+                    android:checked="true"
+                    android:text="V" />
 
-            </HorizontalScrollView>
+                <CheckBox
+                    android:id="@+id/cb_d"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:checked="true"
+                    android:text="D" />
+
+                <CheckBox
+                    android:id="@+id/cb_i"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:checked="true"
+                    android:text="I" />
+
+                <CheckBox
+                    android:id="@+id/cb_w"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:checked="true"
+                    android:text="W" />
+
+                <CheckBox
+                    android:id="@+id/cb_e"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:checked="true"
+                    android:text="E" />
+
+            </LinearLayout>
 
         </FrameLayout>
 

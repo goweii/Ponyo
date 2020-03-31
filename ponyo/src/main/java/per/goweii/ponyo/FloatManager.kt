@@ -9,6 +9,7 @@ import android.view.*
 import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
 import android.widget.Scroller
+import per.goweii.ponyo.log.Ponlog
 import kotlin.math.abs
 import kotlin.math.atan2
 import kotlin.math.max
@@ -313,6 +314,7 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
             tan[1].toDouble(),
             tan[0].toDouble()
         ) * 180f / Math.PI).toFloat()
+        Ponlog.d { "degrees=$degrees" }
         scroller.startScroll(
             startX.toInt(),
             startY.toInt(),

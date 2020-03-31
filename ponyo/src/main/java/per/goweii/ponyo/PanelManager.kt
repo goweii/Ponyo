@@ -10,6 +10,7 @@ import android.graphics.RectF
 import android.os.Build
 import android.view.*
 import android.view.animation.AccelerateDecelerateInterpolator
+import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import kotlin.math.min
@@ -54,8 +55,6 @@ internal class PanelManager(private val context: Context) {
 
     private val floatView: View by lazy {
         LayoutInflater.from(context).inflate(R.layout.layout_float, null).apply {
-            val rv_log = findViewById<RecyclerView>(R.id.rv_log)
-            LogManager.attachTo(rv_log)
             addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
                 override fun onViewAttachedToWindow(v: View?) {
                     onAttachListener?.invoke()
@@ -90,8 +89,9 @@ internal class PanelManager(private val context: Context) {
             scaleType = ImageView.ScaleType.CENTER_CROP
         }
     }
-    private val floatPanel: View by lazy {
-        floatView.findViewById<View>(R.id.panel).apply {
+    private val floatPanel: FrameLayout by lazy {
+        floatView.findViewById<FrameLayout>(R.id.panel).apply {
+            PanelProvider.attach(this)
         }
     }
     private var onAttachListener: (() -> Unit)? = null

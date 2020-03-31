@@ -52,17 +52,34 @@ object LogManager : LogPrinter, CoroutineScope by MainScope() {
 
     @Synchronized
     private fun notifyAdapter() {
-        val count = logCaches.size
-        logs.addAll(logCaches)
-        logCaches.clear()
-        adapter.notifyItemInserted(logs.size - count)
-        recyclerView?.scrollToPosition(adapter.itemCount - 1)
+        launch {
+            val count = logCaches.size
+            logs.addAll(logCaches)
+            logCaches.clear()
+            adapter.notifyItemInserted(logs.size - count)
+            recyclerView?.scrollToPosition(adapter.itemCount - 1)
+        }
     }
 
     fun attachTo(rv: RecyclerView) {
         recyclerView = rv
         rv.adapter = adapter
         rv.layoutManager = LinearLayoutManager(rv.context)
+    }
+
+    var e: Boolean = true
+    var w: Boolean = true
+    var d: Boolean = true
+    var i: Boolean = true
+    var v: Boolean = true
+
+    fun notifyLevel(e: Boolean, w: Boolean, d: Boolean, i: Boolean, v: Boolean) {
+        this.e = e
+        this.w = w
+        this.d = d
+        this.i = i
+        this.v = v
+        adapter.notifyDataSetChanged()
     }
 
 }

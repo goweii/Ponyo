@@ -37,10 +37,48 @@ class LogAdapter(
     inner class LogHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         private val tv_log_tag by lazy { itemView.findViewById<TextView>(R.id.tv_log_tag) }
+        private val tv_log_call by lazy { itemView.findViewById<TextView>(R.id.tv_log_call) }
         private val tv_log_msg by lazy { itemView.findViewById<TextView>(R.id.tv_log_msg) }
 
         @SuppressLint("SetTextI18n")
         fun bindData(data: LogManager.Log) {
+            when (data.level) {
+                Ponlog.Level.ERROR -> {
+                    if (LogManager.e) {
+                        itemView.visibility = View.VISIBLE
+                    } else {
+                        itemView.visibility = View.GONE
+                    }
+                }
+                Ponlog.Level.WARN ->  {
+                    if (LogManager.w) {
+                        itemView.visibility = View.VISIBLE
+                    } else {
+                        itemView.visibility = View.GONE
+                    }
+                }
+                Ponlog.Level.INFO ->  {
+                    if (LogManager.i) {
+                        itemView.visibility = View.VISIBLE
+                    } else {
+                        itemView.visibility = View.GONE
+                    }
+                }
+                Ponlog.Level.DEBUG ->  {
+                    if (LogManager.d) {
+                        itemView.visibility = View.VISIBLE
+                    } else {
+                        itemView.visibility = View.GONE
+                    }
+                }
+                Ponlog.Level.VERBOSE ->  {
+                    if (LogManager.v) {
+                        itemView.visibility = View.VISIBLE
+                    } else {
+                        itemView.visibility = View.GONE
+                    }
+                }
+            }
             val color = when (data.level) {
                 Ponlog.Level.ERROR -> itemView.context.resources.getColor(R.color.colorLogError)
                 Ponlog.Level.WARN -> itemView.context.resources.getColor(R.color.colorLogWarn)
@@ -49,8 +87,12 @@ class LogAdapter(
                 Ponlog.Level.VERBOSE -> itemView.context.resources.getColor(R.color.colorLogVisible)
             }
             tv_log_tag.setTextColor(color)
+            tv_log_call.setTextColor(color)
             tv_log_msg.setTextColor(color)
-            tv_log_tag.text = "${simpleDateFormat.format(data.body.timestamp)} ${data.level.name}/${data.tag} ${data.body.className}.${data.body.methodName}(${data.body.fileName}:${data.body.lineNumber}) ${data.body.threadName}"
+            tv_log_tag.text =
+                "${simpleDateFormat.format(data.body.timestamp)} ${data.body.threadName} ${data.level.name}/${data.tag}"
+            tv_log_call.text =
+                "${data.body.className}.${data.body.methodName}(${data.body.fileName}:${data.body.lineNumber})"
             tv_log_msg.text = data.msg
         }
     }

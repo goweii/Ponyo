@@ -17,6 +17,16 @@
         tools:text="this is a log" />
 
     <TextView
+        android:id="@+id/tv_log_call"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:includeFontPadding="false"
+        android:textColor="@color/colorLogVisible"
+        android:textSize="12sp"
+        android:typeface="monospace"
+        tools:text="Activiy.onCreate()" />
+
+    <TextView
         android:id="@+id/tv_log_msg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -24,6 +34,6 @@
         android:textColor="@color/colorLogVisible"
         android:textSize="12sp"
         android:typeface="monospace"
-        tools:text="日志\n日志" />
+        tools:text="日志\" />
 
 </LinearLayout>
