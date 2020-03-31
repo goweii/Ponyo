@@ -21,7 +21,13 @@ import kotlin.math.min
 internal class FloatManager(private val context: Context) : GestureDetector.OnGestureListener {
 
     private val panelManager: PanelManager by lazy {
-        PanelManager(context)
+        PanelManager(context).apply {
+            onDetachListener {
+                if (toDismiss) {
+                    dismiss()
+                }
+            }
+        }
     }
 
     private val fenceRect: RectF by lazy {
@@ -109,6 +115,8 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
     private var dragStartEventX = 0f
     private var dragStartEventY = 0f
 
+    private var toDismiss = false
+
     enum class State {
         FLOAT, DRAGGING, FLING
     }
@@ -134,13 +142,29 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
 
     fun show() {
         if (isShown()) return
+        toDismiss = false
+        attach()
+    }
+
+    fun dismiss() {
+        if (!isShown()) return
+        if (panelManager.isShown()) {
+            toDismiss = true
+            collapse()
+        } else {
+            detach()
+        }
+    }
+
+    fun attach() {
+        if (isShown()) return
         try {
             windowManager.addView(this.floatView, windowParams)
         } catch (e: Exception) {
         }
     }
 
-    fun dismiss() {
+    fun detach() {
         if (!isShown()) return
         try {
             windowManager.removeView(this.floatView)

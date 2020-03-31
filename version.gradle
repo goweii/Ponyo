@@ -8,6 +8,7 @@ ext {
     dependencies = [
             androidx_appcompat: "androidx.appcompat:appcompat:1.1.0",
             androidx_core     : "androidx.core:core-ktx:1.2.0",
+            lifecycle_process : "androidx.lifecycle:lifecycle-process:2.2.0",
             recyclerview      : "androidx.recyclerview:recyclerview:1.1.0",
     ]
 }

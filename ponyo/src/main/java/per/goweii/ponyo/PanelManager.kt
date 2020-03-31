@@ -54,6 +54,15 @@ internal class PanelManager(private val context: Context) {
         LayoutInflater.from(context).inflate(R.layout.layout_float, null).apply {
             val rv_log = findViewById<RecyclerView>(R.id.rv_log)
             LogManager.attachTo(rv_log)
+            addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+                override fun onViewAttachedToWindow(v: View?) {
+                    onAttachListener?.invoke()
+                }
+
+                override fun onViewDetachedFromWindow(v: View?) {
+                    onDetachListener?.invoke()
+                }
+            })
         }
     }
     private val floatWrapper: View by lazy {
@@ -83,6 +92,8 @@ internal class PanelManager(private val context: Context) {
         floatView.findViewById<View>(R.id.panel).apply {
         }
     }
+    private var onAttachListener: (() -> Unit)? = null
+    private var onDetachListener: (() -> Unit)? = null
 
     private var state: State = State.FLOAT
 
@@ -91,6 +102,7 @@ internal class PanelManager(private val context: Context) {
     }
 
     private fun attach() {
+        if (isShown()) return
         floatView.visibility = View.INVISIBLE
         floatView.alpha = 0F
         floatIcon.visibility = View.INVISIBLE
@@ -122,12 +134,21 @@ internal class PanelManager(private val context: Context) {
     }
 
     private fun detach() {
+        if (!isShown()) return
         floatView.visibility = View.INVISIBLE
         floatView.alpha = 0F
         try {
             windowManager.removeView(floatView)
         } catch (e: Exception) {
         }
+    }
+
+    fun onAttachListener(listener: () -> Unit) {
+        onAttachListener = listener
+    }
+
+    fun onDetachListener(listener: () -> Unit) {
+        onDetachListener = listener
     }
 
     fun show(rectF: RectF) {
@@ -148,6 +169,10 @@ internal class PanelManager(private val context: Context) {
                 attach()
             }
         }
+    }
+
+    fun isShown(): Boolean {
+        return floatView.isAttachedToWindow
     }
 
     fun dismiss(rectF: RectF) {

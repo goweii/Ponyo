@@ -5,12 +5,14 @@ import android.content.ContentProvider
 import android.content.ContentValues
 import android.database.Cursor
 import android.net.Uri
+import androidx.lifecycle.ProcessLifecycleOwner
 
 class InitProvider : ContentProvider() {
 
     override fun onCreate(): Boolean {
         val context = context
         if (context is Application) {
+            ProcessLifecycleOwner.get().lifecycle.addObserver(AppLifecycle)
             context.registerActivityLifecycleCallbacks(ActivityStack)
         }
         return true
