@@ -89,7 +89,7 @@ class LogActivity : AppCompatActivity(), LogPrinter, CoroutineScope by MainScope
     }
 
     private fun startAutoLog() {
-        autoHandler.postDelayed(autoRunnable, 2000)
+        autoHandler.postDelayed(autoRunnable, 200)
     }
 
     private fun stopAutoLog() {

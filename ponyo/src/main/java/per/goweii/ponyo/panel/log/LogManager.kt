@@ -15,7 +15,7 @@ import java.util.*
 object LogManager : LogPrinter, CoroutineScope by MainScope() {
 
     private const val prePageCount = 20
-    private const val minNotifyTime = 1000L
+    private const val minNotifyTime = 100L
 
     private val adapter: LogAdapter by lazy {
         LogAdapter()
@@ -73,8 +73,7 @@ object LogManager : LogPrinter, CoroutineScope by MainScope() {
                 offset += count
                 adapter.remove(count = count)
             }
-            //recyclerView?.smoothScrollToPosition(adapter.itemCount - 1)
-            layoutManager?.scrollToPositionWithOffset(adapter.itemCount - 1, Integer.MIN_VALUE)
+            recyclerView?.smoothScrollToPosition(adapter.itemCount - 1)
         }
     }
 
@@ -130,8 +129,7 @@ object LogManager : LogPrinter, CoroutineScope by MainScope() {
             }
         }
         adapter.add(0, data)
-        //recyclerView?.smoothScrollToPosition(data.size - 1)
-        layoutManager?.scrollToPositionWithOffset(data.size - 1, Integer.MIN_VALUE)
+        recyclerView?.smoothScrollToPosition(data.size - 1)
         return true
     }
 
