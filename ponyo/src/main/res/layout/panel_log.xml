@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.scwang.smart.refresh.layout.SmartRefreshLayout
+        android:id="@+id/srl_log"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:srlHeaderInsetStart="50dp">
+
+        <com.scwang.smart.refresh.header.ClassicsHeader
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:srlTextPulling="下拉加载上一页"
+            app:srlTextLoading="加载中"
+            app:srlTextFinish="加载成功"
+            app:srlFinishDuration="0"
+            app:srlDrawableArrowSize="0dp"
+            app:srlDrawableSize="0dp"
+            app:srlDrawableProgressSize="0dp"
+            app:srlDrawableMarginRight="0dp"
+            app:srlTextSizeTime="0dp"
+            app:srlClassicsSpinnerStyle="FixedBehind"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_log"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingTop="40dp"
+            tools:itemCount="20"
+            tools:listitem="@layout/item_log" />
+
+        <com.scwang.smart.refresh.footer.ClassicsFooter
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:srlDrawableArrowSize="0dp"
+            app:srlFinishDuration="0"
+            app:srlDrawableSize="0dp"
+            app:srlDrawableProgressSize="0dp"
+            app:srlDrawableMarginRight="0dp"
+            app:srlClassicsSpinnerStyle="FixedBehind" />
+
+    </com.scwang.smart.refresh.layout.SmartRefreshLayout>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cv_level"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_margin="5dp"
+        android:alpha="0.9"
+        app:cardCornerRadius="5dp"
+        app:cardElevation="0dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/cb_e"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/colorLogError"
+                android:checked="true"
+                android:text="E" />
+
+            <CheckBox
+                android:id="@+id/cb_w"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/colorLogWarn"
+                android:checked="true"
+                android:text="W" />
+
+            <CheckBox
+                android:id="@+id/cb_i"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/colorLogInfo"
+                android:checked="true"
+                android:text="I" />
+
+            <CheckBox
+                android:id="@+id/cb_d"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:checked="true"
+                android:background="@color/colorLogDebug"
+                android:text="D" />
+
+            <CheckBox
+                android:id="@+id/cb_v"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/colorLogVisible"
+                android:checked="true"
+                android:text="V" />
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</FrameLayout>

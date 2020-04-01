@@ -285,6 +285,7 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
         dragPath.quadTo(dragStartX, dragStartY, cX, cY)
         updateLocation(x.toInt(), y.toInt())
         update()
+        Ponlog.d { "onDragging[$moveX,$moveY]" }
     }
 
     private fun onDragEnd(velocityX: Float, velocityY: Float) {

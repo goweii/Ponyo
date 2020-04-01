@@ -4,6 +4,9 @@ apply from: "../maven.gradle"
 
 dependencies {
     implementation rootProject.ext.dependencies.recyclerview
+    implementation rootProject.ext.dependencies.cardview
+    implementation rootProject.ext.dependencies.smartrefreshlayout
+    implementation rootProject.ext.dependencies.smartrefreshheader
     api project(":ponyo-log")
     api project(":ponyo-timemonitor")
     api project(':ponyo-appstack')

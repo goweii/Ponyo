@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="3dp">
+    android:padding="5dp">
 
     <TextView
         android:id="@+id/tv_log_tag"
@@ -14,7 +14,7 @@
         android:textColor="@color/colorLogVisible"
         android:textSize="12sp"
         android:typeface="monospace"
-        tools:text="this is a log" />
+        tools:text="08:47:39 main DEBUG/LogTag" />
 
     <TextView
         android:id="@+id/tv_log_call"
@@ -24,7 +24,7 @@
         android:textColor="@color/colorLogVisible"
         android:textSize="12sp"
         android:typeface="monospace"
-        tools:text="Activiy.onCreate()" />
+        tools:text="Activiy.onCreate(MainActivity.kt:30)" />
 
     <TextView
         android:id="@+id/tv_log_msg"
@@ -34,6 +34,6 @@
         android:textColor="@color/colorLogVisible"
         android:textSize="12sp"
         android:typeface="monospace"
-        tools:text="日志\" />
+        tools:text="this is a log" />
 
 </LinearLayout>

@@ -12,7 +12,6 @@ import android.view.*
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.FrameLayout
 import android.widget.ImageView
-import androidx.recyclerview.widget.RecyclerView
 import kotlin.math.min
 import kotlin.math.pow
 
@@ -52,9 +51,11 @@ internal class PanelManager(private val context: Context) {
             x = 0
             y = 0
         }
-
     private val floatView: View by lazy {
         LayoutInflater.from(context).inflate(R.layout.layout_float, null).apply {
+            systemUiVisibility = systemUiVisibility or
+                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
             addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
                 override fun onViewAttachedToWindow(v: View?) {
                     onAttachListener?.invoke()
@@ -79,11 +80,6 @@ internal class PanelManager(private val context: Context) {
             }
         }
     }
-    private val floatBg: View by lazy {
-        floatView.findViewById<View>(R.id.bg).apply {
-            alpha = 0F
-        }
-    }
     private val floatIcon: ImageView by lazy {
         floatView.findViewById<ImageView>(R.id.icon).apply {
             scaleType = ImageView.ScaleType.CENTER_CROP
@@ -91,6 +87,7 @@ internal class PanelManager(private val context: Context) {
     }
     private val floatPanel: FrameLayout by lazy {
         floatView.findViewById<FrameLayout>(R.id.panel).apply {
+            fitsSystemWindows = true
             PanelProvider.attach(this)
         }
     }
@@ -290,7 +287,6 @@ internal class PanelManager(private val context: Context) {
         val currValue = RectF(l, t, l + w, t + h)
         updateToRectF(currValue)
         val p = (currValue.width() - floatRectF.width()) / (panelRectF.width() - floatRectF.width())
-        floatBg.alpha = p.acce()
         val minp = 0.2F
         val maxp = 0.5F
         val np = when {

@@ -10,5 +10,8 @@ ext {
             androidx_core     : "androidx.core:core-ktx:1.2.0",
             lifecycle_process : "androidx.lifecycle:lifecycle-process:2.2.0",
             recyclerview      : "androidx.recyclerview:recyclerview:1.1.0",
+            cardview          : "androidx.cardview:cardview:1.0.0",
+            smartrefreshlayout: "com.scwang.smart:refresh-layout-kernel:2.0.0",
+            smartrefreshheader: "com.scwang.smart:refresh-header-classics:2.0.0",
     ]
 }

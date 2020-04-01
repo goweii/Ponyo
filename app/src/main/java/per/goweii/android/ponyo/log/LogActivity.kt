@@ -1,6 +1,9 @@
 package per.goweii.android.ponyo.log
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.os.Handler
+import android.os.Message
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_log.*
 import kotlinx.android.synthetic.main.activity_main.tv_print_log
@@ -21,6 +24,14 @@ class LogActivity : AppCompatActivity(), LogPrinter, CoroutineScope by MainScope
         setContentView(R.layout.activity_log)
 
         Ponlog.addLogPrinter(this)
+
+        cb_auto.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) {
+                startAutoLog()
+            } else {
+                stopAutoLog()
+            }
+        }
 
         tv_print_error.setOnClickListener {
             launch {
@@ -63,9 +74,32 @@ class LogActivity : AppCompatActivity(), LogPrinter, CoroutineScope by MainScope
         }
     }
 
+    private val autoHandler = Handler()
+
+    @SuppressLint("HandlerLeak")
+    private var autoRunnable = Runnable {
+        when (Random.nextInt(5)) {
+            0 -> Ponlog.e("Intent") { intent }
+            1 -> Ponlog.w("Intent") { intent }
+            2 -> Ponlog.i("Intent") { intent }
+            3 -> Ponlog.d("Intent") { intent }
+            4 -> Ponlog.v("Intent") { intent }
+        }
+        startAutoLog()
+    }
+
+    private fun startAutoLog() {
+        autoHandler.postDelayed(autoRunnable, 2000)
+    }
+
+    private fun stopAutoLog() {
+        autoHandler.removeCallbacks(autoRunnable)
+    }
+
     override fun onDestroy() {
         Ponlog.removeLogPrinter(this)
         cancel()
+        stopAutoLog()
         super.onDestroy()
     }
 
