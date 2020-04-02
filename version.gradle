@@ -13,5 +13,6 @@ ext {
             cardview          : "androidx.cardview:cardview:1.0.0",
             smartrefreshlayout: "com.scwang.smart:refresh-layout-kernel:2.0.0",
             smartrefreshheader: "com.scwang.smart:refresh-header-classics:2.0.0",
+            gson              : "com.google.code.gson:gson:2.8.6",
     ]
 }

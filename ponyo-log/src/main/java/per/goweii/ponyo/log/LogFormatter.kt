@@ -3,11 +3,11 @@ package per.goweii.ponyo.log
 import android.content.ClipData
 import android.content.Intent
 import android.os.Bundle
-import org.json.JSONArray
-import org.json.JSONException
+import android.util.JsonWriter
 import org.json.JSONObject
 import java.io.PrintWriter
 import java.io.StringWriter
+import java.io.Writer
 import java.util.*
 
 internal object LogFormatter {
@@ -18,11 +18,30 @@ internal object LogFormatter {
         obj ?: return "null"
         return when (obj) {
             is CharSequence -> obj.toString()
+            obj.javaClass.isArray -> array2String(obj)
             is Throwable -> throwable2String(obj)
             is Bundle -> bundle2String(obj)
             is Intent -> intent2String(obj)
-            obj.javaClass.isArray -> array2String(obj)
-            else -> object2Json(obj)
+            else -> {
+                jsonFormatter?.toJson(obj) ?: run {
+                    obj.toString()
+                }
+            }
+        }
+    }
+
+    private fun array2String(obj: Any): String {
+        return when (obj) {
+            is BooleanArray -> obj.contentToString()
+            is ByteArray -> obj.contentToString()
+            is CharArray -> obj.contentToString()
+            is DoubleArray -> obj.contentToString()
+            is FloatArray -> obj.contentToString()
+            is IntArray -> obj.contentToString()
+            is LongArray -> obj.contentToString()
+            is ShortArray -> obj.contentToString()
+            is Array<*> -> obj.contentDeepToString()
+            else -> obj.toString()
         }
     }
 
@@ -192,52 +211,6 @@ internal object LogFormatter {
         }
         sb.append("NULL")
         sb.append("}")
-    }
-
-    private fun object2Json(obj: Any): String {
-        jsonFormatter ?: return obj.toString()
-        return try {
-            val json = jsonFormatter!!.toJson(obj)
-            formatJson(json)
-        } catch (t: Throwable) {
-            obj.toString()
-        }
-    }
-
-    private fun formatJson(json: String): String {
-        try {
-            var i = 0
-            val len = json.length
-            while (i < len) {
-                val c = json[i]
-                if (c == '{') {
-                    return JSONObject(json).toString(2)
-                } else if (c == '[') {
-                    return JSONArray(json).toString(2)
-                } else if (!Character.isWhitespace(c)) {
-                    return json
-                }
-                i++
-            }
-        } catch (e: JSONException) {
-            e.printStackTrace()
-        }
-        return json
-    }
-
-    private fun array2String(obj: Any): String {
-        return when (obj) {
-            is BooleanArray -> obj.contentToString()
-            is ByteArray -> obj.contentToString()
-            is CharArray -> obj.contentToString()
-            is DoubleArray -> obj.contentToString()
-            is FloatArray -> obj.contentToString()
-            is IntArray -> obj.contentToString()
-            is LongArray -> obj.contentToString()
-            is ShortArray -> obj.contentToString()
-            is Array<*> -> obj.contentDeepToString()
-            else -> obj.toString()
-        }
     }
 
     private fun getFullStackTrace(t: Throwable?): String {

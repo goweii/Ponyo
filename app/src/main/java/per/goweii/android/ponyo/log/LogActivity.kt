@@ -19,13 +19,20 @@ class LogActivity : AppCompatActivity(), LogPrinter, CoroutineScope by MainScope
     private val tvLogBoard by lazy { tv_log_board }
     private val logStringBuilder = StringBuilder()
 
+    private data class User (
+        val name: String,
+        val age: Int,
+        val height: Float,
+        val friends: MutableList<User>
+    )
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_log)
 
         Ponlog.addLogPrinter(this)
 
-        cb_auto.setOnCheckedChangeListener { buttonView, isChecked ->
+        cb_auto.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 startAutoLog()
             } else {
@@ -36,7 +43,15 @@ class LogActivity : AppCompatActivity(), LogPrinter, CoroutineScope by MainScope
         tv_print_error.setOnClickListener {
             launch {
                 withContext(Dispatchers.IO) {
-                    Ponlog.e("Intent") { intent }
+                    val user = newUser()
+                    for (i in 0..1) {
+                        val user1 = newUser()
+                        for (j in 0..1) {
+                            user1.friends.add(newUser())
+                        }
+                        user.friends.add(user1)
+                    }
+                    Ponlog.e("User") { user }
                 }
             }
         }
@@ -72,6 +87,10 @@ class LogActivity : AppCompatActivity(), LogPrinter, CoroutineScope by MainScope
                 }
             }
         }
+    }
+
+    private fun newUser(): User {
+        return User("zhangsan", 20, 180.1F, arrayListOf<User>())
     }
 
     private val autoHandler = Handler()

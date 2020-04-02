@@ -16,7 +16,7 @@ import java.util.*
  */
 object LogManager : LogPrinter, CoroutineScope by MainScope() {
 
-    private const val prePageCount = 200
+    private const val prePageCount = 100
     private const val minNotifyTime = 0L
 
     private val adapter: LogAdapter by lazy {
