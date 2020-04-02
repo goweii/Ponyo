@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder
 import per.goweii.ponyo.appstack.AppLifecycle
 import per.goweii.ponyo.log.JsonFormatter
 import per.goweii.ponyo.log.Ponlog
+import per.goweii.ponyo.panel.db.DbManager
 import per.goweii.ponyo.panel.log.LogManager
 
 object Ponyo : AppLifecycle.AppLifecycleListener {

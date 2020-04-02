@@ -16,6 +16,9 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation project(":ponyo")
+    implementation rootProject.ext.dependencies.constraintlayout
+    implementation rootProject.ext.dependencies.room_runtime
+    implementation rootProject.ext.dependencies.room_ktx
+    kapt rootProject.ext.dependencies.room_compile
 }

@@ -1,23 +1,21 @@
 package per.goweii.ponyo.panel
 
+import android.content.Context
 import android.graphics.Color
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
-import androidx.core.view.setPadding
-import androidx.recyclerview.widget.RecyclerView
-import per.goweii.ponyo.PanelProvider
-import per.goweii.ponyo.R
-import per.goweii.ponyo.panel.log.LogManager
 
 abstract class BasePanel : IPanel {
 
     private lateinit var view: View
+    protected lateinit var context: Context
 
     override fun createPanelView(container: FrameLayout): View {
-        view = LayoutInflater.from(container.context).inflate(getPanelLayoutRes(), container, false)
+        context = container.context
+        view = LayoutInflater.from(context).inflate(getPanelLayoutRes(), container, false)
         onPanelViewCreated(view)
         return view
     }

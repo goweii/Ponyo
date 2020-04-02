@@ -14,5 +14,9 @@ ext {
             smartrefreshlayout: "com.scwang.smart:refresh-layout-kernel:2.0.0",
             smartrefreshheader: "com.scwang.smart:refresh-header-classics:2.0.0",
             gson              : "com.google.code.gson:gson:2.8.6",
+            room_runtime      : "androidx.room:room-runtime:2.2.3",
+            room_compile      : "androidx.room:room-compiler:2.2.3",
+            room_ktx          : "androidx.room:room-ktx:2.2.3",
+            constraintlayout  : "androidx.constraintlayout:constraintlayout:1.1.3",
     ]
 }
