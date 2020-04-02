@@ -43,7 +43,7 @@ object PanelProvider {
             val panelView = it.createPanelView(container)
             val tabView = it.createPanelTab(tab)
             panelView.visibility = View.GONE
-            tabView.visibility = View.GONE
+            tabView.alpha = 0.6F
             tabView.setOnClickListener {
                 selectPanel(panelView)
             }

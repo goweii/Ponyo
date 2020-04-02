@@ -50,14 +50,14 @@ object DbManager {
         Ponlog.d { dbs }
     }
 
-    fun readTable(table: Table) {
+    fun readTable(table: Table): List<List<DbEntity>>? {
         var db: Db? = null
         for (d in dbs) {
             if (d.tables.contains(table)) {
                 db = d
             }
         }
-        db ?: return
+        db ?: return null
         val list = arrayListOf<ArrayList<DbEntity>>()
         SQLiteDatabase.openDatabase(
             db.path,
@@ -80,6 +80,7 @@ object DbManager {
             }
         }
         Ponlog.d { list }
+        return list
     }
 
 }
