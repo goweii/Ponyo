@@ -1,5 +1,7 @@
 package per.goweii.ponyo.panel.log
 
+import android.view.View
+import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.*
@@ -14,13 +16,14 @@ import java.util.*
  */
 object LogManager : LogPrinter, CoroutineScope by MainScope() {
 
-    private const val prePageCount = 20
-    private const val minNotifyTime = 100L
+    private const val prePageCount = 200
+    private const val minNotifyTime = 0L
 
     private val adapter: LogAdapter by lazy {
         LogAdapter()
     }
     private var recyclerView: RecyclerView? = null
+    private var tvMore: TextView? = null
     private var layoutManager: LinearLayoutManager? = null
 
     private val logs: MutableList<LogEntity> = Collections.synchronizedList(LinkedList<LogEntity>())
@@ -31,10 +34,6 @@ object LogManager : LogPrinter, CoroutineScope by MainScope() {
 
     private var lastNotifyTime = 0L
     private var job: Job? = null
-
-    init {
-        Ponlog.addLogPrinter(this)
-    }
 
     override fun print(level: Ponlog.Level, tag: String, body: LogBody, msg: String) {
         logCaches.add(LogEntity(level, tag, body, msg))
@@ -68,21 +67,41 @@ object LogManager : LogPrinter, CoroutineScope by MainScope() {
             }
             adapter.add(data = logCaches)
             logCaches.clear()
-            if (adapter.itemCount > prePageCount) {
-                val count = adapter.itemCount - prePageCount
-                offset += count
-                adapter.remove(count = count)
+            if (false == recyclerView?.canScrollVertically(1)) {
+                if (adapter.itemCount > prePageCount) {
+                    val count = adapter.itemCount - prePageCount
+                    offset += count
+                    adapter.remove(count = count)
+                }
+                recyclerView?.scrollToPosition(adapter.itemCount - 1)
+                recyclerView?.smoothScrollToPosition(adapter.itemCount - 1)
+                tvMore?.visibility = View.GONE
+            } else {
+                tvMore?.visibility = View.VISIBLE
             }
-            recyclerView?.smoothScrollToPosition(adapter.itemCount - 1)
         }
     }
 
-    fun attachTo(rv: RecyclerView) {
+    fun attachTo(rv: RecyclerView, tvMore: TextView) {
         recyclerView = rv
+        rv.itemAnimator = null
+        this.tvMore = tvMore
         rv.adapter = adapter
-        layoutManager = LinearLayoutManager(rv.context)
+        layoutManager = LogLinearLayoutManager(rv.context)
         rv.layoutManager = layoutManager
         adapter.set(logs)
+        tvMore.setOnClickListener {
+            recyclerView?.scrollToPosition(adapter.itemCount - 1)
+            recyclerView?.smoothScrollToPosition(adapter.itemCount - 1)
+        }
+        recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (false == LogManager.recyclerView?.canScrollVertically(1)) {
+                    LogManager.tvMore?.visibility = View.GONE
+                }
+            }
+        })
     }
 
     private var e: Boolean = true
@@ -129,6 +148,7 @@ object LogManager : LogPrinter, CoroutineScope by MainScope() {
             }
         }
         adapter.add(0, data)
+        recyclerView?.scrollToPosition(data.size - 1)
         recyclerView?.smoothScrollToPosition(data.size - 1)
         return true
     }

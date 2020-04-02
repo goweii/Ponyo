@@ -2,6 +2,8 @@ package per.goweii.ponyo
 
 import android.app.Application
 import per.goweii.ponyo.appstack.AppLifecycle
+import per.goweii.ponyo.log.Ponlog
+import per.goweii.ponyo.panel.log.LogManager
 
 object Ponyo : AppLifecycle.AppLifecycleListener {
 
@@ -11,6 +13,7 @@ object Ponyo : AppLifecycle.AppLifecycleListener {
     fun attach(app: Application) = apply {
         application = app
         AppLifecycle.registerAppLifecycleListener(this)
+        Ponlog.addLogPrinter(LogManager)
     }
 
     fun showFloat(iconResId: Int) {

@@ -1,23 +1,25 @@
-package per.goweii.ponyo.panel
+package per.goweii.ponyo.panel.log
 
 import android.view.View
 import android.widget.CheckBox
 import android.widget.CompoundButton
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
 import per.goweii.ponyo.R
-import per.goweii.ponyo.panel.log.LogManager
+import per.goweii.ponyo.panel.BasePanel
 
 class LogPanel : BasePanel() {
 
     override fun getPanelLayoutRes(): Int = R.layout.panel_log
 
+    override fun getPanelName(): String = "日志"
+
     override fun onPanelViewCreated(view: View) {
         val srl_log = view.findViewById<SmartRefreshLayout>(R.id.srl_log)
-        srl_log.setEnableAutoLoadMore(false)
         srl_log.setOnRefreshListener {
-            LogManager.lastPage()
-            srl_log.finishRefresh()
+            val success = LogManager.lastPage()
+            srl_log.finishRefresh(success)
         }
         srl_log.setOnLoadMoreListener {
             LogManager.nextPage()
@@ -43,6 +45,7 @@ class LogPanel : BasePanel() {
         cb_d.setOnCheckedChangeListener(listener)
         cb_i.setOnCheckedChangeListener(listener)
         cb_v.setOnCheckedChangeListener(listener)
-        LogManager.attachTo(rv_log)
+        val tv_more = view.findViewById<TextView>(R.id.tv_more)
+        LogManager.attachTo(rv_log, tv_more)
     }
 }

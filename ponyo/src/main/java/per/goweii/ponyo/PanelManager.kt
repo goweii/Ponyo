@@ -12,6 +12,7 @@ import android.view.*
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.LinearLayout
 import kotlin.math.min
 import kotlin.math.pow
 
@@ -59,10 +60,12 @@ internal class PanelManager(private val context: Context) {
             addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
                 override fun onViewAttachedToWindow(v: View?) {
                     onAttachListener?.invoke()
+                    PanelProvider.onAttach()
                 }
 
                 override fun onViewDetachedFromWindow(v: View?) {
                     onDetachListener?.invoke()
+                    PanelProvider.onDetach()
                 }
             })
         }
@@ -85,10 +88,12 @@ internal class PanelManager(private val context: Context) {
             scaleType = ImageView.ScaleType.CENTER_CROP
         }
     }
-    private val floatPanel: FrameLayout by lazy {
-        floatView.findViewById<FrameLayout>(R.id.panel).apply {
+    private val floatPanel: View by lazy {
+        floatView.findViewById<View>(R.id.panel).apply {
             fitsSystemWindows = true
-            PanelProvider.attach(this)
+            val panelContainer = findViewById<FrameLayout>(R.id.panel_container)
+            val panelTab = findViewById<LinearLayout>(R.id.panel_tab)
+            PanelProvider.attach(panelContainer, panelTab)
         }
     }
     private var onAttachListener: (() -> Unit)? = null
@@ -316,6 +321,7 @@ internal class PanelManager(private val context: Context) {
         floatIcon.alpha = 0F
         floatPanel.visibility = View.VISIBLE
         floatPanel.alpha = 1F
+        PanelProvider.onShow()
     }
 
     private fun startZooming2Float() {
@@ -327,6 +333,7 @@ internal class PanelManager(private val context: Context) {
         startRectF.set(toRectF())
         endRectF.set(floatRectF)
         zoomAnimator.start()
+        PanelProvider.onHide()
     }
 
     private fun endZooming2Float() {

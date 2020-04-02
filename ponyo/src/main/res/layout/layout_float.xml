@@ -19,11 +19,32 @@
             android:scaleType="centerCrop"
             tools:ignore="ContentDescription" />
 
-        <FrameLayout
+        <LinearLayout
             android:id="@+id/panel"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center" />
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <FrameLayout
+                android:id="@+id/panel_container"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:id="@+id/panel_tab"
+                    android:layout_width="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_height="44dp"/>
+
+            </HorizontalScrollView>
+
+        </LinearLayout>
 
     </FrameLayout>
 
