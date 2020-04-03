@@ -7,7 +7,15 @@ import kotlin.math.max
 object TimeMonitor {
     private val timeMap = ConcurrentHashMap<String, MutableList<TimeCost>>()
 
-    var onTimeLineEndListener: ((lineTag: String, lineInfo: String) -> Unit)? = null
+    private var timeLineEndListeners = arrayListOf<TimeLineEndListener>()
+
+    fun registerTimeLineEndListener(listener: TimeLineEndListener) {
+        timeLineEndListeners.add(listener)
+    }
+
+    fun unregisterTimeLineEndListener(listener: TimeLineEndListener) {
+        timeLineEndListeners.remove(listener)
+    }
 
     /**
      * 开始一组时间线的记录
@@ -46,8 +54,12 @@ object TimeMonitor {
         record(tagLine, tagEnd)
         timeMap.remove(tagLine)?.let { list ->
             val info = formatTimeLine(tagLine, list)
-            onTimeLineEndListener?.invoke(tagLine, info) ?: run {
+            if (timeLineEndListeners.isEmpty()) {
                 Ponlog.d { info }
+            } else {
+                timeLineEndListeners.forEach {
+                    it.onEnd(tagLine, info)
+                }
             }
         }
     }

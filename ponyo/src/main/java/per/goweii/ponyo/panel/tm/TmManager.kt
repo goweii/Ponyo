@@ -1,13 +1,19 @@
 package per.goweii.ponyo.panel.tm
 
 import android.text.TextUtils
+import per.goweii.ponyo.timemonitor.TimeLineEndListener
 
-object TmManager : (String, String) -> Unit {
+object TmManager : TimeLineEndListener {
 
     private var tmAdapter: TmAdapter? = null
     private val datas = arrayListOf<TmEntity>()
 
-    override fun invoke(lineTag: String, lineInfo: String) {
+    fun attach(tmAdapter: TmAdapter) {
+        this.tmAdapter = tmAdapter
+        tmAdapter.set(datas)
+    }
+
+    override fun onEnd(lineTag: String, lineInfo: String) {
         var item: TmEntity? = null
         datas.forEach {
             if (TextUtils.equals(it.lineTag, lineTag)) {
@@ -22,11 +28,6 @@ object TmManager : (String, String) -> Unit {
             datas.add(tmEntity)
         }
         tmAdapter?.set(datas)
-    }
-
-    fun attach(tmAdapter: TmAdapter) {
-        this.tmAdapter = tmAdapter
-        tmAdapter.set(datas)
     }
 
 }

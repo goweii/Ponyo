@@ -17,7 +17,7 @@ object Ponyo : AppLifecycle.AppLifecycleListener {
         AppLifecycle.registerAppLifecycleListener(Ponyo)
         Ponlog.addLogPrinter(LogManager)
         Ponlog.setJsonFormatter(GsonFormatter())
-        TimeMonitor.onTimeLineEndListener = TmManager
+        TimeMonitor.registerTimeLineEndListener(TmManager)
         ActivityStack.registerStackUpdateListener(ActiStackManager)
         floatManager = FloatManager(application).icon(R.drawable.ic_logo)
     }
