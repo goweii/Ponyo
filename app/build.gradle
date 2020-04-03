@@ -17,7 +17,7 @@ android {
 
 dependencies {
     debugImplementation project(":ponyo")
-    //releaseImplementation "com.github.goweii:Ponyo:1.0.0"
+    releaseImplementation "com.github.goweii.Ponyo:ponyo:1.0.0"
     implementation rootProject.ext.dependencies.constraintlayout
     implementation rootProject.ext.dependencies.room_runtime
     implementation rootProject.ext.dependencies.room_ktx
