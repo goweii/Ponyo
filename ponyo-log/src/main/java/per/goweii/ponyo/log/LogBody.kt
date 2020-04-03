@@ -10,20 +10,25 @@ data class LogBody private constructor(
 ) {
     companion object {
         fun build(
+            bridgeCount: Int,
             invokeCls: Class<*>
         ): LogBody {
             val stackTrace = Thread.currentThread().stackTrace
             var caller: StackTraceElement? = null
-            var find = false
-            for (i in 1 until stackTrace.size) {
-                val stackTraceElement = stackTrace[i]
-                val clsName = stackTraceElement.className
-                if (clsName == invokeCls.name) {
-                    find = true
-                } else {
-                    if (find) {
-                        caller = stackTraceElement
-                        break
+            if (bridgeCount > 0) {
+                caller = stackTrace[bridgeCount + 1]
+            } else {
+                var find = false
+                for (i in 1 until stackTrace.size) {
+                    val stackTraceElement = stackTrace[i]
+                    val clsName = stackTraceElement.className
+                    if (clsName == invokeCls.name) {
+                        find = true
+                    } else {
+                        if (find) {
+                            caller = stackTraceElement
+                            break
+                        }
                     }
                 }
             }
