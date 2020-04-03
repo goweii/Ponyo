@@ -32,9 +32,7 @@ object TimeMonitor {
             val stepCost = lastOrNull()?.let {
                 time - it.timestamp
             } ?: 0
-            add(TimeCost(tagPoint, time, totalCost, stepCost).also {
-                log("$tagLine:$it")
-            })
+            add(TimeCost(tagPoint, time, totalCost, stepCost))
         }
     }
 
