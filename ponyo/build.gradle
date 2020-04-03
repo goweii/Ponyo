@@ -1,6 +1,5 @@
 apply plugin: 'com.android.library'
 apply from: "../basic.gradle"
-apply from: "../maven.gradle"
 
 dependencies {
     implementation rootProject.ext.dependencies.recyclerview
