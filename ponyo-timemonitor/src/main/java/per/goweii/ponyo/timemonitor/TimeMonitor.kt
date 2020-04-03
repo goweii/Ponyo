@@ -46,8 +46,9 @@ object TimeMonitor {
         record(tagLine, tagEnd)
         timeMap.remove(tagLine)?.let { list ->
             val info = formatTimeLine(tagLine, list)
-            Ponlog.d { info }
-            onTimeLineEndListener?.invoke(tagLine, info)
+            onTimeLineEndListener?.invoke(tagLine, info) ?: run {
+                Ponlog.d { info }
+            }
         }
     }
 
