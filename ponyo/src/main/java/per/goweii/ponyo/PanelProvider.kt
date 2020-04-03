@@ -4,6 +4,7 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import per.goweii.ponyo.panel.IPanel
+import per.goweii.ponyo.panel.actistack.ActiStackPanel
 import per.goweii.ponyo.panel.db.DbPanel
 import per.goweii.ponyo.panel.log.LogPanel
 import per.goweii.ponyo.panel.tm.TmPanel
@@ -16,6 +17,7 @@ object PanelProvider {
         add(LogPanel())
         add(DbPanel())
         add(TmPanel())
+        add(ActiStackPanel())
     }
 
     fun attach(container: FrameLayout, tab: LinearLayout) {
