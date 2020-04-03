@@ -1,1 +1,9 @@
-<manifest package="per.goweii.ponyo" />
+<manifest package="per.goweii.ponyo"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <application>
+        <provider
+            android:authorities="${applicationId}.ponyo.initprovider"
+            android:name="per.goweii.ponyo.InitProvider"
+            android:exported="false" />
+    </application>
+</manifest>

@@ -11,6 +11,5 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        Ponyo.attach(this).showFloat(R.mipmap.ic_logo)
     }
 }

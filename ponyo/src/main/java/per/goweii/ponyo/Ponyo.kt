@@ -1,35 +1,19 @@
 package per.goweii.ponyo
 
 import android.app.Application
-import com.google.gson.GsonBuilder
 import per.goweii.ponyo.appstack.AppLifecycle
-import per.goweii.ponyo.log.JsonFormatter
 import per.goweii.ponyo.log.Ponlog
-import per.goweii.ponyo.panel.db.DbManager
 import per.goweii.ponyo.panel.log.LogManager
 
 object Ponyo : AppLifecycle.AppLifecycleListener {
 
-    private lateinit var application: Application
+    private lateinit var floatManager: FloatManager
 
-    private val gson by lazy {
-        GsonBuilder().setPrettyPrinting().create()
-    }
-    private var floatManager: FloatManager? = null
-
-    fun attach(app: Application) = apply {
-        application = app
-        AppLifecycle.registerAppLifecycleListener(this)
+    fun onInitialize(application: Application) {
+        AppLifecycle.registerAppLifecycleListener(Ponyo)
         Ponlog.addLogPrinter(LogManager)
-        Ponlog.setJsonFormatter(object : JsonFormatter {
-            override fun toJson(any: Any): String {
-                return gson.toJson(any)
-            }
-        })
-    }
-
-    fun showFloat(iconResId: Int) {
-        floatManager = FloatManager(application).icon(iconResId)
+        Ponlog.setJsonFormatter(GsonFormatter())
+        floatManager = FloatManager(application).icon(R.drawable.ic_logo)
     }
 
     override fun onCreate() {
@@ -39,11 +23,11 @@ object Ponyo : AppLifecycle.AppLifecycleListener {
     }
 
     override fun onResume() {
-        floatManager?.show()
+        floatManager.show()
     }
 
     override fun onPause() {
-        floatManager?.dismiss()
+        floatManager.dismiss()
     }
 
     override fun onStop() {
