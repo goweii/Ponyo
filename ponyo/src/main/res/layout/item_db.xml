@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:background="#111111">
+    android:background="#22ffffff">
 
     <TextView
         android:id="@+id/tv_db_value"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#111111"
+        android:maxWidth="120dp"
+        android:maxLines="5"
+        android:ellipsize="end"
         android:layout_margin="1px"
         android:paddingStart="5dp"
         android:paddingTop="3dp"

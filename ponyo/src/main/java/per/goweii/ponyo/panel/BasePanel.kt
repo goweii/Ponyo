@@ -29,7 +29,7 @@ abstract class BasePanel : IPanel {
                 10F,
                 container.context.resources.displayMetrics
             ).toInt()
-            setPadding(size, size, size, size)
+            setPadding(size, 0, size, 0)
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.MATCH_PARENT

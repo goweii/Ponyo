@@ -1,8 +1,8 @@
 package per.goweii.ponyo.panel.db
 
 import android.content.Context
+import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
-import per.goweii.ponyo.log.Ponlog
 
 object DbManager {
 
@@ -13,6 +13,8 @@ object DbManager {
     )
 
     data class Table(
+        val dbName: String,
+        val dbPath: String,
         val name: String
     )
 
@@ -36,7 +38,7 @@ object DbManager {
                         ).use { _cursor ->
                             while (_cursor.moveToNext()) {
                                 val tableName = _cursor.getString(0)
-                                val table = Table(tableName)
+                                val table = Table(name, path.absolutePath, tableName)
                                 db.tables.add(table)
                             }
                         }
@@ -47,20 +49,12 @@ object DbManager {
             } catch (e: Exception) {
             }
         }
-        Ponlog.d { dbs }
     }
 
     fun readTable(table: Table): List<List<DbEntity>>? {
-        var db: Db? = null
-        for (d in dbs) {
-            if (d.tables.contains(table)) {
-                db = d
-            }
-        }
-        db ?: return null
         val list = arrayListOf<ArrayList<DbEntity>>()
         SQLiteDatabase.openDatabase(
-            db.path,
+            table.dbPath,
             null,
             SQLiteDatabase.OPEN_READONLY
         ).use { _db ->
@@ -71,7 +65,7 @@ object DbManager {
                     val dbEntityList = arrayListOf<DbEntity>()
                     for (columnName in _cursor.columnNames) {
                         val columnIndex = _cursor.getColumnIndex(columnName)
-                        val value = _cursor.getString(columnIndex)
+                        val value = readValue(_cursor, columnIndex)
                         val dbEntity = DbEntity(columnName, value)
                         dbEntityList.add(dbEntity)
                     }
@@ -79,8 +73,46 @@ object DbManager {
                 }
             }
         }
-        Ponlog.d { list }
         return list
+    }
+
+    private fun readValue(cursor: Cursor, columnIndex: Int): String {
+        try {
+            val value = cursor.getBlob(columnIndex)
+            return String(value)
+        } catch (e: Exception) {
+        }
+        try {
+            val value = cursor.getShort(columnIndex)
+            return value.toString()
+        } catch (e: Exception) {
+        }
+        try {
+            val value = cursor.getInt(columnIndex)
+            return value.toString()
+        } catch (e: Exception) {
+        }
+        try {
+            val value = cursor.getLong(columnIndex)
+            return value.toString()
+        } catch (e: Exception) {
+        }
+        try {
+            val value = cursor.getFloat(columnIndex)
+            return value.toString()
+        } catch (e: Exception) {
+        }
+        try {
+            val value = cursor.getDouble(columnIndex)
+            return value.toString()
+        } catch (e: Exception) {
+        }
+        try {
+            val value = cursor.getString(columnIndex)
+            return value ?: "null"
+        } catch (e: Exception) {
+        }
+        return "null"
     }
 
 }
