@@ -13,6 +13,7 @@ object Ponlog {
     private var filter: Int = setLevel(
         Level.ERROR, Level.WARN, Level.INFO, Level.DEBUG, Level.VERBOSE
     )
+    private var bridgeClassCount = 0
     private var invokeClass: Class<*>? = null
     private var perLogMaxLength: Int = 4 * 1024
     private val androidLogPrinter: LogPrinter = AndroidLogPrinter()
@@ -20,6 +21,10 @@ object Ponlog {
 
     fun setInvokeClass(cls: Class<*>?) {
         invokeClass = cls
+    }
+
+    fun setBridgeClassCount(count: Int) {
+        bridgeClassCount = count
     }
 
     fun setLevel(vararg levels: Level): Int {
