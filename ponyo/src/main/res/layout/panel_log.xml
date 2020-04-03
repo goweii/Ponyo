@@ -95,7 +95,7 @@
                 android:background="@color/colorLogError"
                 android:checked="true"
                 android:text="E"
-                android:textColor="@color/colorOnBackground"
+                android:textColor="@color/colorOnForeground"
                 android:textSize="12sp" />
 
             <CheckBox
@@ -106,7 +106,7 @@
                 android:background="@color/colorLogWarn"
                 android:checked="true"
                 android:text="W"
-                android:textColor="@color/colorOnBackground"
+                android:textColor="@color/colorOnForeground"
                 android:textSize="12sp" />
 
             <CheckBox
@@ -117,7 +117,7 @@
                 android:background="@color/colorLogInfo"
                 android:checked="true"
                 android:text="I"
-                android:textColor="@color/colorOnBackground"
+                android:textColor="@color/colorOnForeground"
                 android:textSize="12sp" />
 
             <CheckBox
@@ -128,7 +128,7 @@
                 android:background="@color/colorLogDebug"
                 android:checked="true"
                 android:text="D"
-                android:textColor="@color/colorOnBackground"
+                android:textColor="@color/colorOnForeground"
                 android:textSize="12sp" />
 
             <CheckBox
@@ -139,7 +139,7 @@
                 android:background="@color/colorLogVisible"
                 android:checked="true"
                 android:text="V"
-                android:textColor="@color/colorOnBackground"
+                android:textColor="@color/colorOnForeground"
                 android:textSize="12sp" />
 
         </LinearLayout>

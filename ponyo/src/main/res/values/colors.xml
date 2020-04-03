@@ -2,6 +2,7 @@
 <resources>
     <color name="colorBackground">#FF111111</color>
     <color name="colorOnBackground">#EEFFFFFF</color>
+    <color name="colorOnForeground">#EE111111</color>
 
     <color name="colorLogError">#FFFF6B68</color>
     <color name="colorLogWarn">#FFB19B00</color>
