@@ -7,6 +7,8 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
+import androidx.core.content.ContextCompat
+import per.goweii.ponyo.R
 
 abstract class BasePanel : IPanel {
 
@@ -35,7 +37,7 @@ abstract class BasePanel : IPanel {
                 LinearLayout.LayoutParams.MATCH_PARENT
             )
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 12F)
-            setTextColor(Color.WHITE)
+            setTextColor(ContextCompat.getColor(context, R.color.colorOnBackground))
         }
     }
 

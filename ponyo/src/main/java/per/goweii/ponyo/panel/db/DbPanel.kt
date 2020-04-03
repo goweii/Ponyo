@@ -6,6 +6,7 @@ import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import per.goweii.ponyo.R
@@ -115,7 +116,7 @@ class DbPanel : BasePanel() {
                 LinearLayout.LayoutParams.MATCH_PARENT
             )
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 12F)
-            setTextColor(Color.WHITE)
+            setTextColor(ContextCompat.getColor(context, R.color.colorOnBackground))
         }
     }
 }

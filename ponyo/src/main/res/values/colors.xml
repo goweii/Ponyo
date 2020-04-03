@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorLogError">#FF6B68</color>
-    <color name="colorLogWarn">#B19B00</color>
-    <color name="colorLogInfo">#4E90E9</color>
-    <color name="colorLogDebug">#01BB07</color>
-    <color name="colorLogVisible">#666666</color>
+    <color name="colorBackground">#FF111111</color>
+    <color name="colorOnBackground">#EEFFFFFF</color>
+
+    <color name="colorLogError">#FFFF6B68</color>
+    <color name="colorLogWarn">#FFB19B00</color>
+    <color name="colorLogInfo">#FF4E90E9</color>
+    <color name="colorLogDebug">#FF01BB07</color>
+    <color name="colorLogVisible">#FF666666</color>
+
+    <color name="colorDivide">#22FFFFFF</color>
 </resources>

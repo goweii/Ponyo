@@ -3,13 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#22ffffff">
+    android:background="@color/colorDivide">
 
     <TextView
         android:id="@+id/tv_db_value"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#111111"
+        android:background="@color/colorBackground"
         android:maxWidth="120dp"
         android:maxLines="5"
         android:ellipsize="end"
@@ -18,7 +18,7 @@
         android:paddingTop="3dp"
         android:paddingEnd="5dp"
         android:paddingBottom="3dp"
-        android:textColor="#eeffffff"
+        android:textColor="@color/colorOnBackground"
         android:textSize="12sp"
         tools:text="1321321321" />
 
