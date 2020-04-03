@@ -1,6 +1,5 @@
 package per.goweii.ponyo.panel.db
 
-import android.graphics.Color
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View

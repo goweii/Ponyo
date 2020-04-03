@@ -7,6 +7,8 @@ import kotlin.math.max
 object TimeMonitor {
     private val timeMap = ConcurrentHashMap<String, MutableList<TimeCost>>()
 
+    var onTimeLineEndListener: ((lineTag: String, lineInfo: String) -> Unit)? = null
+
     /**
      * 开始一组时间线的记录
      * 同一标记的时间线只能有一条，会移除之前已存在的
@@ -43,7 +45,9 @@ object TimeMonitor {
     fun end(tagLine: String, tagEnd: String = "record end") {
         record(tagLine, tagEnd)
         timeMap.remove(tagLine)?.let { list ->
-            log(formatTimeLine(tagLine, list))
+            val info = formatTimeLine(tagLine, list)
+            Ponlog.d { info }
+            onTimeLineEndListener?.invoke(tagLine, info)
         }
     }
 
@@ -64,14 +68,20 @@ object TimeMonitor {
         }
         val sb = StringBuilder()
             .append("One time monitor has ended and all records printed as follows")
-            .append("\n+").append("-".r(n = l_tag + l_timestamp + l_total_cost + l_step_cost + 3)).append("+")
-            .append("\n|").append(" ".r(tagLine, l_tag + l_timestamp + l_total_cost + l_step_cost + 3, "")).append("|")
-            .append("\n+").append("-".r(n = l_tag)).append("+").append("-".r(n = l_timestamp)).append("+")
+            .append("\n+").append("-".r(n = l_tag + l_timestamp + l_total_cost + l_step_cost + 3))
+            .append("+")
+            .append("\n|")
+            .append(" ".r(tagLine, l_tag + l_timestamp + l_total_cost + l_step_cost + 3, ""))
+            .append("|")
+            .append("\n+").append("-".r(n = l_tag)).append("+").append("-".r(n = l_timestamp))
+            .append("+")
             .append("-".r(n = l_total_cost)).append("+").append("-".r(n = l_step_cost)).append("+")
             .append("\n|").append(" ".r(column_tag, l_tag, "")).append("|")
-            .append(" ".r(column_timestamp, l_timestamp, "")).append("|").append(" ".r(column_total_cost, l_total_cost, ""))
+            .append(" ".r(column_timestamp, l_timestamp, "")).append("|")
+            .append(" ".r(column_total_cost, l_total_cost, ""))
             .append("|").append(" ".r(column_step_cost, l_step_cost, "")).append("|")
-            .append("\n+").append("-".r(n = l_tag)).append("+").append("-".r(n = l_timestamp)).append("+")
+            .append("\n+").append("-".r(n = l_tag)).append("+").append("-".r(n = l_timestamp))
+            .append("+")
             .append("-".r(n = l_total_cost)).append("+").append("-".r(n = l_step_cost)).append("+")
         list.forEach {
             sb.append("\n|").append(" ".r(it.tag, l_tag, "")).append("|")
@@ -79,7 +89,8 @@ object TimeMonitor {
                 .append(" ".r("", l_total_cost, "${it.totalCost}")).append("|")
                 .append(" ".r("", l_step_cost, "${it.stepCost}")).append("|")
         }
-        sb.append("\n+").append("-".r(n = l_tag)).append("+").append("-".r(n = l_timestamp)).append("+")
+        sb.append("\n+").append("-".r(n = l_tag)).append("+").append("-".r(n = l_timestamp))
+            .append("+")
             .append("-".r(n = l_total_cost)).append("+").append("-".r(n = l_step_cost)).append("+")
         return sb.toString()
     }
@@ -90,10 +101,6 @@ object TimeMonitor {
             sb.append(this)
         }
         return sb.append(e)
-    }
-
-    private fun log(str: String) {
-        Ponlog.d { str }
     }
 
 }

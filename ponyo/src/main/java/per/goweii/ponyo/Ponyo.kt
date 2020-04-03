@@ -4,6 +4,8 @@ import android.app.Application
 import per.goweii.ponyo.appstack.AppLifecycle
 import per.goweii.ponyo.log.Ponlog
 import per.goweii.ponyo.panel.log.LogManager
+import per.goweii.ponyo.panel.tm.TmManager
+import per.goweii.ponyo.timemonitor.TimeMonitor
 
 object Ponyo : AppLifecycle.AppLifecycleListener {
 
@@ -13,6 +15,7 @@ object Ponyo : AppLifecycle.AppLifecycleListener {
         AppLifecycle.registerAppLifecycleListener(Ponyo)
         Ponlog.addLogPrinter(LogManager)
         Ponlog.setJsonFormatter(GsonFormatter())
+        TimeMonitor.onTimeLineEndListener = TmManager
         floatManager = FloatManager(application).icon(R.drawable.ic_logo)
     }
 

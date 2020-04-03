@@ -3,10 +3,10 @@ package per.goweii.ponyo
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.LinearLayout
-import androidx.core.view.forEach
 import per.goweii.ponyo.panel.IPanel
 import per.goweii.ponyo.panel.db.DbPanel
 import per.goweii.ponyo.panel.log.LogPanel
+import per.goweii.ponyo.panel.tm.TmPanel
 
 object PanelProvider {
 
@@ -15,6 +15,7 @@ object PanelProvider {
     private val panels = arrayListOf<IPanel>().apply {
         add(LogPanel())
         add(DbPanel())
+        add(TmPanel())
     }
 
     fun attach(container: FrameLayout, tab: LinearLayout) {
