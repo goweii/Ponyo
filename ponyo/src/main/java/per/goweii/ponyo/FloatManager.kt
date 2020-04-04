@@ -71,7 +71,7 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
             scaleType = ImageView.ScaleType.CENTER_CROP
             elevation = TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP,
-                0F,
+                10F,
                 context.resources.displayMetrics
             )
             clipToOutline = true

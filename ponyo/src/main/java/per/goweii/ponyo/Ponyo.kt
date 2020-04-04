@@ -19,7 +19,7 @@ object Ponyo : AppLifecycle.AppLifecycleListener {
         Ponlog.setJsonFormatter(GsonFormatter())
         TimeMonitor.registerTimeLineEndListener(TmManager)
         ActivityStack.registerStackUpdateListener(ActiStackManager)
-        floatManager = FloatManager(application).icon(R.drawable.ponyo_ic_float)
+        floatManager = FloatManager(application).icon(R.drawable.ponyo)
     }
 
     override fun onCreate() {
