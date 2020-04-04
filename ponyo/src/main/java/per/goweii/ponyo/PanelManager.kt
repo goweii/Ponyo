@@ -360,8 +360,8 @@ internal class PanelManager(private val context: Context) {
             rectF.right.toInt(),
             rectF.bottom.toInt()
         )
-        floatPanel.scrollX = rectF.left.toInt()
-        floatPanel.scrollY = rectF.top.toInt()
+        floatPanel.x = -rectF.left
+        floatPanel.y = -rectF.top
         val sx = rectF.width() / panelRectF.width()
         val sy = rectF.height() / panelRectF.height()
         val s = min(sx, sy)
