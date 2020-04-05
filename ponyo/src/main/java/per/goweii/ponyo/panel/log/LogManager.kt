@@ -17,7 +17,7 @@ import java.util.*
 object LogManager : LogPrinter, CoroutineScope by MainScope() {
 
     private const val prePageCount = 100
-    private const val minNotifyTime = 0L
+    private const val minNotifyTime = 100L
 
     private val adapter: LogAdapter by lazy {
         LogAdapter()
@@ -35,6 +35,7 @@ object LogManager : LogPrinter, CoroutineScope by MainScope() {
     private var lastNotifyTime = 0L
     private var job: Job? = null
 
+    @Synchronized
     override fun print(level: Ponlog.Level, tag: String, body: LogBody, msg: String) {
         logCaches.add(LogEntity(level, tag, body, msg))
         job?.cancel()
