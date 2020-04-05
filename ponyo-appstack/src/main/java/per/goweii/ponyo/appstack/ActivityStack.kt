@@ -7,16 +7,25 @@ import androidx.fragment.app.FragmentActivity
 import kotlin.text.StringBuilder
 
 object ActivityStack : Application.ActivityLifecycleCallbacks {
-    private var activityStackUpdateListeners = arrayListOf<() -> Unit>()
+    private var activityStackUpdateListeners = arrayListOf<ActivityStackUpdateListener>()
+    private var activityLifecycleListeners = arrayListOf<ActivityLifecycleListener>()
 
     val activityInfos = arrayListOf<ActivityInfo>()
 
-    fun registerStackUpdateListener(listener: () -> Unit) {
+    fun registerStackUpdateListener(listener: ActivityStackUpdateListener) {
         activityStackUpdateListeners.add(listener)
     }
 
-    fun unregisterStackUpdateListener(listener: () -> Unit) {
+    fun unregisterStackUpdateListener(listener: ActivityStackUpdateListener) {
         activityStackUpdateListeners.remove(listener)
+    }
+
+    fun registerActivityLifecycleListener(listener: ActivityLifecycleListener) {
+        activityLifecycleListeners.add(listener)
+    }
+
+    fun unregisterActivityLifecycleListener(listener: ActivityLifecycleListener) {
+        activityLifecycleListeners.remove(listener)
     }
 
     fun copyStack(): StringBuilder {
@@ -63,7 +72,7 @@ object ActivityStack : Application.ActivityLifecycleCallbacks {
 
     private fun notifyStackUpdate() {
         activityStackUpdateListeners.forEach {
-            it.invoke()
+            it.onStackUpdate()
         }
     }
 
@@ -78,21 +87,26 @@ object ActivityStack : Application.ActivityLifecycleCallbacks {
         val activityInfo = ActivityInfo(activity, fragmentStack)
         activityInfos.add(activityInfo)
         notifyStackUpdate()
+        activityLifecycleListeners.forEach { it.onCreated(activity) }
     }
 
     override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
     }
 
     override fun onActivityStarted(activity: Activity) {
+        activityLifecycleListeners.forEach { it.onStarted(activity) }
     }
 
     override fun onActivityResumed(activity: Activity) {
+        activityLifecycleListeners.forEach { it.onResumed(activity) }
     }
 
     override fun onActivityPaused(activity: Activity) {
+        activityLifecycleListeners.forEach { it.onPaused(activity) }
     }
 
     override fun onActivityStopped(activity: Activity) {
+        activityLifecycleListeners.forEach { it.onStopped(activity) }
     }
 
     override fun onActivityDestroyed(activity: Activity) {
@@ -111,6 +125,7 @@ object ActivityStack : Application.ActivityLifecycleCallbacks {
             activity.supportFragmentManager.unregisterFragmentLifecycleCallbacks(activityInfo.fragmentStack)
         }
         notifyStackUpdate()
+        activityLifecycleListeners.forEach { it.onDestroyed(activity) }
     }
 
 }

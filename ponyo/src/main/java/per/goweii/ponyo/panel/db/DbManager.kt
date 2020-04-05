@@ -9,7 +9,7 @@ object DbManager {
     data class Db(
         val name: String,
         val path: String,
-        val tables: MutableList<Table> = arrayListOf()
+        val tables: MutableList<Table> = mutableListOf()
     )
 
     data class Table(

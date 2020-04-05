@@ -46,7 +46,7 @@ object PanelProvider {
             val panelView = it.createPanelView(container)
             val tabView = it.createPanelTab(tab)
             panelView.visibility = View.GONE
-            tabView.alpha = 0.6F
+            tabView.isSelected = false
             tabView.setOnClickListener {
                 selectPanel(panelView)
             }
@@ -61,10 +61,10 @@ object PanelProvider {
             val tabView = tab.getChildAt(i)
             if (panelView == panel) {
                 panelView.visibility = View.VISIBLE
-                tabView.alpha = 1F
+                tabView.isSelected = true
             } else {
                 panelView.visibility = View.GONE
-                tabView.alpha = 0.6F
+                tabView.isSelected = false
             }
         }
     }

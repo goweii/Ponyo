@@ -23,8 +23,8 @@
             android:id="@+id/panel"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:gravity="center">
+            android:gravity="center"
+            android:orientation="vertical">
 
             <FrameLayout
                 android:id="@+id/panel_container"
@@ -32,15 +32,24 @@
                 android:layout_height="0dp"
                 android:layout_weight="1" />
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@color/colorDivide" />
+
             <HorizontalScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:overScrollMode="never"
+                android:scrollbars="none">
 
                 <LinearLayout
                     android:id="@+id/panel_tab"
                     android:layout_width="wrap_content"
+                    android:layout_height="44dp"
                     android:orientation="horizontal"
-                    android:layout_height="44dp"/>
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp" />
 
             </HorizontalScrollView>
 

@@ -1,4 +1,4 @@
-package per.goweii.ponyo
+package per.goweii.ponyo.panel.log
 
 import com.google.gson.GsonBuilder
 import per.goweii.ponyo.log.JsonFormatter

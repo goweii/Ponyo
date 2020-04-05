@@ -5,9 +5,10 @@ import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_acti_stack.*
 import per.goweii.android.ponyo.R
 import per.goweii.ponyo.appstack.ActivityStack
+import per.goweii.ponyo.appstack.ActivityStackUpdateListener
 import per.goweii.ponyo.log.Ponlog
 
-class ActiStackActivity : AppCompatActivity(), () -> Unit {
+class ActiStackActivity : AppCompatActivity(), ActivityStackUpdateListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,8 +31,8 @@ class ActiStackActivity : AppCompatActivity(), () -> Unit {
         ActivityStack.unregisterStackUpdateListener(this)
     }
 
-    override fun invoke() {
+    override fun onStackUpdate() {
         tv_activity_stack_log.text = ActivityStack.copyStack()
-        Ponlog.d { "\n" + ActivityStack.copyStack() }
+        Ponlog.d {ActivityStack.copyStack() }
     }
 }

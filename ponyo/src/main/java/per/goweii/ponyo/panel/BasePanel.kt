@@ -23,22 +23,11 @@ abstract class BasePanel : IPanel {
     }
 
     override fun createPanelTab(container: LinearLayout): View {
-        return TextView(container.context).apply {
-            text = getPanelName()
-            gravity = Gravity.CENTER
-            val size = TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP,
-                10F,
-                container.context.resources.displayMetrics
-            ).toInt()
-            setPadding(size, 0, size, 0)
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.MATCH_PARENT
-            )
-            setTextSize(TypedValue.COMPLEX_UNIT_SP, 12F)
-            setTextColor(ContextCompat.getColor(context, R.color.colorOnBackground))
-        }
+        return LayoutInflater.from(container.context)
+            .inflate(R.layout.tab, container, false).apply {
+                this as TextView
+                text = getPanelName()
+            }
     }
 
     abstract fun getPanelLayoutRes(): Int

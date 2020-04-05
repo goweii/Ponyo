@@ -66,7 +66,7 @@
         android:layout_gravity="bottom|right"
         android:layout_margin="5dp"
         android:alpha="0.9"
-        android:background="@drawable/bg_log_more"
+        android:background="@drawable/log_more_bg"
         android:gravity="center"
         android:text="有新日志"
         android:textColor="#FFFFFF"
