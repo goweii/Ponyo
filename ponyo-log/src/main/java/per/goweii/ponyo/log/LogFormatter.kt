@@ -76,7 +76,7 @@ internal object LogFormatter {
         var first = true
         val mAction = intent.action
         if (mAction != null) {
-            sb.append("act=").append(mAction)
+            sb.append("action=").append(mAction)
             first = false
         }
         val mCategories = intent.categories
@@ -85,7 +85,7 @@ internal object LogFormatter {
                 sb.append(' ')
             }
             first = false
-            sb.append("cat=[")
+            sb.append("categories=[")
             var firstCategory = true
             for (c in mCategories) {
                 if (!firstCategory) {
@@ -102,7 +102,7 @@ internal object LogFormatter {
                 sb.append(' ')
             }
             first = false
-            sb.append("dat=").append(mData)
+            sb.append("data=").append(mData)
         }
         val mType = intent.type
         if (mType != null) {
@@ -110,7 +110,7 @@ internal object LogFormatter {
                 sb.append(' ')
             }
             first = false
-            sb.append("typ=").append(mType)
+            sb.append("type=").append(mType)
         }
         val mFlags = intent.flags
         if (mFlags != 0) {
@@ -118,7 +118,7 @@ internal object LogFormatter {
                 sb.append(' ')
             }
             first = false
-            sb.append("flg=0x").append(Integer.toHexString(mFlags))
+            sb.append("flags=0x").append(Integer.toHexString(mFlags))
         }
         val mPackage = intent.getPackage()
         if (mPackage != null) {
@@ -126,7 +126,7 @@ internal object LogFormatter {
                 sb.append(' ')
             }
             first = false
-            sb.append("pkg=").append(mPackage)
+            sb.append("package=").append(mPackage)
         }
         val mComponent = intent.component
         if (mComponent != null) {
@@ -134,7 +134,7 @@ internal object LogFormatter {
                 sb.append(' ')
             }
             first = false
-            sb.append("cmp=").append(mComponent.flattenToShortString())
+            sb.append("component=").append(mComponent.flattenToShortString())
         }
         val mSourceBounds = intent.sourceBounds
         if (mSourceBounds != null) {
@@ -142,7 +142,7 @@ internal object LogFormatter {
                 sb.append(' ')
             }
             first = false
-            sb.append("bnds=").append(mSourceBounds.toShortString())
+            sb.append("sourceBounds=").append(mSourceBounds.toShortString())
         }
         val mClipData = intent.clipData
         if (mClipData != null) {
@@ -167,7 +167,7 @@ internal object LogFormatter {
             if (!first) {
                 sb.append(' ')
             }
-            sb.append("sel={")
+            sb.append("selector={")
             sb.append(if (mSelector === intent) "(this Intent)" else intent2String(mSelector))
             sb.append("}")
         }
@@ -184,27 +184,27 @@ internal object LogFormatter {
         sb.append("ClipData.Item { ")
         val mHtmlText = item.htmlText
         if (mHtmlText != null) {
-            sb.append("H:")
+            sb.append("html:")
             sb.append(mHtmlText)
             sb.append("}")
             return
         }
         val mText = item.text
         if (mText != null) {
-            sb.append("T:")
+            sb.append("text:")
             sb.append(mText)
             sb.append("}")
             return
         }
         val uri = item.uri
         if (uri != null) {
-            sb.append("U:").append(uri)
+            sb.append("uri:").append(uri)
             sb.append("}")
             return
         }
         val intent = item.intent
         if (intent != null) {
-            sb.append("I:")
+            sb.append("intent:")
             sb.append(intent2String(intent))
             sb.append("}")
             return

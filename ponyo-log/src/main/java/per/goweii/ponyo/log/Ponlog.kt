@@ -94,7 +94,7 @@ object Ponlog {
     }
 
     private fun print(level: Level, tag: String?, msg: Any?) {
-        val logBody = LogBody.build(bridgeClassCount, invokeClass ?: javaClass)
+        val logBody = LogBody.build(invokeClass ?: javaClass, bridgeClassCount)
         val logTag = tag ?: logBody.className
         val logMsg = LogFormatter.object2String(msg)
         if (logMsg.length > perLogMaxLength) {
