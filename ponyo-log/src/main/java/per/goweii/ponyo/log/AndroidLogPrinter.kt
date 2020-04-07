@@ -18,5 +18,6 @@ class AndroidLogPrinter : LogPrinter {
             Ponlog.Level.INFO -> Log.INFO
             Ponlog.Level.DEBUG -> Log.DEBUG
             Ponlog.Level.VERBOSE -> Log.VERBOSE
+            Ponlog.Level.ASSERT -> Log.ASSERT
         }
 }

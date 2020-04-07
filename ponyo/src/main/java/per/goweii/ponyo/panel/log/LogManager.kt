@@ -14,7 +14,6 @@ import java.util.*
  * @author CuiZhen
  * @date 2020/3/29
  */
-@ObsoleteCoroutinesApi
 object LogManager : LogPrinter,
     CoroutineScope by CoroutineScope(newSingleThreadContext("LogCounterContext")) {
     private const val prePageCount = 100
@@ -35,6 +34,7 @@ object LogManager : LogPrinter,
             val logEntity = LogEntity(level, tag, body, msg)
             logs.add(logEntity)
             val needNotify = when (logEntity.level) {
+                Ponlog.Level.ASSERT -> a
                 Ponlog.Level.ERROR -> e
                 Ponlog.Level.WARN -> w
                 Ponlog.Level.INFO -> i
@@ -82,13 +82,15 @@ object LogManager : LogPrinter,
         })
     }
 
+    private var a: Boolean = true
     private var e: Boolean = true
     private var w: Boolean = true
     private var d: Boolean = true
     private var i: Boolean = true
     private var v: Boolean = true
 
-    fun notifyLevel(e: Boolean, w: Boolean, d: Boolean, i: Boolean, v: Boolean) {
+    fun notifyLevel(a: Boolean, e: Boolean, w: Boolean, d: Boolean, i: Boolean, v: Boolean) {
+        this.a = a
         this.e = e
         this.w = w
         this.d = d
@@ -98,6 +100,7 @@ object LogManager : LogPrinter,
         for (pos in offset until logs.size) {
             val item = logs[pos]
             when (item.level) {
+                Ponlog.Level.ASSERT -> if (this.a) data.add(item)
                 Ponlog.Level.ERROR -> if (this.e) data.add(item)
                 Ponlog.Level.WARN -> if (this.w) data.add(item)
                 Ponlog.Level.INFO -> if (this.i) data.add(item)
@@ -118,6 +121,7 @@ object LogManager : LogPrinter,
         for (pos in offset until oldOffset) {
             val item = logs[pos]
             when (item.level) {
+                Ponlog.Level.ASSERT -> if (this.a) data.add(item)
                 Ponlog.Level.ERROR -> if (this.e) data.add(item)
                 Ponlog.Level.WARN -> if (this.w) data.add(item)
                 Ponlog.Level.INFO -> if (this.i) data.add(item)

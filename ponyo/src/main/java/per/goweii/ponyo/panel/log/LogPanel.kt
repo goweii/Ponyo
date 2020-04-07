@@ -26,6 +26,7 @@ class LogPanel : BasePanel() {
             srl_log.finishLoadMore()
         }
         val rv_log = view.findViewById<RecyclerView>(R.id.rv_log)
+        val cb_a = view.findViewById<CheckBox>(R.id.cb_a)
         val cb_e = view.findViewById<CheckBox>(R.id.cb_e)
         val cb_w = view.findViewById<CheckBox>(R.id.cb_w)
         val cb_d = view.findViewById<CheckBox>(R.id.cb_d)
@@ -33,6 +34,7 @@ class LogPanel : BasePanel() {
         val cb_v = view.findViewById<CheckBox>(R.id.cb_v)
         val listener = CompoundButton.OnCheckedChangeListener { buttonView, isChecked ->
             LogManager.notifyLevel(
+                cb_a.isChecked,
                 cb_e.isChecked,
                 cb_w.isChecked,
                 cb_d.isChecked,

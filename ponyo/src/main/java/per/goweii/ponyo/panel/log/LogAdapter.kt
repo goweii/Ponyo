@@ -76,6 +76,7 @@ class LogAdapter : RecyclerView.Adapter<LogAdapter.LogHolder>() {
         @SuppressLint("SetTextI18n")
         fun bindData(data: LogEntity) {
             val color = when (data.level) {
+                Ponlog.Level.ASSERT -> itemView.context.resources.getColor(R.color.colorLogAssert)
                 Ponlog.Level.ERROR -> itemView.context.resources.getColor(R.color.colorLogError)
                 Ponlog.Level.WARN -> itemView.context.resources.getColor(R.color.colorLogWarn)
                 Ponlog.Level.INFO -> itemView.context.resources.getColor(R.color.colorLogInfo)

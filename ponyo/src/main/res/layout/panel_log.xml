@@ -88,6 +88,17 @@
             android:orientation="horizontal">
 
             <CheckBox
+                android:id="@+id/cb_a"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/colorLogAssert"
+                android:checked="true"
+                android:text="A"
+                android:textColor="@color/colorOnForeground"
+                android:textSize="12sp" />
+
+            <CheckBox
                 android:id="@+id/cb_e"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"

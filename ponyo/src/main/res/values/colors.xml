@@ -10,6 +10,7 @@
     <color name="colorOnForeground">#EE111111</color>
     <color name="colorOnPrimary">#EE111111</color>
 
+    <color name="colorLogAssert">#9C27B0</color>
     <color name="colorLogError">#F44336</color>
     <color name="colorLogWarn">#FFC107</color>
     <color name="colorLogInfo">#2196F3</color>

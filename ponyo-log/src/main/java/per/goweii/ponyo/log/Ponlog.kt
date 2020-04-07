@@ -8,6 +8,7 @@ object Ponlog {
         INFO(1 shl 2),
         DEBUG(1 shl 3),
         VERBOSE(1 shl 4),
+        ASSERT(1 shl 5),
     }
 
     private var filter: Int = setLevel(
