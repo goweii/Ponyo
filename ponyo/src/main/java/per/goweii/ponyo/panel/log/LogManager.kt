@@ -58,7 +58,7 @@ object LogManager : LogPrinter,
 
     private fun showMore(): Boolean {
         return if (false == recyclerView?.canScrollVertically(1)) {
-            tvMore?.visibility = View.GONE
+            tvMore?.visibility = View.INVISIBLE
             false
         } else {
             tvMore?.visibility = View.VISIBLE
