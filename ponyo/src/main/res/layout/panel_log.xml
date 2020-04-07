@@ -61,22 +61,27 @@
 
     <TextView
         android:id="@+id/tv_more"
-        android:layout_width="100dp"
-        android:layout_height="30dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
         android:layout_margin="5dp"
-        android:alpha="0.9"
+        android:alpha="0.8"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
         android:background="@drawable/log_more_bg"
         android:gravity="center"
-        android:text="有新日志"
-        android:textColor="#FFFFFF"
+        android:text="去底部"
+        android:textColor="@color/colorOnPrimary"
         android:textSize="12sp"
-        android:visibility="gone" />
+        android:visibility="gone"
+        tools:visibility="visible" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cv_level"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:alpha="0.9"
         app:cardCornerRadius="5dp"
@@ -84,7 +89,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="30dp"
             android:orientation="horizontal">
 
             <CheckBox

@@ -44,19 +44,25 @@ object LogManager : LogPrinter,
             if (!needNotify) return@launch
             launch(Dispatchers.Main) {
                 adapter.add(data = logEntity)
-                if (false == recyclerView?.canScrollVertically(1)) {
+                if (!showMore()) {
                     if (adapter.itemCount > prePageCount) {
                         val count = adapter.itemCount - prePageCount
                         offset += count
                         adapter.remove(count = count)
                     }
-                    recyclerView?.scrollToPosition(adapter.itemCount - 1)
-                    recyclerView?.smoothScrollToPosition(adapter.itemCount - 1)
-                    tvMore?.visibility = View.GONE
-                } else {
-                    tvMore?.visibility = View.VISIBLE
+                    scrollBottom()
                 }
             }
+        }
+    }
+
+    private fun showMore(): Boolean {
+        return if (false == recyclerView?.canScrollVertically(1)) {
+            tvMore?.visibility = View.GONE
+            false
+        } else {
+            tvMore?.visibility = View.VISIBLE
+            true
         }
     }
 
@@ -69,15 +75,12 @@ object LogManager : LogPrinter,
         rv.layoutManager = layoutManager
         adapter.set(logs)
         tvMore.setOnClickListener {
-            recyclerView?.scrollToPosition(adapter.itemCount - 1)
-            recyclerView?.smoothScrollToPosition(adapter.itemCount - 1)
+            scrollBottom()
         }
         recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                if (false == LogManager.recyclerView?.canScrollVertically(1)) {
-                    LogManager.tvMore?.visibility = View.GONE
-                }
+                showMore()
             }
         })
     }
@@ -130,14 +133,18 @@ object LogManager : LogPrinter,
             }
         }
         adapter.add(0, data)
-        recyclerView?.scrollToPosition(data.size - 1)
-        recyclerView?.smoothScrollToPosition(data.size - 1)
+        scrollBottom()
         return true
     }
 
     fun nextPage() {
         offset = logs.size
         adapter.clear()
+    }
+
+    fun scrollBottom() {
+        recyclerView?.scrollToPosition(adapter.itemCount - 1)
+        recyclerView?.smoothScrollToPosition(adapter.itemCount - 1)
     }
 
 }
