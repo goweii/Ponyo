@@ -22,6 +22,11 @@ class LogAdapter : RecyclerView.Adapter<LogAdapter.LogHolder>() {
 
     private val datas by lazy { mutableListOf<LogEntity>() }
 
+    fun add(start: Int = datas.size, data: LogEntity) {
+        datas.add(start, data)
+        notifyItemInserted(start)
+    }
+
     fun add(start: Int = datas.size, data: List<LogEntity>) {
         if (data.isEmpty()) return
         datas.addAll(start, data)

@@ -14,10 +14,10 @@ import java.util.*
  * @author CuiZhen
  * @date 2020/3/29
  */
-object LogManager : LogPrinter, CoroutineScope by MainScope() {
-
+@ObsoleteCoroutinesApi
+object LogManager : LogPrinter,
+    CoroutineScope by CoroutineScope(newSingleThreadContext("LogCounterContext")) {
     private const val prePageCount = 100
-    private const val minNotifyTime = 100L
 
     private val adapter: LogAdapter by lazy {
         LogAdapter()
@@ -27,47 +27,22 @@ object LogManager : LogPrinter, CoroutineScope by MainScope() {
     private var layoutManager: LinearLayoutManager? = null
 
     private val logs: MutableList<LogEntity> = Collections.synchronizedList(LinkedList<LogEntity>())
-    private val logCaches: MutableList<LogEntity> =
-        Collections.synchronizedList(LinkedList<LogEntity>())
 
     private var offset: Int = 0
 
-    private var lastNotifyTime = 0L
-    private var job: Job? = null
-
     @Synchronized
-    override fun print(level: Ponlog.Level, tag: String, body: LogBody, msg: String) {
-        logCaches.add(LogEntity(level, tag, body, msg))
-        job?.cancel()
-        val currTime = System.currentTimeMillis()
-        if (currTime - lastNotifyTime > minNotifyTime) {
-            lastNotifyTime = currTime
-            notifyAdapter()
-        } else {
-            job = launch(Dispatchers.IO) {
-                delay(minNotifyTime)
-                notifyAdapter()
-            }
+    override fun print(level: Ponlog.Level, tag: String, body: LogBody, msg: String) = runBlocking {
+        val logEntity = LogEntity(level, tag, body, msg)
+        logs.add(logEntity)
+        when (logEntity.level) {
+            Ponlog.Level.ERROR -> if (!e) return@runBlocking
+            Ponlog.Level.WARN -> if (!w) return@runBlocking
+            Ponlog.Level.INFO -> if (!i) return@runBlocking
+            Ponlog.Level.DEBUG -> if (!d) return@runBlocking
+            Ponlog.Level.VERBOSE -> if (!v) return@runBlocking
         }
-    }
-
-    @Synchronized
-    private fun notifyAdapter() {
-        launch {
-            logs.addAll(logCaches)
-            val iterator = logCaches.iterator()
-            while (iterator.hasNext()) {
-                val item = iterator.next()
-                when (item.level) {
-                    Ponlog.Level.ERROR -> if (!e) iterator.remove()
-                    Ponlog.Level.WARN -> if (!w) iterator.remove()
-                    Ponlog.Level.INFO -> if (!i) iterator.remove()
-                    Ponlog.Level.DEBUG -> if (!d) iterator.remove()
-                    Ponlog.Level.VERBOSE -> if (!v) iterator.remove()
-                }
-            }
-            adapter.add(data = logCaches)
-            logCaches.clear()
+        launch(Dispatchers.Main) {
+            adapter.add(data = logEntity)
             if (false == recyclerView?.canScrollVertically(1)) {
                 if (adapter.itemCount > prePageCount) {
                     val count = adapter.itemCount - prePageCount

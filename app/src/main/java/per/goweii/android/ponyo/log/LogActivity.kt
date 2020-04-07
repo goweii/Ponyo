@@ -6,7 +6,6 @@ import android.os.Handler
 import android.os.Message
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_log.*
-import kotlinx.android.synthetic.main.activity_main.tv_print_log
 import kotlinx.coroutines.*
 import per.goweii.android.ponyo.R
 import per.goweii.ponyo.log.LogBody
@@ -19,7 +18,7 @@ class LogActivity : AppCompatActivity(), LogPrinter, CoroutineScope by MainScope
     private val tvLogBoard by lazy { tv_log_board }
     private val logStringBuilder = StringBuilder()
 
-    private data class User (
+    private data class User(
         val name: String,
         val age: Int,
         val height: Float,
@@ -58,9 +57,18 @@ class LogActivity : AppCompatActivity(), LogPrinter, CoroutineScope by MainScope
 
         tv_print_warn.setOnClickListener {
             launch {
-                withContext(Dispatchers.IO) {
-                    Ponlog.w("Intent") { intent }
+                val a1 = async(Dispatchers.Default) {
+                    for (i in 0..10) {
+                        Ponlog.w("Intent") { intent }
+                    }
                 }
+                val a2 = async(Dispatchers.IO) {
+                    for (i in 0..10) {
+                        Ponlog.w("Intent") { intent }
+                    }
+                }
+                a1.await()
+                a2.await()
             }
         }
 
