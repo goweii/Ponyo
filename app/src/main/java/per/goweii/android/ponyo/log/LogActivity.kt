@@ -3,7 +3,6 @@ package per.goweii.android.ponyo.log
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
-import android.os.Message
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_log.*
 import kotlinx.coroutines.*
@@ -17,13 +16,6 @@ class LogActivity : AppCompatActivity(), LogPrinter, CoroutineScope by MainScope
 
     private val tvLogBoard by lazy { tv_log_board }
     private val logStringBuilder = StringBuilder()
-
-    private data class User(
-        val name: String,
-        val age: Int,
-        val height: Float,
-        val friends: MutableList<User>
-    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,13 +50,13 @@ class LogActivity : AppCompatActivity(), LogPrinter, CoroutineScope by MainScope
         tv_print_warn.setOnClickListener {
             launch {
                 val a1 = async(Dispatchers.Default) {
-                    for (i in 0..10) {
-                        Ponlog.w("Intent") { intent }
+                    for (i in 0..100) {
+                        Ponlog.e("User") { newUser() }
                     }
                 }
                 val a2 = async(Dispatchers.IO) {
-                    for (i in 0..10) {
-                        Ponlog.w("Intent") { intent }
+                    for (i in 0..100) {
+                        Ponlog.e("User") { newUser() }
                     }
                 }
                 a1.await()
@@ -75,7 +67,7 @@ class LogActivity : AppCompatActivity(), LogPrinter, CoroutineScope by MainScope
         tv_print_info.setOnClickListener {
             launch {
                 withContext(Dispatchers.IO) {
-                    Ponlog.i("Intent") { intent }
+                    Ponlog.log(Ponlog.Level.INFO, null, intent)
                 }
             }
         }
@@ -97,21 +89,11 @@ class LogActivity : AppCompatActivity(), LogPrinter, CoroutineScope by MainScope
         }
     }
 
-    private fun newUser(): User {
-        return User("zhangsan", 20, 180.1F, arrayListOf<User>())
-    }
-
     private val autoHandler = Handler()
 
     @SuppressLint("HandlerLeak")
     private var autoRunnable = Runnable {
-        when (Random.nextInt(5)) {
-            0 -> Ponlog.e("Intent") { intent }
-            1 -> Ponlog.w("Intent") { intent }
-            2 -> Ponlog.i("Intent") { intent }
-            3 -> Ponlog.d("Intent") { intent }
-            4 -> Ponlog.v("Intent") { intent }
-        }
+        log()
         startAutoLog()
     }
 
@@ -138,5 +120,26 @@ class LogActivity : AppCompatActivity(), LogPrinter, CoroutineScope by MainScope
             logStringBuilder.append("[${level.name}]$tag:$msg")
             tvLogBoard.text = logStringBuilder
         }
+    }
+}
+
+private data class User(
+    val name: String,
+    val age: Int,
+    val height: Float,
+    val friends: MutableList<User>
+)
+
+private fun newUser(): User {
+    return User("zhangsan", 20, 180.1F, arrayListOf<User>())
+}
+
+fun log() {
+    when (Random.nextInt(5)) {
+        0 -> Ponlog.e("User") { newUser() }
+        1 -> Ponlog.w("User") { newUser() }
+        2 -> Ponlog.i("User") { newUser() }
+        3 -> Ponlog.d("User") { newUser() }
+        4 -> Ponlog.v("User") { newUser() }
     }
 }

@@ -1,7 +1,9 @@
 package per.goweii.android.ponyo
 
 import android.app.Application
+import per.goweii.android.ponyo.log.log
 import per.goweii.ponyo.Ponyo
+import per.goweii.ponyo.log.Ponlog
 
 /**
  * @author CuiZhen
@@ -10,6 +12,7 @@ import per.goweii.ponyo.Ponyo
 class App : Application() {
 
     override fun onCreate() {
+        Ponlog.d("App") { "onCreate" }
         super.onCreate()
     }
 }

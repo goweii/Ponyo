@@ -30,30 +30,32 @@ object LogManager : LogPrinter,
 
     private var offset: Int = 0
 
-    @Synchronized
-    override fun print(level: Ponlog.Level, tag: String, body: LogBody, msg: String) = runBlocking {
-        val logEntity = LogEntity(level, tag, body, msg)
-        logs.add(logEntity)
-        when (logEntity.level) {
-            Ponlog.Level.ERROR -> if (!e) return@runBlocking
-            Ponlog.Level.WARN -> if (!w) return@runBlocking
-            Ponlog.Level.INFO -> if (!i) return@runBlocking
-            Ponlog.Level.DEBUG -> if (!d) return@runBlocking
-            Ponlog.Level.VERBOSE -> if (!v) return@runBlocking
-        }
-        launch(Dispatchers.Main) {
-            adapter.add(data = logEntity)
-            if (false == recyclerView?.canScrollVertically(1)) {
-                if (adapter.itemCount > prePageCount) {
-                    val count = adapter.itemCount - prePageCount
-                    offset += count
-                    adapter.remove(count = count)
+    override fun print(level: Ponlog.Level, tag: String, body: LogBody, msg: String) {
+        launch(this.coroutineContext) {
+            val logEntity = LogEntity(level, tag, body, msg)
+            logs.add(logEntity)
+            val needNotify = when (logEntity.level) {
+                Ponlog.Level.ERROR -> e
+                Ponlog.Level.WARN -> w
+                Ponlog.Level.INFO -> i
+                Ponlog.Level.DEBUG -> d
+                Ponlog.Level.VERBOSE -> v
+            }
+            if (!needNotify) return@launch
+            launch(Dispatchers.Main) {
+                adapter.add(data = logEntity)
+                if (false == recyclerView?.canScrollVertically(1)) {
+                    if (adapter.itemCount > prePageCount) {
+                        val count = adapter.itemCount - prePageCount
+                        offset += count
+                        adapter.remove(count = count)
+                    }
+                    recyclerView?.scrollToPosition(adapter.itemCount - 1)
+                    recyclerView?.smoothScrollToPosition(adapter.itemCount - 1)
+                    tvMore?.visibility = View.GONE
+                } else {
+                    tvMore?.visibility = View.VISIBLE
                 }
-                recyclerView?.scrollToPosition(adapter.itemCount - 1)
-                recyclerView?.smoothScrollToPosition(adapter.itemCount - 1)
-                tvMore?.visibility = View.GONE
-            } else {
-                tvMore?.visibility = View.VISIBLE
             }
         }
     }
