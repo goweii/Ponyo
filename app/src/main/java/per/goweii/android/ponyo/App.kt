@@ -1,8 +1,6 @@
 package per.goweii.android.ponyo
 
 import android.app.Application
-import per.goweii.android.ponyo.log.log
-import per.goweii.ponyo.Ponyo
 import per.goweii.ponyo.log.Ponlog
 
 /**

@@ -56,6 +56,11 @@ object LogManager : LogPrinter,
         }
     }
 
+    private fun scrollBottom() {
+        recyclerView?.scrollToPosition(adapter.itemCount - 1)
+        recyclerView?.smoothScrollToPosition(adapter.itemCount - 1)
+    }
+
     private fun showMore(): Boolean {
         return if (false == recyclerView?.canScrollVertically(1)) {
             tvMore?.visibility = View.INVISIBLE
@@ -133,18 +138,12 @@ object LogManager : LogPrinter,
             }
         }
         adapter.add(0, data)
-        scrollBottom()
         return true
     }
 
     fun nextPage() {
         offset = logs.size
         adapter.clear()
-    }
-
-    fun scrollBottom() {
-        recyclerView?.scrollToPosition(adapter.itemCount - 1)
-        recyclerView?.smoothScrollToPosition(adapter.itemCount - 1)
     }
 
 }

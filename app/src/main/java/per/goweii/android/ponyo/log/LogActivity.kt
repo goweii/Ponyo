@@ -14,14 +14,22 @@ import kotlin.random.Random
 
 class LogActivity : AppCompatActivity(), LogPrinter, CoroutineScope by MainScope() {
 
+    private data class User(
+        val name: String,
+        val age: Int,
+        val height: Float,
+        val friends: MutableList<User>
+    )
+
     private val tvLogBoard by lazy { tv_log_board }
     private val logStringBuilder = StringBuilder()
+    private val logger = Ponlog.create().addLogPrinter(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_log)
 
-        Ponlog.addLogPrinter(this)
+        LogTest()
 
         cb_auto.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
@@ -42,7 +50,7 @@ class LogActivity : AppCompatActivity(), LogPrinter, CoroutineScope by MainScope
                         }
                         user.friends.add(user1)
                     }
-                    Ponlog.e("User") { user }
+                    logger.e("User") { user }
                 }
             }
         }
@@ -51,12 +59,12 @@ class LogActivity : AppCompatActivity(), LogPrinter, CoroutineScope by MainScope
             launch {
                 val a1 = async(Dispatchers.Default) {
                     for (i in 0..100) {
-                        Ponlog.e("User") { newUser() }
+                        logger.e("User") { newUser() }
                     }
                 }
                 val a2 = async(Dispatchers.IO) {
                     for (i in 0..100) {
-                        Ponlog.e("User") { newUser() }
+                        logger.e("User") { newUser() }
                     }
                 }
                 a1.await()
@@ -67,7 +75,7 @@ class LogActivity : AppCompatActivity(), LogPrinter, CoroutineScope by MainScope
         tv_print_info.setOnClickListener {
             launch {
                 withContext(Dispatchers.IO) {
-                    Ponlog.log(Ponlog.Level.INFO, null, intent)
+                    logger.i(null) { intent }
                 }
             }
         }
@@ -75,7 +83,7 @@ class LogActivity : AppCompatActivity(), LogPrinter, CoroutineScope by MainScope
         tv_print_debug.setOnClickListener {
             launch {
                 withContext(Dispatchers.IO) {
-                    Ponlog.d("Intent") { intent }
+                    logger.d("Intent") { intent }
                 }
             }
         }
@@ -83,7 +91,7 @@ class LogActivity : AppCompatActivity(), LogPrinter, CoroutineScope by MainScope
         tv_print_visible.setOnClickListener {
             launch {
                 withContext(Dispatchers.IO) {
-                    Ponlog.v("Intent") { intent }
+                    logger.v("Intent") { intent }
                 }
             }
         }
@@ -93,8 +101,18 @@ class LogActivity : AppCompatActivity(), LogPrinter, CoroutineScope by MainScope
 
     @SuppressLint("HandlerLeak")
     private var autoRunnable = Runnable {
-        log()
+        when (Random.nextInt(5)) {
+            0 -> logger.e("User") { newUser() }
+            1 -> logger.w("User") { newUser() }
+            2 -> logger.i("User") { newUser() }
+            3 -> logger.d("User") { newUser() }
+            4 -> logger.v("User") { newUser() }
+        }
         startAutoLog()
+    }
+
+    private fun newUser(): User {
+        return User("zhangsan", 20, 180.1F, arrayListOf<User>())
     }
 
     private fun startAutoLog() {
@@ -106,7 +124,6 @@ class LogActivity : AppCompatActivity(), LogPrinter, CoroutineScope by MainScope
     }
 
     override fun onDestroy() {
-        Ponlog.removeLogPrinter(this)
         cancel()
         stopAutoLog()
         super.onDestroy()
@@ -120,26 +137,5 @@ class LogActivity : AppCompatActivity(), LogPrinter, CoroutineScope by MainScope
             logStringBuilder.append("[${level.name}]$tag:$msg")
             tvLogBoard.text = logStringBuilder
         }
-    }
-}
-
-private data class User(
-    val name: String,
-    val age: Int,
-    val height: Float,
-    val friends: MutableList<User>
-)
-
-private fun newUser(): User {
-    return User("zhangsan", 20, 180.1F, arrayListOf<User>())
-}
-
-fun log() {
-    when (Random.nextInt(5)) {
-        0 -> Ponlog.e("User") { newUser() }
-        1 -> Ponlog.w("User") { newUser() }
-        2 -> Ponlog.i("User") { newUser() }
-        3 -> Ponlog.d("User") { newUser() }
-        4 -> Ponlog.v("User") { newUser() }
     }
 }

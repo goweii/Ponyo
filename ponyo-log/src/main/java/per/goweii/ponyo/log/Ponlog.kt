@@ -9,23 +9,137 @@ object Ponlog {
         DEBUG(1 shl 3),
         VERBOSE(1 shl 4),
         ASSERT(1 shl 5),
+        ;
+
+        companion object {
+            fun all(): Int {
+                var allLevel = 0
+                values().forEach { allLevel = allLevel or it.value }
+                return allLevel
+            }
+        }
     }
 
-    private var filter: Int = setLevel(
-        Level.ERROR, Level.WARN, Level.INFO, Level.DEBUG, Level.VERBOSE
-    )
-    private var bridgeClassCount = 0
-    private var invokeClass: Class<*>? = null
-    private var perLogMaxLength: Int = 4 * 1024
-    private val androidLogPrinter: LogPrinter = AndroidLogPrinter()
-    private val logPrinterList = mutableListOf<LogPrinter>()
+    class Logger {
+        private var invokeClass: Class<*>? = null
+        private var bridgeClassCount: Int = 0
+        private var filter: Int = Level.all()
+        private var perLogMaxLength: Int = 4 * 1024
+        private var androidLogPrinter: LogPrinter? = AndroidLogPrinter
+        private val logPrinters = mutableListOf<LogPrinter>()
 
-    fun setInvokeClass(cls: Class<*>?) {
-        invokeClass = cls
+        fun setInvokeClass(cls: Class<*>) = apply {
+            invokeClass = cls
+        }
+
+        fun setBridgeClassCount(count: Int) = apply {
+            bridgeClassCount = count
+        }
+
+        fun setLevel(vararg levels: Level) = apply {
+            filter = 0
+            levels.forEach { filter = filter or it.value }
+        }
+
+        fun addLevel(vararg levels: Level) = apply {
+            levels.forEach { filter = filter or it.value }
+        }
+
+        fun removeLevel(vararg levels: Level) = apply {
+            levels.forEach { filter = filter xor it.value }
+        }
+
+        fun setPerLogMaxLength(perLogMaxLength: Int) = apply {
+            this.perLogMaxLength = perLogMaxLength
+        }
+
+        fun setAndroidLogPrinterEnable(enable: Boolean) {
+            androidLogPrinter = if (enable) AndroidLogPrinter else null
+        }
+
+        fun addLogPrinter(logPrinter: LogPrinter) = apply {
+            this.logPrinters.add(logPrinter)
+        }
+
+        fun removeLogPrinter(logPrinter: LogPrinter) = apply {
+            this.logPrinters.remove(logPrinter)
+        }
+
+        fun containLevel(level: Level): Boolean {
+            return level.value and filter != 0
+        }
+
+        inline fun v(tag: String? = null, msg: () -> Any?) {
+            log(Level.VERBOSE, tag, msg)
+        }
+
+        inline fun d(tag: String? = null, msg: () -> Any?) {
+            log(Level.DEBUG, tag, msg)
+        }
+
+        inline fun i(tag: String? = null, msg: () -> Any?) {
+            log(Level.INFO, tag, msg)
+        }
+
+        inline fun w(tag: String? = null, msg: () -> Any?) {
+            log(Level.WARN, tag, msg)
+        }
+
+        inline fun e(tag: String? = null, msg: () -> Any?) {
+            log(Level.ERROR, tag, msg)
+        }
+
+        inline fun a(tag: String? = null, msg: () -> Any?) {
+            log(Level.ASSERT, tag, msg)
+        }
+
+        inline fun log(level: Level, tag: String? = null, msg: () -> Any?) {
+            if (Ponlog.containLevel(level) && containLevel(level)) {
+                log(level, tag, msg.invoke())
+            }
+        }
+
+        fun log(level: Level, tag: String? = null, msg: Any?) {
+            print(level, tag, msg)
+        }
+
+        private fun print(level: Level, tag: String?, msg: Any?) {
+            val logBody = LogBody.build(invokeClass, bridgeClassCount)
+            val logTag = tag ?: logBody.className
+            val logMsg = LogFormatter.object2String(msg)
+            print(level, logTag, logBody, logMsg)
+        }
+
+        fun print(level: Level, tag: String, body: LogBody, msg: String) {
+            if (msg.length > perLogMaxLength) {
+                for (i in 0..msg.length / perLogMaxLength) {
+                    val start = i * perLogMaxLength
+                    var end = (i + 1) * perLogMaxLength
+                    end = if (end > msg.length) msg.length else end
+                    println(level, tag, body, msg.substring(start, end))
+                }
+            } else {
+                println(level, tag, body, msg)
+            }
+        }
+
+        fun println(level: Level, tag: String, body: LogBody, msg: String) {
+            androidLogPrinter?.print(level, tag, body, msg)
+            logPrinters.forEach { it.print(level, tag, body, msg) }
+            Ponlog.logPrinters.forEach { it.print(level, tag, body, msg) }
+        }
     }
 
-    fun setBridgeClassCount(count: Int) {
-        bridgeClassCount = count
+    private var filter = Level.all()
+    private val logPrinters = mutableListOf<LogPrinter>()
+    private val logger = Logger()
+
+    fun default() = logger
+
+    fun create() = Logger()
+
+    fun setJsonFormatter(jsonFormatter: JsonFormatter?) = apply {
+        LogFormatter.jsonFormatter = jsonFormatter
     }
 
     fun setLevel(vararg levels: Level): Int {
@@ -48,73 +162,47 @@ object Ponlog {
         return level.value and filter != 0
     }
 
-    fun setPerLogMaxLength(perLogMaxLength: Int) {
-        this.perLogMaxLength = perLogMaxLength
-    }
-
-    fun setJsonFormatter(jsonFormatter: JsonFormatter?) {
-        LogFormatter.jsonFormatter = jsonFormatter
-    }
-
     fun addLogPrinter(logPrinter: LogPrinter) {
-        this.logPrinterList.add(logPrinter)
+        this.logPrinters.add(logPrinter)
     }
 
     fun removeLogPrinter(logPrinter: LogPrinter) {
-        this.logPrinterList.remove(logPrinter)
+        this.logPrinters.remove(logPrinter)
     }
 
-    inline fun v(tag: String? = null, msg: () -> Any?) {
-        log(Level.VERBOSE, tag, msg)
+    fun v(tag: String? = null, msg: () -> Any?) {
+        logger.v(tag, msg)
     }
 
-    inline fun d(tag: String? = null, msg: () -> Any?) {
-        log(Level.DEBUG, tag, msg)
+    fun d(tag: String? = null, msg: () -> Any?) {
+        logger.d(tag, msg)
     }
 
-    inline fun i(tag: String? = null, msg: () -> Any?) {
-        log(Level.INFO, tag, msg)
+    fun i(tag: String? = null, msg: () -> Any?) {
+        logger.i(tag, msg)
     }
 
-    inline fun w(tag: String? = null, msg: () -> Any?) {
-        log(Level.WARN, tag, msg)
+    fun w(tag: String? = null, msg: () -> Any?) {
+        logger.w(tag, msg)
     }
 
-    inline fun e(tag: String? = null, msg: () -> Any?) {
-        log(Level.ERROR, tag, msg)
+    fun e(tag: String? = null, msg: () -> Any?) {
+        logger.e(tag, msg)
     }
 
-    inline fun log(level: Level, tag: String? = null, msg: () -> Any?) {
-        if (containLevel(level)) {
-            log(level, tag, msg.invoke())
-        }
+    fun a(tag: String? = null, msg: () -> Any?) {
+        logger.a(tag, msg)
+    }
+
+    fun log(level: Level, tag: String? = null, msg: () -> Any?) {
+        logger.log(level, tag, msg)
     }
 
     fun log(level: Level, tag: String? = null, msg: Any?) {
-        print(level, tag, msg)
+        logger.log(level, tag, msg)
     }
 
-    private fun print(level: Level, tag: String?, msg: Any?) {
-        val logBody = LogBody.build(invokeClass ?: javaClass, bridgeClassCount)
-        val logTag = tag ?: logBody.className
-        val logMsg = LogFormatter.object2String(msg)
-        if (logMsg.length > perLogMaxLength) {
-            for (i in 0..logMsg.length / perLogMaxLength) {
-                val start = i * perLogMaxLength
-                var end = (i + 1) * perLogMaxLength
-                end = if (end > logMsg.length) logMsg.length else end
-                print(level, logTag, logBody, logMsg.substring(start, end))
-            }
-        } else {
-            print(level, logTag, logBody, logMsg)
-        }
+    fun print(level: Level, tag: String, body: LogBody, msg: String) {
+        logger.print(level, tag, body, msg)
     }
-
-    private fun print(level: Level, tag: String, body: LogBody, msg: String) {
-        androidLogPrinter.print(level, tag, body, msg)
-        logPrinterList.forEach {
-            it.print(level, tag, body, msg)
-        }
-    }
-
 }

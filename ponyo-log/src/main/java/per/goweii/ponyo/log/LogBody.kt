@@ -1,6 +1,6 @@
 package per.goweii.ponyo.log
 
-data class LogBody private constructor(
+data class LogBody (
     val timestamp: Long,
     val threadName: String,
     val fileName: String,
@@ -9,22 +9,44 @@ data class LogBody private constructor(
     val lineNumber: Int
 ) {
     companion object {
-        fun build(
-            invokeClass: Class<*>,
+        internal fun build(
+            invokeClass: Class<*>?,
             bridgeCount: Int
         ): LogBody {
             val stackTrace = Thread.currentThread().stackTrace
-            var invokeIndex = -1
-            stackTrace.forEachIndexed { index, stackTraceElement ->
-                if (stackTraceElement.className == invokeClass.name) {
+            var invokeIndex = 0
+            var foundPonyo = false
+            for (index in 2 until stackTrace.size) {
+                val stackTraceElement = stackTrace[index]
+                if (stackTraceElement.className.startsWith(Ponlog::class.java.name)) {
+                    foundPonyo = true
                     invokeIndex = index
-                    return@forEachIndexed
+                } else {
+                    if (foundPonyo) {
+                        break
+                    }
                 }
             }
-            invokeIndex += bridgeCount
+            var foundInvoke = false
+            invokeClass?.let {
+                for (index in invokeIndex until stackTrace.size) {
+                    val stackTraceElement = stackTrace[index]
+                    if (stackTraceElement.className == invokeClass.name) {
+                        foundInvoke = true
+                        invokeIndex = index
+                    } else {
+                        if (foundInvoke) {
+                            break
+                        }
+                    }
+                }
+            }
             var caller: StackTraceElement? = null
-            if (invokeIndex + 1 in stackTrace.indices) {
-                caller = stackTrace[invokeIndex + 1]
+            val callerIndex = invokeIndex + 1
+            if (callerIndex + bridgeCount in stackTrace.indices) {
+                caller = stackTrace[callerIndex + bridgeCount]
+            } else if (callerIndex in stackTrace.indices) {
+                caller = stackTrace[callerIndex]
             }
             val timestamp = System.currentTimeMillis()
             val threadName = Thread.currentThread().name

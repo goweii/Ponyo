@@ -2,7 +2,7 @@ package per.goweii.ponyo.log
 
 import android.util.Log
 
-class AndroidLogPrinter : LogPrinter {
+object AndroidLogPrinter : LogPrinter {
     override fun print(level: Ponlog.Level, tag: String, body: LogBody, msg: String) {
         Log.println(
             level.priority,
