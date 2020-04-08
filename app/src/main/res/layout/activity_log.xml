@@ -17,7 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-            <TextView
+            <per.goweii.ponyo.panel.AutoSplitTextView
                 android:id="@+id/tv_log_board"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -37,6 +37,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/tv_print_assert"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Assert"
+            android:textAllCaps="false" />
 
         <Button
             android:id="@+id/tv_print_error"

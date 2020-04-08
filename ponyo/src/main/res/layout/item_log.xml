@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:padding="5dp">
 
-    <TextView
+    <per.goweii.ponyo.panel.AutoSplitTextView
         android:id="@+id/tv_log_tag"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -17,7 +17,7 @@
         android:typeface="monospace"
         tools:text="08:47:39 main DEBUG/LogTag" />
 
-    <TextView
+    <per.goweii.ponyo.panel.AutoSplitTextView
         android:id="@+id/tv_log_call"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -27,7 +27,7 @@
         android:typeface="monospace"
         tools:text="Activiy.onCreate(MainActivity.kt:30)" />
 
-    <TextView
+    <per.goweii.ponyo.panel.AutoSplitTextView
         android:id="@+id/tv_log_msg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

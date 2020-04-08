@@ -39,36 +39,27 @@ class LogActivity : AppCompatActivity(), LogPrinter, CoroutineScope by MainScope
             }
         }
 
+        tv_print_assert.setOnClickListener {
+            launch {
+                withContext(Dispatchers.IO) {
+                    logger.a("User") { newUser() }
+                }
+            }
+        }
+
         tv_print_error.setOnClickListener {
             launch {
                 withContext(Dispatchers.IO) {
-                    val user = newUser()
-                    for (i in 0..1) {
-                        val user1 = newUser()
-                        for (j in 0..1) {
-                            user1.friends.add(newUser())
-                        }
-                        user.friends.add(user1)
-                    }
-                    logger.e("User") { user }
+                    logger.e("User") { newUser() }
                 }
             }
         }
 
         tv_print_warn.setOnClickListener {
             launch {
-                val a1 = async(Dispatchers.Default) {
-                    for (i in 0..100) {
-                        logger.e("User") { newUser() }
-                    }
+                withContext(Dispatchers.IO) {
+                    logger.e("User") { newUser() }
                 }
-                val a2 = async(Dispatchers.IO) {
-                    for (i in 0..100) {
-                        logger.e("User") { newUser() }
-                    }
-                }
-                a1.await()
-                a2.await()
             }
         }
 
@@ -101,12 +92,13 @@ class LogActivity : AppCompatActivity(), LogPrinter, CoroutineScope by MainScope
 
     @SuppressLint("HandlerLeak")
     private var autoRunnable = Runnable {
-        when (Random.nextInt(5)) {
-            0 -> logger.e("User") { newUser() }
-            1 -> logger.w("User") { newUser() }
-            2 -> logger.i("User") { newUser() }
-            3 -> logger.d("User") { newUser() }
-            4 -> logger.v("User") { newUser() }
+        when (Random.nextInt(6)) {
+            0 -> logger.a("User") { newUser() }
+            1 -> logger.e("User") { newUser() }
+            2 -> logger.w("User") { newUser() }
+            3 -> logger.i("User") { newUser() }
+            4 -> logger.d("User") { newUser() }
+            5 -> logger.v("User") { newUser() }
         }
         startAutoLog()
     }

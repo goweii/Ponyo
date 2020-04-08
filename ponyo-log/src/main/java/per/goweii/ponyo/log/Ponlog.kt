@@ -53,7 +53,7 @@ object Ponlog {
             this.perLogMaxLength = perLogMaxLength
         }
 
-        fun setAndroidLogPrinterEnable(enable: Boolean) {
+        fun setAndroidLogPrinterEnable(enable: Boolean) = apply {
             androidLogPrinter = if (enable) AndroidLogPrinter else null
         }
 

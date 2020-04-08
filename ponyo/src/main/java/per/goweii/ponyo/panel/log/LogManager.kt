@@ -117,6 +117,7 @@ object LogManager : LogPrinter,
             }
         }
         adapter.set(data)
+        showMore()
     }
 
     fun lastPage(): Boolean {
@@ -138,6 +139,7 @@ object LogManager : LogPrinter,
             }
         }
         adapter.add(0, data)
+        showMore()
         return true
     }
 
