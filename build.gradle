@@ -15,9 +15,14 @@ buildscript {
 }
 
 allprojects {
+    group rootProject.ext.maven.group
+    version rootProject.ext.maven.version
     repositories {
         google()
         jcenter()
+        maven {
+            url rootProject.ext.maven.url
+        }
         maven {
             url "https://jitpack.io"
             credentials { username authToken }

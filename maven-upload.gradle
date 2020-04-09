@@ -1,0 +1,10 @@
+apply plugin:'maven'
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: rootProject.ext.maven.url)
+            pom.packaging = 'aar'
+        }
+    }
+}
