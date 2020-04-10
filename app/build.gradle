@@ -14,10 +14,10 @@ android {
 }
 
 dependencies {
-    implementation project(":ponyo")
-//    implementation "per.goweii.ponyo:ponyo:1.0.0"
-//    implementation "per.goweii.ponyo:ponyo-log:1.0.0"
-//    implementation "per.goweii.ponyo:ponyo-timemonitor:1.0.0"
+//    implementation project(":ponyo")
+//    implementation "per.goweii.ponyo:ponyo:1.1.0"
+//    implementation "per.goweii.ponyo:ponyo-log:1.1.0"
+//    implementation "per.goweii.ponyo:ponyo-timemonitor:1.1.0"
     implementation rootProject.ext.dependencies.constraintlayout
     implementation rootProject.ext.dependencies.room_runtime
     implementation rootProject.ext.dependencies.room_ktx
