@@ -3,7 +3,18 @@ apply plugin:'maven'
 uploadArchives {
     repositories {
         mavenDeployer {
-            repository(url: rootProject.ext.maven.url)
+            snapshotRepository(url: rootProject.ext.maven.snapshotUrl) {
+                authentication(
+                        userName: rootProject.ext.maven.nexusAccount,
+                        password: rootProject.ext.maven.nexusPassword
+                )
+            }
+            repository(url: rootProject.ext.maven.releaseUrl) {
+                authentication(
+                        userName: rootProject.ext.maven.nexusAccount,
+                        password: rootProject.ext.maven.nexusPassword
+                )
+            }
             pom.packaging = 'aar'
         }
     }
