@@ -1,5 +1,8 @@
 apply plugin:'maven'
 
+group rootProject.ext.maven.group
+version rootProject.ext.maven.version
+
 uploadArchives {
     repositories {
         mavenDeployer {
