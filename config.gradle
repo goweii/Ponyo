@@ -2,9 +2,9 @@ ext {
     maven = [
             nexusAccount : "admin",
             nexusPassword: "mbadashi123",
-            publicUrl    : "http://192.168.0.161:8081/repository/maven-public/",
-            releaseUrl   : "http://192.168.0.161:8081/repository/maven-releases/",
-            snapshotUrl  : "http://192.168.0.161:8081/repository/maven-snapshots/",
+            publicUrl    : "http://30l90c4575.qicp.vip/repository/maven-public/",
+            releaseUrl   : "http://30l90c4575.qicp.vip/repository/maven-releases/",
+            snapshotUrl  : "http://30l90c4575.qicp.vip/repository/maven-snapshots/",
             group        : "per.goweii.ponyo",
             version      : "1.1.1-SNAPSHOT", //-SNAPSHOT
     ]
