@@ -18,7 +18,13 @@ allprojects {
     version rootProject.ext.maven.version
     repositories {
         flatDir { dirs 'libs' }
-        maven { url rootProject.ext.maven.releaseUrl }
+        maven {
+            url rootProject.ext.maven.releaseUrl
+            credentials {
+                username rootProject.ext.maven.nexusAccount
+                password rootProject.ext.maven.nexusPassword
+            }
+        }
         maven { url "https://maven.aliyun.com/repository/google" }
         maven { url "https://maven.aliyun.com/repository/jcenter" }
     }

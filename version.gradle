@@ -1,12 +1,12 @@
 ext {
     maven = [
             nexusAccount : "admin",
-            nexusPassword: "2306",
-            releaseUrl   : "file://d:/maven/repository",
-            // releaseUrl   : "http://192.168.0.124:8081/repository/maven-releases/",
-            snapshotUrl  : "http://192.168.0.124:8081/repository/maven-snapshots/",
+            nexusPassword: "mbadashi123",
+            publicUrl    : "http://192.168.0.161:8081/repository/maven-public/",
+            releaseUrl   : "http://192.168.0.161:8081/repository/maven-releases/",
+            snapshotUrl  : "http://192.168.0.161:8081/repository/maven-snapshots/",
             group        : "per.goweii.ponyo",
-            version      : "1.1.0",
+            version      : "1.1.0", //-SNAPSHOT
     ]
     android = [
             compileSdkVersion: 29,
