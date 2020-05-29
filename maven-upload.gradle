@@ -1,4 +1,4 @@
-apply plugin:'maven'
+apply plugin: 'maven'
 
 group rootProject.ext.maven.group
 version rootProject.ext.maven.version
@@ -6,17 +6,22 @@ version rootProject.ext.maven.version
 uploadArchives {
     repositories {
         mavenDeployer {
-            snapshotRepository(url: rootProject.ext.maven.snapshotUrl) {
-                authentication(
-                        userName: rootProject.ext.maven.nexusAccount,
-                        password: rootProject.ext.maven.nexusPassword
-                )
-            }
-            repository(url: rootProject.ext.maven.releaseUrl) {
-                authentication(
-                        userName: rootProject.ext.maven.nexusAccount,
-                        password: rootProject.ext.maven.nexusPassword
-                )
+            if (rootProject.ext.maven.useRemoteOrLocal) {
+                snapshotRepository(url: rootProject.ext.mavenRemote.snapshotUrl) {
+                    authentication(
+                            userName: rootProject.ext.mavenRemote.nexusAccount,
+                            password: rootProject.ext.mavenRemote.nexusPassword
+                    )
+                }
+                repository(url: rootProject.ext.mavenRemote.releaseUrl) {
+                    authentication(
+                            userName: rootProject.ext.mavenRemote.nexusAccount,
+                            password: rootProject.ext.mavenRemote.nexusPassword
+                    )
+                }
+            } else {
+                snapshotRepository(url: rootProject.ext.mavenLocal.snapshotUrl)
+                repository(url: rootProject.ext.mavenLocal.releaseUrl)
             }
             pom.packaging = 'aar'
         }

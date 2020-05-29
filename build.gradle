@@ -17,10 +17,14 @@ allprojects {
     repositories {
         flatDir { dirs 'libs' }
         maven {
-            url rootProject.ext.maven.releaseUrl
-            credentials {
-                username rootProject.ext.maven.nexusAccount
-                password rootProject.ext.maven.nexusPassword
+            if (rootProject.ext.maven.useRemoteOrLocal.toBoolean()) {
+                url rootProject.ext.mavenRemote.releaseUrl
+                credentials {
+                    username rootProject.ext.mavenRemote.nexusAccount
+                    password rootProject.ext.mavenRemote.nexusPassword
+                }
+            } else {
+                url rootProject.ext.mavenLocal.releaseUrl
             }
         }
         maven { url "https://maven.aliyun.com/repository/google" }
