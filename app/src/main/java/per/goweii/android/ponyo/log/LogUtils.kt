@@ -4,7 +4,10 @@ import per.goweii.ponyo.log.Ponlog
 
 object LogUtils {
 
-    private val logger = Ponlog.create().setInvokeClass(LogUtils.javaClass)
+    private val logger = Ponlog.create().apply {
+        setFileLogPrinterEnable(true)
+        setInvokeClass(LogUtils.javaClass)
+    }
 
     fun v(tag: String? = null, msg: Any?) {
         logger.v(tag) { msg }
@@ -15,7 +18,10 @@ object LogUtils {
     }
 }
 
-private val logger = Ponlog.create().setBridgeClassCount(1)
+private val logger = Ponlog.create().apply {
+    setFileLogPrinterEnable(true)
+    setBridgeClassCount(1)
+}
 
 fun i(tag: String? = null, msg: Any?) {
     logger.i(tag) { msg }

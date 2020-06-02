@@ -23,7 +23,10 @@ class LogActivity : AppCompatActivity(), LogPrinter, CoroutineScope by MainScope
 
     private val tvLogBoard by lazy { tv_log_board }
     private val logStringBuilder = StringBuilder()
-    private val logger = Ponlog.create().addLogPrinter(this)
+    private val logger = Ponlog.create().apply {
+        setFileLogPrinterEnable(true)
+        addLogPrinter(this@LogActivity)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
