@@ -26,6 +26,7 @@ object Ponlog {
         private var filter: Int = Level.all()
         private var perLogMaxLength: Int = 4 * 1024
         private var androidLogPrinter: LogPrinter? = AndroidLogPrinter
+        private var fileLogPrinter: LogPrinter? = null
         private val logPrinters = mutableListOf<LogPrinter>()
 
         fun setInvokeClass(cls: Class<*>) = apply {
@@ -55,6 +56,10 @@ object Ponlog {
 
         fun setAndroidLogPrinterEnable(enable: Boolean) = apply {
             androidLogPrinter = if (enable) AndroidLogPrinter else null
+        }
+
+        fun setFileLogPrinterEnable(enable: Boolean) = apply {
+            fileLogPrinter = if (enable) { FileLogPrinter } else { null }
         }
 
         fun addLogPrinter(logPrinter: LogPrinter) = apply {
@@ -140,6 +145,19 @@ object Ponlog {
 
     fun setJsonFormatter(jsonFormatter: JsonFormatter?) = apply {
         LogFormatter.jsonFormatter = jsonFormatter
+    }
+
+    fun openFilePrinter(
+        cachePath: String,
+        logPath: String,
+        namePrefix: String,
+        publicKey: String
+    ) {
+        FileLogPrinter.open(cachePath, logPath, namePrefix, publicKey)
+    }
+
+    fun closeFilePrinter() {
+        FileLogPrinter.close()
     }
 
     fun setLevel(vararg levels: Level): Int {

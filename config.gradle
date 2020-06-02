@@ -37,5 +37,6 @@ ext {
             room_compile      : "androidx.room:room-compiler:2.2.3",
             room_ktx          : "androidx.room:room-ktx:2.2.3",
             constraintlayout  : "androidx.constraintlayout:constraintlayout:1.1.3",
+            xlog              : "com.tencent.mars:mars-xlog:1.2.3",
     ]
 }
