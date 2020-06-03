@@ -15,12 +15,14 @@ import java.text.SimpleDateFormat
  * @author CuiZhen
  * @date 2020/3/29
  */
-@SuppressLint("SimpleDateFormat")
 class LogAdapter : RecyclerView.Adapter<LogAdapter.LogHolder>() {
 
-    private val simpleDateFormat: SimpleDateFormat by lazy { SimpleDateFormat("HH:mm:ss") }
-
+    private var itemClicked: ((logEntity: LogEntity) -> Unit)? = null
     private val datas by lazy { mutableListOf<LogEntity>() }
+
+    fun onItemClicked(itemClicked: (logEntity: LogEntity) -> Unit) {
+        this.itemClicked = itemClicked
+    }
 
     fun add(start: Int = datas.size, data: LogEntity) {
         datas.add(start, data)
@@ -69,9 +71,23 @@ class LogAdapter : RecyclerView.Adapter<LogAdapter.LogHolder>() {
 
     inner class LogHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
+        private val tv_log_time by lazy { itemView.findViewById<TextView>(R.id.tv_log_time) }
         private val tv_log_tag by lazy { itemView.findViewById<TextView>(R.id.tv_log_tag) }
         private val tv_log_call by lazy { itemView.findViewById<TextView>(R.id.tv_log_call) }
         private val tv_log_msg by lazy { itemView.findViewById<TextView>(R.id.tv_log_msg) }
+
+        init {
+            val listener = View.OnClickListener {
+                datas.getOrNull(adapterPosition)?.let {
+                    itemClicked?.invoke(it)
+                }
+            }
+            itemView.setOnClickListener(listener)
+            tv_log_time.setOnClickListener(listener)
+            tv_log_tag.setOnClickListener(listener)
+            tv_log_call.setOnClickListener(listener)
+            tv_log_msg.setOnClickListener(listener)
+        }
 
         @SuppressLint("SetTextI18n")
         fun bindData(data: LogEntity) {
@@ -83,13 +99,13 @@ class LogAdapter : RecyclerView.Adapter<LogAdapter.LogHolder>() {
                 Ponlog.Level.DEBUG -> itemView.context.resources.getColor(R.color.colorLogDebug)
                 Ponlog.Level.VERBOSE -> itemView.context.resources.getColor(R.color.colorLogVisible)
             }
+            tv_log_time.setTextColor(color)
             tv_log_tag.setTextColor(color)
             tv_log_call.setTextColor(color)
             tv_log_msg.setTextColor(color)
-            tv_log_tag.text =
-                "${simpleDateFormat.format(data.body.timestamp)} ${data.level.name}/${data.tag} ${data.body.threadName}"
-            tv_log_call.text =
-                "${data.body.className}.${data.body.methodName}(${data.body.fileName}:${data.body.lineNumber})"
+            tv_log_time.text = "${data.level.name} ${data.body.timeFormat}"
+            tv_log_tag.text = "${data.tag} ${data.body.threadName}"
+            tv_log_call.text = data.body.classInfo
             tv_log_msg.text = data.msg
         }
     }

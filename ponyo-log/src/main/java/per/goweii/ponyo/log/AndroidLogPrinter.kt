@@ -7,7 +7,7 @@ object AndroidLogPrinter : LogPrinter {
         Log.println(
             level.priority,
             tag,
-            "${body.className}.${body.methodName}(${body.fileName}:${body.lineNumber}):$msg"
+            "${body.classInfo}:$msg"
         )
     }
 

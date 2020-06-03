@@ -1,11 +1,15 @@
 package per.goweii.ponyo.log
 
 import com.tencent.mars.xlog.Xlog
-import java.lang.IllegalStateException
 
 object FileLogPrinter : LogPrinter {
 
     private var opened = false
+
+    init {
+        System.loadLibrary("c++_shared")
+        System.loadLibrary("marsxlog")
+    }
 
     fun open(
         cachePath: String,
@@ -15,10 +19,9 @@ object FileLogPrinter : LogPrinter {
     ) {
         if (opened) return
         opened = true
-        Xlog.open(
-            true,
+        Xlog.appenderOpen(
             Xlog.LEVEL_ALL, Xlog.AppednerModeAsync,
-            cachePath, logPath, namePrefix, publicKey
+            cachePath, logPath, namePrefix, 0, publicKey
         )
         Xlog.setConsoleLogOpen(false)
         com.tencent.mars.xlog.Log.setLogImp(Xlog())
@@ -44,6 +47,6 @@ object FileLogPrinter : LogPrinter {
     }
 
     private fun formatMsg(body: LogBody, msg: String): String {
-        return "${body.className}.${body.methodName}(${body.fileName}:${body.lineNumber}):$msg"
+        return "${body.classInfo}:$msg"
     }
 }

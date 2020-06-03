@@ -2,14 +2,15 @@ package per.goweii.android.ponyo.timemonitor
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.android.synthetic.main.activity_log.*
+import kotlinx.android.synthetic.main.activity_time_monitor.*
 import per.goweii.android.ponyo.R
+import per.goweii.ponyo.panel.AutoSplitTextView
 import per.goweii.ponyo.timemonitor.TimeLineEndListener
 import per.goweii.ponyo.timemonitor.TimeMonitor
 
 class TimeMonitorActivity : AppCompatActivity(), TimeLineEndListener {
 
-    private val tvLogBoard by lazy { tv_log_board }
+    private val tvLogBoard: AutoSplitTextView by lazy { tv_log_board }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         TimeMonitor.registerTimeLineEndListener(this)

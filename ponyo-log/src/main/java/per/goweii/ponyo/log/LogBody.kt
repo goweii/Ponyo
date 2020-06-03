@@ -1,5 +1,9 @@
 package per.goweii.ponyo.log
 
+import android.annotation.SuppressLint
+import java.text.SimpleDateFormat
+import java.util.*
+
 data class LogBody (
     val timestamp: Long,
     val threadName: String,
@@ -8,7 +12,18 @@ data class LogBody (
     val methodName: String,
     val lineNumber: Int
 ) {
+    val fileInfo = "($fileName:$lineNumber)"
+    val classInfo = "$className.$methodName$fileInfo"
+    val timeFormat = sdf.format(Date(timestamp))
+
+    override fun toString(): String {
+        return "$timeFormat$[$threadName]$classInfo"
+    }
+
     companion object {
+        @SuppressLint("SimpleDateFormat")
+        private val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+
         internal fun build(
             invokeClass: Class<*>?,
             bridgeCount: Int

@@ -32,8 +32,6 @@ class LogActivity : AppCompatActivity(), LogPrinter, CoroutineScope by MainScope
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_log)
 
-        LogTest()
-
         cb_auto.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 startAutoLog()
@@ -61,7 +59,7 @@ class LogActivity : AppCompatActivity(), LogPrinter, CoroutineScope by MainScope
         tv_print_warn.setOnClickListener {
             launch {
                 withContext(Dispatchers.IO) {
-                    logger.e("User") { newUser() }
+                    logger.w("User") { newUser() }
                 }
             }
         }
@@ -95,13 +93,24 @@ class LogActivity : AppCompatActivity(), LogPrinter, CoroutineScope by MainScope
 
     @SuppressLint("HandlerLeak")
     private var autoRunnable = Runnable {
-        when (Random.nextInt(6)) {
-            0 -> logger.a("User") { newUser() }
-            1 -> logger.e("User") { newUser() }
-            2 -> logger.w("User") { newUser() }
-            3 -> logger.i("User") { newUser() }
-            4 -> logger.d("User") { newUser() }
-            5 -> logger.v("User") { newUser() }
+        if (Random.nextBoolean()) {
+            when (Random.nextInt(6)) {
+                0 -> logger.a("User") { newUser() }
+                1 -> logger.e("User") { newUser() }
+                2 -> logger.w("User") { newUser() }
+                3 -> logger.i("User") { newUser() }
+                4 -> logger.d("User") { newUser() }
+                5 -> logger.v("User") { newUser() }
+            }
+        } else {
+            when (Random.nextInt(6)) {
+                0 -> logger.a("Intent") { intent }
+                1 -> logger.e("Intent") { intent }
+                2 -> logger.w("Intent") { intent }
+                3 -> logger.i("Intent") { intent }
+                4 -> logger.d("Intent") { intent }
+                5 -> logger.v("Intent") { intent }
+            }
         }
         startAutoLog()
     }
@@ -111,7 +120,7 @@ class LogActivity : AppCompatActivity(), LogPrinter, CoroutineScope by MainScope
     }
 
     private fun startAutoLog() {
-        autoHandler.postDelayed(autoRunnable, 200)
+        autoHandler.postDelayed(autoRunnable, 1000)
     }
 
     private fun stopAutoLog() {

@@ -8,15 +8,24 @@
     android:padding="5dp">
 
     <per.goweii.ponyo.panel.AutoSplitTextView
+        android:id="@+id/tv_log_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:includeFontPadding="false"
+        android:alpha="0.5"
+        tools:textColor="@color/colorLogDebug"
+        android:textSize="10sp"
+        tools:text="DEBUG 2020-05-01T08:47:39.000+0800" />
+
+    <per.goweii.ponyo.panel.AutoSplitTextView
         android:id="@+id/tv_log_tag"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:includeFontPadding="false"
         android:alpha="0.5"
         tools:textColor="@color/colorLogDebug"
-        android:textSize="11sp"
-        android:typeface="monospace"
-        tools:text="08:47:39 main DEBUG/LogTag" />
+        android:textSize="10sp"
+        tools:text="LogTag [main]" />
 
     <per.goweii.ponyo.panel.AutoSplitTextView
         android:id="@+id/tv_log_call"
@@ -25,8 +34,7 @@
         android:includeFontPadding="false"
         android:alpha="0.5"
         tools:textColor="@color/colorLogDebug"
-        android:textSize="11sp"
-        android:typeface="monospace"
+        android:textSize="10sp"
         tools:text="Activiy.onCreate(MainActivity.kt:30)" />
 
     <per.goweii.ponyo.panel.AutoSplitTextView
@@ -35,8 +43,7 @@
         android:layout_height="wrap_content"
         android:includeFontPadding="false"
         tools:textColor="@color/colorLogDebug"
-        android:textSize="12sp"
-        android:typeface="monospace"
+        android:textSize="11sp"
         tools:text="this is a log" />
 
 </LinearLayout>

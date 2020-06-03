@@ -8,6 +8,8 @@ import kotlinx.coroutines.*
 import per.goweii.ponyo.log.LogBody
 import per.goweii.ponyo.log.LogPrinter
 import per.goweii.ponyo.log.Ponlog
+import per.goweii.ponyo.panel.log.LogManager.match
+import per.goweii.ponyo.panel.log.LogManager.matchTag
 import java.util.*
 
 /**
@@ -18,9 +20,7 @@ object LogManager : LogPrinter,
     CoroutineScope by CoroutineScope(newSingleThreadContext("LogCounterContext")) {
     private const val prePageCount = 100
 
-    private val adapter: LogAdapter by lazy {
-        LogAdapter()
-    }
+    private val adapter: LogAdapter by lazy { LogAdapter() }
     private var recyclerView: RecyclerView? = null
     private var tvMore: TextView? = null
     private var layoutManager: LinearLayoutManager? = null
@@ -33,24 +33,17 @@ object LogManager : LogPrinter,
         launch(this.coroutineContext) {
             val logEntity = LogEntity(level, tag, body, msg)
             logs.add(logEntity)
-            val needNotify = when (logEntity.level) {
-                Ponlog.Level.ASSERT -> a
-                Ponlog.Level.ERROR -> e
-                Ponlog.Level.WARN -> w
-                Ponlog.Level.INFO -> i
-                Ponlog.Level.DEBUG -> d
-                Ponlog.Level.VERBOSE -> v
-            }
-            if (!needNotify) return@launch
-            launch(Dispatchers.Main) {
-                adapter.add(data = logEntity)
-                if (!showMore()) {
-                    if (adapter.itemCount > prePageCount) {
-                        val count = adapter.itemCount - prePageCount
-                        offset += count
-                        adapter.remove(count = count)
+            if (logEntity.match()) {
+                launch(Dispatchers.Main) {
+                    adapter.add(data = logEntity)
+                    if (!showMore()) {
+                        if (adapter.itemCount > prePageCount) {
+                            val count = adapter.itemCount - prePageCount
+                            offset += count
+                            adapter.remove(count = count)
+                        }
+                        scrollBottom()
                     }
-                    scrollBottom()
                 }
             }
         }
@@ -71,10 +64,11 @@ object LogManager : LogPrinter,
         }
     }
 
-    fun attachTo(rv: RecyclerView, tvMore: TextView) {
+    fun attachTo(rv: RecyclerView, tvMore: TextView, itemClicked: (logEntity: LogEntity)->Unit) {
         recyclerView = rv
         rv.itemAnimator = null
         this.tvMore = tvMore
+        adapter.onItemClicked(itemClicked)
         rv.adapter = adapter
         layoutManager = LogLinearLayoutManager(rv.context)
         rv.layoutManager = layoutManager
@@ -107,13 +101,38 @@ object LogManager : LogPrinter,
         val data = mutableListOf<LogEntity>()
         for (pos in offset until logs.size) {
             val item = logs[pos]
-            when (item.level) {
-                Ponlog.Level.ASSERT -> if (this.a) data.add(item)
-                Ponlog.Level.ERROR -> if (this.e) data.add(item)
-                Ponlog.Level.WARN -> if (this.w) data.add(item)
-                Ponlog.Level.INFO -> if (this.i) data.add(item)
-                Ponlog.Level.DEBUG -> if (this.d) data.add(item)
-                Ponlog.Level.VERBOSE -> if (this.v) data.add(item)
+            if (item.match()) {
+                data.add(item)
+            }
+        }
+        adapter.set(data)
+        showMore()
+    }
+
+    private var t: String = ""
+
+    fun notifyTag(tag: String) {
+        this.t = tag
+        val data = mutableListOf<LogEntity>()
+        for (pos in offset until logs.size) {
+            val item = logs[pos]
+            if (item.match()) {
+                data.add(item)
+            }
+        }
+        adapter.set(data)
+        showMore()
+    }
+
+    private var s: String = ""
+
+    fun notifySearch(key: String) {
+        this.s = key
+        val data = mutableListOf<LogEntity>()
+        for (pos in offset until logs.size) {
+            val item = logs[pos]
+            if (item.match()) {
+                data.add(item)
             }
         }
         adapter.set(data)
@@ -129,13 +148,8 @@ object LogManager : LogPrinter,
         val data = mutableListOf<LogEntity>()
         for (pos in offset until oldOffset) {
             val item = logs[pos]
-            when (item.level) {
-                Ponlog.Level.ASSERT -> if (this.a) data.add(item)
-                Ponlog.Level.ERROR -> if (this.e) data.add(item)
-                Ponlog.Level.WARN -> if (this.w) data.add(item)
-                Ponlog.Level.INFO -> if (this.i) data.add(item)
-                Ponlog.Level.DEBUG -> if (this.d) data.add(item)
-                Ponlog.Level.VERBOSE -> if (this.v) data.add(item)
+            if (item.match()) {
+                data.add(item)
             }
         }
         adapter.add(0, data)
@@ -146,6 +160,31 @@ object LogManager : LogPrinter,
     fun nextPage() {
         offset = logs.size
         adapter.clear()
+    }
+
+    private fun LogEntity.match(): Boolean {
+        return matchLevel() && matchTag() && matchSearch()
+    }
+
+    private fun LogEntity.matchLevel(): Boolean {
+        return when (this.level) {
+            Ponlog.Level.ASSERT -> a
+            Ponlog.Level.ERROR -> e
+            Ponlog.Level.WARN -> w
+            Ponlog.Level.INFO -> i
+            Ponlog.Level.DEBUG -> d
+            Ponlog.Level.VERBOSE -> v
+        }
+    }
+
+    private fun LogEntity.matchTag(): Boolean {
+        return this.tag.contains(t)
+    }
+
+    private fun LogEntity.matchSearch(): Boolean {
+        return this.msg.contains(s) ||
+                this.body.threadName.contains(s) ||
+                this.body.classInfo.contains(s)
     }
 
 }
