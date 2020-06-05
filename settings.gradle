@@ -1,3 +1,4 @@
+include ':ponyo-crash'
 rootProject.name='Ponyo'
 include ':app'
 include ':ponyo'

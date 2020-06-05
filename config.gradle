@@ -6,15 +6,15 @@ ext {
     ]
     mavenRemote = [
             nexusAccount : "admin",
-            nexusPassword: "mbadashi123",
+            nexusPassword: "mbamaster123",
             publicUrl    : "http://30l90c4575.qicp.vip/repository/maven-public/",
             releaseUrl   : "http://30l90c4575.qicp.vip/repository/maven-releases/",
             snapshotUrl  : "http://30l90c4575.qicp.vip/repository/maven-snapshots/",
     ]
     mavenLocal = [
-            publicUrl  : "file://F://Maven",
-            releaseUrl : "file://F://Maven",
-            snapshotUrl: "file://F://Maven",
+            publicUrl  : "file://F://Maven/public/",
+            releaseUrl : "file://F://Maven/releases/",
+            snapshotUrl: "file://F://Maven/snapshots/",
     ]
     android = [
             compileSdkVersion: 29,
