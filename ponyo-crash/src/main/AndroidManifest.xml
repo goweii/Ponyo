@@ -4,7 +4,7 @@
     <application>
         <activity
             android:name=".CrashActivity"
-            android:process=".ponyo-crash" />
+            android:process=".ponyocrash" />
     </application>
 
 </manifest>

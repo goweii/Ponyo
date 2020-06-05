@@ -20,10 +20,10 @@ class CrashActivity : AppCompatActivity() {
                 throw RuntimeException("click btn error on thread")
             }
         }
+        throw RuntimeException("onCreate error")
     }
 
     override fun onStop() {
         super.onStop()
-        throw RuntimeException("onCreate error")
     }
 }
