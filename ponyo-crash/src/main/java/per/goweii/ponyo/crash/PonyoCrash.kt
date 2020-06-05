@@ -44,13 +44,15 @@ class CrashHandler(
 
     override fun uncaughtException(t: Thread, e: Throwable) {
         logger.e { e }
-        for (element in e.stackTrace) {
-            if (element.className == "android.app.ActivityThread") {
-                for (activityLiftMethodName in activityLiftMethodNames) {
-                    if (element.methodName == activityLiftMethodName) {
-                        defaultHandler?.uncaughtException(Looper.getMainLooper().thread, e)
-                        defaultHandler?.uncaughtException(t, e)
-                        CrashActivity.start(application, e)
+        if (t == Looper.getMainLooper().thread) {
+            for (element in e.stackTrace) {
+                if (element.className == "android.app.ActivityThread") {
+                    for (activityLiftMethodName in activityLiftMethodNames) {
+                        if (element.methodName == activityLiftMethodName) {
+                            defaultHandler?.uncaughtException(Looper.getMainLooper().thread, e)
+                            defaultHandler?.uncaughtException(t, e)
+                            CrashActivity.start(application, e)
+                        }
                     }
                 }
             }
