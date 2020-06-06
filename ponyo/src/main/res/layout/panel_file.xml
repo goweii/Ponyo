@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:background="@color/colorBackground">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_file_navi"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:orientation="horizontal"
+        tools:itemCount="5"
+        tools:layoutManager="LinearLayoutManager"
+        tools:listitem="@layout/item_file_navi" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="5dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_file_name"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        tools:itemCount="20"
+        tools:layoutManager="LinearLayoutManager"
+        tools:listitem="@layout/item_file_name" />
+
+    <RelativeLayout
+        android:id="@+id/rl_file_str"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <ProgressBar
+            android:id="@+id/pb_file_str_loading"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:indeterminateTint="@color/colorPrimary"
+            android:indeterminateOnly="true"
+            android:layout_height="wrap_content" />
+
+        <per.goweii.ponyo.panel.AutoSplitTextView
+            android:id="@+id/tv_file_str_name"
+            android:layout_below="@+id/pb_file_str_loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="1px"
+            android:background="@color/colorBackground"
+            android:paddingStart="5dp"
+            android:paddingTop="5dp"
+            android:paddingEnd="5dp"
+            android:paddingBottom="5dp"
+            android:textColor="@color/colorOnBackground"
+            android:textSize="12sp"
+            tools:text="文件名" />
+
+        <per.goweii.ponyo.panel.AutoSplitTextView
+            android:id="@+id/tv_file_str_close"
+            android:layout_width="wrap_content"
+            android:layout_below="@+id/pb_file_str_loading"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="1px"
+            android:background="@color/colorBackground"
+            android:paddingStart="5dp"
+            android:paddingTop="5dp"
+            android:paddingEnd="5dp"
+            android:paddingBottom="5dp"
+            android:text="关闭"
+            android:textColor="@color/colorOnBackground"
+            android:textSize="12sp" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/tv_file_str_name">
+
+            <per.goweii.ponyo.panel.AutoSplitTextView
+                android:id="@+id/tv_file_str"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="1px"
+                android:background="@color/colorBackground"
+                android:paddingStart="5dp"
+                android:paddingTop="5dp"
+                android:paddingEnd="5dp"
+                android:paddingBottom="5dp"
+                android:textColor="@color/colorOnBackground"
+                android:textSize="12sp" />
+
+        </ScrollView>
+
+    </RelativeLayout>
+
+</LinearLayout>
