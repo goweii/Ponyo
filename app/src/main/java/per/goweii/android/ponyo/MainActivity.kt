@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import kotlinx.android.synthetic.main.activity_main.*
 import per.goweii.android.ponyo.appstack.ActiStackActivity
-import per.goweii.android.ponyo.crash.CrashActivity
+import per.goweii.android.ponyo.crash.TestCrashActivity
 import per.goweii.android.ponyo.log.LogActivity
 import per.goweii.android.ponyo.timemonitor.TM
 import per.goweii.android.ponyo.timemonitor.TimeMonitorActivity
@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this@MainActivity, ActiStackActivity::class.java))
         }
         tv_crash.setOnClickListener {
-            startActivity(Intent(this@MainActivity, CrashActivity::class.java))
+            startActivity(Intent(this@MainActivity, TestCrashActivity::class.java))
         }
     }
 }
