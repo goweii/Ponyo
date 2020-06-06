@@ -16,7 +16,9 @@
             <TextView
                 android:id="@+id/ponyo_crash_tv_error"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:typeface="monospace"/>
 
         </androidx.core.widget.NestedScrollView>
 
