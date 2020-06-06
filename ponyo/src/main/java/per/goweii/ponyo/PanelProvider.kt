@@ -7,6 +7,7 @@ import per.goweii.ponyo.panel.IPanel
 import per.goweii.ponyo.panel.actistack.ActiStackPanel
 import per.goweii.ponyo.panel.db.DbPanel
 import per.goweii.ponyo.panel.log.LogPanel
+import per.goweii.ponyo.panel.sp.SpPanel
 import per.goweii.ponyo.panel.tm.TmPanel
 
 object PanelProvider {
@@ -18,6 +19,7 @@ object PanelProvider {
         add(DbPanel())
         add(TmPanel())
         add(ActiStackPanel())
+        add(SpPanel())
     }
 
     fun attach(container: FrameLayout, tab: LinearLayout) {
