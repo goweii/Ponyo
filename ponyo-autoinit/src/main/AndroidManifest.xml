@@ -1,5 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="per.goweii.android.ponyo.autoinit">
-
-    /
+    package="per.goweii.ponyo.autoinit">
+    <application>
+        <provider
+            android:authorities="${applicationId}.ponyo.autoinit.autoinitprovider"
+            android:name="per.goweii.ponyo.autoinit.AutoInitProvider"
+            android:exported="false" />
+    </application>
 </manifest>

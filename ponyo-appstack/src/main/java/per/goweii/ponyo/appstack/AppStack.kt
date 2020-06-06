@@ -5,14 +5,20 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ProcessLifecycleOwner
-import per.goweii.ponyo.log.Ponlog
 
-object AppLifecycle : LifecycleObserver {
+object AppStack : LifecycleObserver {
 
     lateinit var application: Application
         internal set
 
     private var appLifecycleListeners = arrayListOf<AppLifecycleListener>()
+
+    fun initialize(application: Application) {
+        if (this::application.isInitialized) return
+        this.application = application
+        ProcessLifecycleOwner.get().lifecycle.addObserver(AppStack)
+        this.application.registerActivityLifecycleCallbacks(ActivityStack)
+    }
 
     fun registerAppLifecycleListener(listener: AppLifecycleListener) {
         appLifecycleListeners.add(listener)
@@ -20,12 +26,6 @@ object AppLifecycle : LifecycleObserver {
 
     fun unregisterAppLifecycleListener(listener: AppLifecycleListener) {
         appLifecycleListeners.remove(listener)
-    }
-
-    fun onInitialize(application: Application) {
-        this.application = application
-        ProcessLifecycleOwner.get().lifecycle.addObserver(AppLifecycle)
-        this.application.registerActivityLifecycleCallbacks(ActivityStack)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)

@@ -8,6 +8,7 @@ dependencies {
     implementation rootProject.ext.dependencies.smartrefreshlayout
     implementation rootProject.ext.dependencies.smartrefreshheader
     implementation rootProject.ext.dependencies.gson
+    implementation project(":ponyo-autoinit")
     api project(":ponyo-log")
     api project(":ponyo-timemonitor")
     api project(':ponyo-appstack')

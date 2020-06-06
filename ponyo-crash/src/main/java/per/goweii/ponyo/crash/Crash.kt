@@ -7,11 +7,9 @@ import per.goweii.ponyo.log.Ponlog
 
 class Crash {
     companion object {
-        private var application: Application? = null
-
-        fun install(application: Application) {
-            this.application = application
+        fun initialize(application: Application) {
             val defaultHandler = Thread.getDefaultUncaughtExceptionHandler()
+            if (defaultHandler is CrashHandler) return
             val crashHandler = CrashHandler(application, defaultHandler)
             Thread.setDefaultUncaughtExceptionHandler(crashHandler)
             Handler(Looper.getMainLooper()).post {
