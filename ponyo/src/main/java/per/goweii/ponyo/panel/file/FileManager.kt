@@ -1,11 +1,17 @@
 package per.goweii.ponyo.panel.file
 
+import android.content.ActivityNotFoundException
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.os.Build
 import android.text.format.Formatter
+import androidx.core.content.FileProvider
 import kotlinx.coroutines.*
 import java.io.BufferedReader
 import java.io.File
 import java.io.FileReader
+
 
 object FileManager : CoroutineScope by MainScope() {
 
@@ -100,6 +106,28 @@ object FileManager : CoroutineScope by MainScope() {
             callback(readStrFileDeferred!!.await())
             readStrFileDeferred = null
         }
+    }
+
+    fun openFile(context: Context, fileEntity: FileEntity) {
+        try {
+            val intent = Intent()
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            intent.action = Intent.ACTION_VIEW
+            val file = File(fileEntity.path)
+            val uri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                FileProvider.getUriForFile(context, "${context.packageName}.ponyo.fileprovider", file)
+            } else {
+                Uri.fromFile(file)
+            }
+            intent.setDataAndType(uri, getMimeType(context, uri))
+            context.startActivity(intent)
+            Intent.createChooser(intent, "请选择对应的软件打开该文件")
+        } catch (e: ActivityNotFoundException) {
+        }
+    }
+
+    private fun getMimeType(context: Context, uri: Uri): String {
+        return context.contentResolver.getType(uri) ?: "text/plain"
     }
 
 }

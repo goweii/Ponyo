@@ -26,6 +26,9 @@ class FilePanel : BasePanel() {
     private lateinit var sv_file_str: ScrollView
     private lateinit var tv_file_str: TextView
     private lateinit var pb_file_str_loading: ProgressBar
+    private lateinit var ll_file_open: LinearLayout
+    private lateinit var tv_file_open_text_by_self: TextView
+    private lateinit var tv_file_open_text_by_system: TextView
 
     override fun getPanelLayoutRes(): Int = R.layout.panel_file
 
@@ -43,6 +46,9 @@ class FilePanel : BasePanel() {
         sv_file_str = view.findViewById(R.id.sv_file_str)
         tv_file_str = view.findViewById(R.id.tv_file_str)
         pb_file_str_loading = view.findViewById(R.id.pb_file_str_loading)
+        ll_file_open = view.findViewById(R.id.ll_file_open)
+        tv_file_open_text_by_self = view.findViewById(R.id.tv_file_open_text_by_self)
+        tv_file_open_text_by_system = view.findViewById(R.id.tv_file_open_text_by_system)
         tv_file_data_data.setOnClickListener {
             tv_file_data_data.isSelected = true
             tv_file_external_data.isSelected = false
@@ -54,12 +60,9 @@ class FilePanel : BasePanel() {
             onTabClick(FileManager.getRootExternalDir(context))
         }
         tv_file_str_close.setOnClickListener {
-            FileManager.closeStrFile()
-            pb_file_str_loading.visibility = View.GONE
-            sv_file_str.visibility = View.GONE
             ll_file_str.visibility = View.GONE
-            tv_file_str_name.text = null
-            tv_file_str.text = null
+            tv_file_str.text = ""
+            FileManager.closeStrFile()
         }
         rv_file_navi.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -98,15 +101,25 @@ class FilePanel : BasePanel() {
     private fun onNameClick(fileEntity: FileManager.FileEntity) {
         val list = FileManager.childFilesOrNull(fileEntity)
         if (list == null) {
-            pb_file_str_loading.visibility = View.VISIBLE
-            sv_file_str.visibility = View.GONE
-            ll_file_str.visibility = View.VISIBLE
             tv_file_str_name.text = fileEntity.name
             tv_file_str.text = ""
-            FileManager.readStrFile(fileEntity) {
-                pb_file_str_loading.visibility = View.GONE
-                sv_file_str.visibility = View.VISIBLE
-                tv_file_str.text = it
+            ll_file_str.visibility = View.VISIBLE
+            pb_file_str_loading.visibility = View.GONE
+            sv_file_str.visibility = View.GONE
+            ll_file_open.visibility = View.VISIBLE
+            tv_file_open_text_by_self.setOnClickListener {
+                pb_file_str_loading.visibility = View.VISIBLE
+                sv_file_str.visibility = View.GONE
+                ll_file_open.visibility = View.GONE
+                FileManager.readStrFile(fileEntity) {
+                    pb_file_str_loading.visibility = View.GONE
+                    sv_file_str.visibility = View.VISIBLE
+                    ll_file_open.visibility = View.GONE
+                    tv_file_str.text = it
+                }
+            }
+            tv_file_open_text_by_system.setOnClickListener {
+                FileManager.openFile(context, fileEntity)
             }
             return
         }

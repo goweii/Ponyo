@@ -63,11 +63,11 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_file_navi"
-            android:padding="5dp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="horizontal"
+            android:padding="5dp"
             tools:itemCount="5"
             tools:layoutManager="LinearLayoutManager"
             tools:listitem="@layout/item_file_navi" />
@@ -187,6 +187,57 @@
                 android:layout_gravity="center"
                 android:indeterminateOnly="true"
                 android:indeterminateTint="@color/colorPrimary" />
+
+            <LinearLayout
+                android:id="@+id/ll_file_open"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/colorBackground"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:text="选择打开方式"
+                    android:textColor="@color/colorOnBackground"
+                    android:textSize="15sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="@color/colorDivide" />
+
+                <TextView
+                    android:id="@+id/tv_file_open_text_by_self"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:text="直接以文本打开（只读取100行）"
+                    android:textColor="@color/colorOnBackground"
+                    android:textSize="14sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="@color/colorDivide" />
+
+                <TextView
+                    android:id="@+id/tv_file_open_text_by_system"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:text="在第三方打开文本"
+                    android:textColor="@color/colorOnBackground"
+                    android:textSize="14sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="@color/colorDivide" />
+
+            </LinearLayout>
 
         </FrameLayout>
 
