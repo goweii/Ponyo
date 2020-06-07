@@ -9,14 +9,16 @@ import per.goweii.ponyo.log.Ponlog
 import per.goweii.ponyo.panel.BasePanel
 
 class FilePanel : BasePanel() {
+    private val fileTabAdapter by lazy {
+        FileTabAdapter { onTabClick(it) }
+    }
     private val fileNaviAdapter by lazy {
         FileNaviAdapter { onNaviClick(it) }
     }
     private val fileNameAdapter by lazy {
         FileNameAdapter { onNameClick(it) }
     }
-    private lateinit var tv_file_data_data: TextView
-    private lateinit var tv_file_external_data: TextView
+    private lateinit var rv_file_tab: RecyclerView
     private lateinit var rv_file_navi: RecyclerView
     private lateinit var tv_navi_length: TextView
     private lateinit var rv_file_name: RecyclerView
@@ -35,8 +37,7 @@ class FilePanel : BasePanel() {
     override fun getPanelName(): String = "文件"
 
     override fun onPanelViewCreated(view: View) {
-        tv_file_data_data = view.findViewById(R.id.tv_file_data_data)
-        tv_file_external_data = view.findViewById(R.id.tv_file_external_data)
+        rv_file_tab = view.findViewById(R.id.rv_file_tab)
         rv_file_navi = view.findViewById(R.id.rv_file_navi)
         tv_navi_length = view.findViewById(R.id.tv_navi_length)
         rv_file_name = view.findViewById(R.id.rv_file_name)
@@ -49,16 +50,9 @@ class FilePanel : BasePanel() {
         ll_file_open = view.findViewById(R.id.ll_file_open)
         tv_file_open_text_by_self = view.findViewById(R.id.tv_file_open_text_by_self)
         tv_file_open_text_by_system = view.findViewById(R.id.tv_file_open_text_by_system)
-        tv_file_data_data.setOnClickListener {
-            tv_file_data_data.isSelected = true
-            tv_file_external_data.isSelected = false
-            onTabClick(FileManager.getRootDataDir(context))
-        }
-        tv_file_external_data.setOnClickListener {
-            tv_file_data_data.isSelected = false
-            tv_file_external_data.isSelected = true
-            onTabClick(FileManager.getRootExternalDir(context))
-        }
+        rv_file_tab.layoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        rv_file_tab.adapter = fileTabAdapter
         tv_file_str_close.setOnClickListener {
             ll_file_str.visibility = View.GONE
             tv_file_str.text = ""
@@ -70,6 +64,20 @@ class FilePanel : BasePanel() {
         rv_file_name.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         rv_file_name.adapter = fileNameAdapter
+    }
+
+    override fun onVisible() {
+        fileTabAdapter.set(mutableListOf<FileManager.FileEntity>().apply {
+            add(FileManager.getRootDataDir(context).apply {
+                name = "内部存储"
+            })
+            add(FileManager.getRootExternalDir(context).apply {
+                name = "外部存储"
+            })
+        })
+    }
+
+    override fun onGone() {
     }
 
     private fun onTabClick(fileEntity: FileManager.FileEntity) {

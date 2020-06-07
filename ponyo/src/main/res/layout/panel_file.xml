@@ -7,54 +7,14 @@
     android:orientation="vertical"
     tools:background="@color/colorBackground">
 
-    <HorizontalScrollView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_file_tab"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:overScrollMode="never"
-        android:scrollbars="none">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/tv_file_data_data"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="5dp"
-                android:background="@drawable/selector_tab_bg"
-                android:gravity="center"
-                android:paddingStart="10dp"
-                android:paddingTop="2dp"
-                android:paddingEnd="10dp"
-                android:paddingBottom="2dp"
-                android:text="Data-data"
-                android:textColor="@color/colorOnPrimary"
-                android:textSize="12sp" />
-
-            <TextView
-                android:id="@+id/tv_file_external_data"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="5dp"
-                android:background="@drawable/selector_tab_bg"
-                android:gravity="center"
-                android:paddingStart="10dp"
-                android:paddingTop="2dp"
-                android:paddingEnd="10dp"
-                android:paddingBottom="2dp"
-                android:text="External-data"
-                android:textColor="@color/colorOnPrimary"
-                android:textSize="12sp" />
-
-        </LinearLayout>
-
-    </HorizontalScrollView>
+        tools:itemCount="2"
+        tools:orientation="horizontal"
+        tools:layoutManager="LinearLayoutManager"
+        tools:listitem="@layout/item_tab" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -204,38 +164,27 @@
                     android:textColor="@color/colorOnBackground"
                     android:textSize="15sp" />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1px"
-                    android:background="@color/colorDivide" />
-
                 <TextView
                     android:id="@+id/tv_file_open_text_by_self"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/rect_bg"
+                    android:gravity="center"
                     android:padding="5dp"
                     android:text="直接以文本打开（只读取100行）"
                     android:textColor="@color/colorOnBackground"
                     android:textSize="14sp" />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1px"
-                    android:background="@color/colorDivide" />
-
                 <TextView
                     android:id="@+id/tv_file_open_text_by_system"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/rect_bg"
+                    android:gravity="center"
                     android:padding="5dp"
                     android:text="在第三方打开文本"
                     android:textColor="@color/colorOnBackground"
                     android:textSize="14sp" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1px"
-                    android:background="@color/colorDivide" />
 
             </LinearLayout>
 

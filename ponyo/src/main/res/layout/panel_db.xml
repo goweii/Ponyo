@@ -6,35 +6,23 @@
     android:orientation="vertical"
     tools:background="@color/colorBackground">
 
-    <HorizontalScrollView
-        android:id="@+id/hsv_db"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_db_tab"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:overScrollMode="never"
-        android:scrollbars="none">
+        tools:itemCount="5"
+        tools:orientation="horizontal"
+        tools:layoutManager="LinearLayoutManager"
+        tools:listitem="@layout/item_tab" />
 
-        <LinearLayout
-            android:id="@+id/ll_db"
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:orientation="horizontal" />
-
-    </HorizontalScrollView>
-
-    <HorizontalScrollView
-        android:id="@+id/hsv_table"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_table_tab"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:overScrollMode="never"
-        android:scrollbars="none">
-
-        <LinearLayout
-            android:id="@+id/ll_table"
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:orientation="horizontal" />
-
-    </HorizontalScrollView>
+        tools:itemCount="5"
+        tools:orientation="horizontal"
+        tools:layoutManager="LinearLayoutManager"
+        tools:listitem="@layout/item_tab" />
 
     <View
         android:layout_width="match_parent"

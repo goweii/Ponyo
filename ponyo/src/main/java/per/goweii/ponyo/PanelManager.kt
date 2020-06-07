@@ -12,7 +12,8 @@ import android.view.*
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.FrameLayout
 import android.widget.ImageView
-import android.widget.LinearLayout
+import androidx.recyclerview.widget.RecyclerView
+import per.goweii.ponyo.panel.PanelProvider
 import kotlin.math.min
 import kotlin.math.pow
 
@@ -92,7 +93,7 @@ internal class PanelManager(private val context: Context) {
         floatView.findViewById<View>(R.id.panel).apply {
             fitsSystemWindows = true
             val panelContainer = findViewById<FrameLayout>(R.id.panel_container)
-            val panelTab = findViewById<LinearLayout>(R.id.panel_tab)
+            val panelTab = findViewById<RecyclerView>(R.id.panel_tab)
             PanelProvider.attach(panelContainer, panelTab)
         }
     }

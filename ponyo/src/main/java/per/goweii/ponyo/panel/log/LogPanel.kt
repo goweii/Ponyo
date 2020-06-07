@@ -119,4 +119,10 @@ class LogPanel : BasePanel() {
             }
         }
     }
+
+    override fun onVisible() {
+    }
+
+    override fun onGone() {
+    }
 }

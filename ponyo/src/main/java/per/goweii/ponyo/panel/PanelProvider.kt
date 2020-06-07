@@ -1,9 +1,9 @@
-package per.goweii.ponyo
+package per.goweii.ponyo.panel
 
 import android.view.View
 import android.widget.FrameLayout
-import android.widget.LinearLayout
-import per.goweii.ponyo.panel.IPanel
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import per.goweii.ponyo.panel.actistack.ActiStackPanel
 import per.goweii.ponyo.panel.db.DbPanel
 import per.goweii.ponyo.panel.file.FilePanel
@@ -14,22 +14,32 @@ import per.goweii.ponyo.panel.tm.TmPanel
 object PanelProvider {
 
     private lateinit var container: FrameLayout
-    private lateinit var tab: LinearLayout
+    private lateinit var tab: RecyclerView
+    private val tabAdapter by lazy {
+        PanelTabAdapter { selectPanel(it) }
+    }
     private val panels = arrayListOf<IPanel>().apply {
         add(LogPanel())
-        add(DbPanel())
         add(TmPanel())
         add(ActiStackPanel())
+        add(DbPanel())
         add(SpPanel())
         add(FilePanel())
     }
 
-    fun attach(container: FrameLayout, tab: LinearLayout) {
+    fun attach(container: FrameLayout, tab: RecyclerView) {
         this.container = container
         this.tab = tab
-        initPanels()
-        if (PanelProvider.container.childCount > 0) {
-            selectPanel(PanelProvider.container.getChildAt(0))
+        this.tab.layoutManager = LinearLayoutManager(tab.context, LinearLayoutManager.HORIZONTAL, false)
+        this.tab.adapter = tabAdapter
+        tabAdapter.set(panels)
+        panels.forEach {
+            val panelView = it.createPanelView(container)
+            panelView.visibility = View.GONE
+            container.addView(panelView)
+        }
+        if (this.container.childCount > 0) {
+            selectPanel(0)
         }
     }
 
@@ -45,30 +55,17 @@ object PanelProvider {
     fun onDetach() {
     }
 
-    private fun initPanels() {
-        panels.forEach {
-            val panelView = it.createPanelView(container)
-            val tabView = it.createPanelTab(tab)
-            panelView.visibility = View.GONE
-            tabView.isSelected = false
-            tabView.setOnClickListener {
-                selectPanel(panelView)
-            }
-            container.addView(panelView)
-            tab.addView(tabView)
-        }
-    }
-
-    private fun selectPanel(panel: View) {
+    private fun selectPanel(index: Int) {
+        tabAdapter.select(index)
         for (i in 0 until container.childCount) {
+            val panel = panels[i]
             val panelView = container.getChildAt(i)
-            val tabView = tab.getChildAt(i)
-            if (panelView == panel) {
+            if (i == index) {
+                panel.onVisible()
                 panelView.visibility = View.VISIBLE
-                tabView.isSelected = true
             } else {
+                panel.onGone()
                 panelView.visibility = View.GONE
-                tabView.isSelected = false
             }
         }
     }

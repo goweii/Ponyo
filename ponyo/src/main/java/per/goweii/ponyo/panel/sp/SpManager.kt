@@ -14,6 +14,7 @@ object SpManager {
     val spNames by lazy { mutableListOf<String>() }
 
     fun findAllSp(context: Context) {
+        spNames.clear()
         val filesDir = context.filesDir
         val spDir = File(filesDir.parent, "shared_prefs")
         val spFiles = spDir.listFiles()

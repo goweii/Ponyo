@@ -21,6 +21,7 @@ object DbManager {
     val dbs by lazy { mutableListOf<Db>() }
 
     fun findAllDb(context: Context) {
+        dbs.clear()
         val list = context.databaseList()
         for (name in list) {
             val path = context.getDatabasePath(name)

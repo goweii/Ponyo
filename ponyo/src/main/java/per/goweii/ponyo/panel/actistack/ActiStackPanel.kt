@@ -14,4 +14,10 @@ class ActiStackPanel: BasePanel() {
         val tv_actistack: TextView = view.findViewById(R.id.tv_actistack)
         ActiStackManager.attach(tv_actistack)
     }
+
+    override fun onVisible() {
+    }
+
+    override fun onGone() {
+    }
 }

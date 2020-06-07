@@ -5,7 +5,8 @@
     android:layout_height="wrap_content"
     android:background="@color/colorBackground"
     android:orientation="vertical"
-    android:padding="5dp">
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp">
 
     <HorizontalScrollView
         android:layout_width="match_parent"

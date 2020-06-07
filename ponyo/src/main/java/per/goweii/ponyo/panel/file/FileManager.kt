@@ -1,6 +1,5 @@
 package per.goweii.ponyo.panel.file
 
-import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -12,11 +11,10 @@ import java.io.BufferedReader
 import java.io.File
 import java.io.FileReader
 
-
 object FileManager : CoroutineScope by MainScope() {
 
     data class FileEntity(
-        val name: String,
+        var name: String,
         val path: String,
         val isDir: Boolean,
         val length: Long
@@ -40,7 +38,6 @@ object FileManager : CoroutineScope by MainScope() {
     fun getRootDataDir(context: Context): FileEntity {
         val filesDir = context.cacheDir
         val dataDir = File(filesDir.parent!!)
-        val length = dataDir.length()
         return FileEntity(dataDir.name, dataDir.absolutePath, dataDir.isDirectory, dataDir.size())
     }
 
