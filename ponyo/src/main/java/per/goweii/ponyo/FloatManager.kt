@@ -18,6 +18,7 @@ import kotlin.math.min
  * @author CuiZhen
  * @date 2020/3/28
  */
+@SuppressLint("ClickableViewAccessibility")
 internal class FloatManager(private val context: Context) : GestureDetector.OnGestureListener,
     ViewTreeObserver.OnGlobalLayoutListener {
 
@@ -71,7 +72,7 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
             scaleType = ImageView.ScaleType.CENTER_CROP
             elevation = TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP,
-                10F,
+                5F,
                 context.resources.displayMetrics
             )
             clipToOutline = true
