@@ -35,6 +35,7 @@ class FileNameAdapter(
 
     inner class FileHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val tv_file_name by lazy { itemView.findViewById<TextView>(R.id.tv_file_name) }
+        private val tv_file_length by lazy { itemView.findViewById<TextView>(R.id.tv_file_length) }
 
         init {
             itemView.setOnClickListener {
@@ -44,7 +45,8 @@ class FileNameAdapter(
 
         @SuppressLint("SetTextI18n")
         fun bindData(data: FileManager.FileEntity) {
-            tv_file_name.text = "${if (data.isDir) "Dir" else "File"}:${data.name}"
+            tv_file_name.text = "${data.name}${if (data.isDir) "/" else ""}"
+            tv_file_length.text = data.formatLength(tv_file_length.context)
         }
     }
 

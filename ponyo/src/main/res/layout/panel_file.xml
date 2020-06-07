@@ -1,20 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:background="@color/colorBackground">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_file_navi"
+    <HorizontalScrollView
         android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:orientation="horizontal"
-        tools:itemCount="5"
-        tools:layoutManager="LinearLayoutManager"
-        tools:listitem="@layout/item_file_navi" />
+        android:layout_height="wrap_content"
+        android:overScrollMode="never"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_file_data_data"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:background="@drawable/selector_tab_bg"
+                android:gravity="center"
+                android:paddingStart="10dp"
+                android:paddingTop="2dp"
+                android:paddingEnd="10dp"
+                android:paddingBottom="2dp"
+                android:text="Data-data"
+                android:textColor="@color/colorOnPrimary"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/tv_file_external_data"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:background="@drawable/selector_tab_bg"
+                android:gravity="center"
+                android:paddingStart="10dp"
+                android:paddingTop="2dp"
+                android:paddingEnd="10dp"
+                android:paddingBottom="2dp"
+                android:text="External-data"
+                android:textColor="@color/colorOnPrimary"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+
+    </HorizontalScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_file_navi"
+            android:padding="5dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            tools:itemCount="5"
+            tools:layoutManager="LinearLayoutManager"
+            tools:listitem="@layout/item_file_navi" />
+
+        <per.goweii.ponyo.panel.AutoSplitTextView
+            android:id="@+id/tv_navi_length"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1px"
+            android:layout_marginBottom="1px"
+            android:background="@color/colorBackground"
+            android:paddingStart="5dp"
+            android:paddingTop="5dp"
+            android:paddingEnd="5dp"
+            android:paddingBottom="5dp"
+            android:textColor="@color/colorOnBackground"
+            android:textSize="12sp"
+            tools:text="800KB" />
+
+    </LinearLayout>
 
     <View
         android:layout_width="match_parent"
@@ -29,73 +102,94 @@
         tools:layoutManager="LinearLayoutManager"
         tools:listitem="@layout/item_file_name" />
 
-    <RelativeLayout
-        android:id="@+id/rl_file_str"
+    <LinearLayout
+        android:id="@+id/ll_file_str"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:orientation="vertical"
         android:visibility="gone"
         tools:visibility="visible">
 
-        <ProgressBar
-            android:id="@+id/pb_file_str_loading"
-            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        <View
             android:layout_width="match_parent"
-            android:indeterminateTint="@color/colorPrimary"
-            android:indeterminateOnly="true"
-            android:layout_height="wrap_content" />
+            android:layout_height="1px"
+            android:background="@color/colorDivide" />
 
-        <per.goweii.ponyo.panel.AutoSplitTextView
-            android:id="@+id/tv_file_str_name"
-            android:layout_below="@+id/pb_file_str_loading"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="1px"
-            android:background="@color/colorBackground"
-            android:paddingStart="5dp"
-            android:paddingTop="5dp"
-            android:paddingEnd="5dp"
-            android:paddingBottom="5dp"
-            android:textColor="@color/colorOnBackground"
-            android:textSize="12sp"
-            tools:text="文件名" />
-
-        <per.goweii.ponyo.panel.AutoSplitTextView
-            android:id="@+id/tv_file_str_close"
-            android:layout_width="wrap_content"
-            android:layout_below="@+id/pb_file_str_loading"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_margin="1px"
-            android:background="@color/colorBackground"
-            android:paddingStart="5dp"
-            android:paddingTop="5dp"
-            android:paddingEnd="5dp"
-            android:paddingBottom="5dp"
-            android:text="关闭"
-            android:textColor="@color/colorOnBackground"
-            android:textSize="12sp" />
-
-        <ScrollView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/tv_file_str_name">
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical">
 
             <per.goweii.ponyo.panel.AutoSplitTextView
-                android:id="@+id/tv_file_str"
-                android:layout_width="match_parent"
+                android:id="@+id/tv_file_str_name"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="1px"
-                android:background="@color/colorBackground"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:lines="1"
                 android:paddingStart="5dp"
                 android:paddingTop="5dp"
                 android:paddingEnd="5dp"
                 android:paddingBottom="5dp"
                 android:textColor="@color/colorOnBackground"
+                android:textSize="12sp"
+                tools:text="文件名" />
+
+            <per.goweii.ponyo.panel.AutoSplitTextView
+                android:id="@+id/tv_file_str_close"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="5dp"
+                android:paddingTop="5dp"
+                android:paddingEnd="5dp"
+                android:paddingBottom="5dp"
+                android:text="关闭"
+                android:textColor="@color/colorOnBackground"
                 android:textSize="12sp" />
 
-        </ScrollView>
+        </LinearLayout>
 
-    </RelativeLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/colorDivide" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ScrollView
+                android:id="@+id/sv_file_str"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/tv_file_str"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorBackground"
+                    android:paddingStart="5dp"
+                    android:paddingTop="5dp"
+                    android:paddingEnd="5dp"
+                    android:paddingBottom="5dp"
+                    android:textColor="@color/colorOnBackground"
+                    android:textSize="12sp"
+                    android:typeface="monospace" />
+
+            </ScrollView>
+
+            <ProgressBar
+                android:id="@+id/pb_file_str_loading"
+                style="@style/Widget.AppCompat.ProgressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:indeterminateOnly="true"
+                android:indeterminateTint="@color/colorPrimary" />
+
+        </FrameLayout>
+
+    </LinearLayout>
 
 </LinearLayout>

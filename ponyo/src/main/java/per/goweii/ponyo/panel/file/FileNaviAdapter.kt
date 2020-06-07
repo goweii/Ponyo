@@ -1,5 +1,6 @@
 package per.goweii.ponyo.panel.file
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -49,8 +50,9 @@ class FileNaviAdapter(
             }
         }
 
+        @SuppressLint("SetTextI18n")
         fun bindData(data: FileManager.FileEntity) {
-            tv_dir_name.text = data.name
+            tv_dir_name.text = "${data.name}/"
         }
     }
 
