@@ -119,10 +119,11 @@ object FileManager : CoroutineScope by MainScope() {
             } else {
                 Uri.fromFile(file)
             }
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             intent.setDataAndType(uri, getMimeType(context, uri))
             context.startActivity(intent)
             Intent.createChooser(intent, "请选择对应的软件打开该文件")
-        } catch (e: ActivityNotFoundException) {
+        } catch (e: Exception) {
         }
     }
 
