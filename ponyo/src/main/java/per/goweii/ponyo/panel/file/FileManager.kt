@@ -112,7 +112,7 @@ object FileManager : CoroutineScope by MainScope() {
             intent.action = Intent.ACTION_VIEW
             val file = File(fileEntity.path)
             val uri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                FileProvider.getUriForFile(context, "${context.packageName}.ponyo.fileprovider", file)
+                FileProvider.getUriForFile(context, FileOpenProvider.authorities(context), file)
             } else {
                 Uri.fromFile(file)
             }

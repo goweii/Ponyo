@@ -3,13 +3,13 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <application>
         <provider
-            android:name="androidx.core.content.FileProvider"
-            android:authorities="${applicationId}.ponyo.fileprovider"
+            android:name=".panel.file.FileOpenProvider"
+            android:authorities="${applicationId}.ponyo.file.fileopenprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/filepath" />
+                android:resource="@xml/ponyo_file_paths" />
         </provider>
     </application>
 </manifest>
