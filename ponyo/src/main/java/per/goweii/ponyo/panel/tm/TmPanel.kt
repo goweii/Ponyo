@@ -20,7 +20,7 @@ class TmPanel: BasePanel() {
         TmManager.attach(tmAdapter)
     }
 
-    override fun onVisible() {
+    override fun onFirstVisible() {
     }
 
     override fun onGone() {

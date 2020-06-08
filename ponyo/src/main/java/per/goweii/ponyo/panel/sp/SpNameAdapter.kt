@@ -19,11 +19,13 @@ class SpNameAdapter(
         val name: String
     )
 
-    fun set(data: List<String>) {
+    fun get() = datas
+
+    fun set(data: List<String>, selectIndex: Int = -1) {
         datas.clear()
         val newDatas = mutableListOf<Selectable>()
-        data.forEach {
-            newDatas.add(Selectable(false, it))
+        data.forEachIndexed { index, name ->
+            newDatas.add(Selectable(selectIndex == index, name))
         }
         datas.addAll(newDatas)
         notifyDataSetChanged()

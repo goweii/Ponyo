@@ -11,6 +11,8 @@ abstract class BasePanel : IPanel {
     private lateinit var view: View
     protected lateinit var context: Context
 
+    private var firstVisible = false
+
     override fun createPanelView(container: FrameLayout): View {
         context = container.context
         view = LayoutInflater.from(context).inflate(getPanelLayoutRes(), container, false)
@@ -21,4 +23,13 @@ abstract class BasePanel : IPanel {
     abstract fun getPanelLayoutRes(): Int
 
     abstract fun onPanelViewCreated(view: View)
+
+    abstract fun onFirstVisible()
+
+    override fun onVisible() {
+        if (!firstVisible) {
+            firstVisible = true
+            onFirstVisible()
+        }
+    }
 }

@@ -29,20 +29,44 @@ class SpPanel : BasePanel() {
         rv_sp.adapter = spAdapter
     }
 
+    override fun onFirstVisible() {
+    }
+
     override fun onVisible() {
+        super.onVisible()
+        var selected: String? = null
+        spNameAdapter.get().forEach {
+            if (it.selected) {
+                selected = it.name
+                return@forEach
+            }
+        }
         SpManager.findAllSp(context)
-        spNameAdapter.set(SpManager.spNames)
+        val newData = SpManager.spNames
+        var selectIndex = -1
+        selected?.let { _selected ->
+            newData.forEachIndexed { index, name ->
+                if (_selected == name) {
+                    selectIndex = index
+                    return@forEachIndexed
+                }
+            }
+        }
+        spNameAdapter.set(SpManager.spNames, selectIndex)
+        if (selectIndex == -1) {
+            selectSp(null)
+        }
     }
 
     override fun onGone() {
     }
 
-    private fun selectSp(spName: String) {
-        showSp(spName)
-    }
-
-    private fun showSp(spName: String) {
-        val data = SpManager.readSp(context, spName)
-        spAdapter.set(data)
+    private fun selectSp(spName: String?) {
+        spName?.let {
+            val data = SpManager.readSp(context, spName)
+            spAdapter.set(data)
+        } ?: run {
+            spAdapter.set(emptyList())
+        }
     }
 }

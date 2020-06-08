@@ -1,9 +1,6 @@
 package per.goweii.ponyo.panel.db
 
-import android.view.LayoutInflater
 import android.view.View
-import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -39,20 +36,58 @@ class DbPanel : BasePanel() {
         rv_db_value.adapter = dbValueAdapter
     }
 
+    override fun onFirstVisible() {
+    }
+
     override fun onVisible() {
+        super.onVisible()
+        var selectDb: DbManager.Db? = null
+        dbTabAdapter.get().forEach {
+            if (it.selected) {
+                selectDb = it.db
+                return@forEach
+            }
+        }
         DbManager.findAllDb(context)
-        dbTabAdapter.set(DbManager.dbs)
+        val newData = DbManager.dbs
+        var selectIndex = -1
+        selectDb?.let { _selectDb ->
+            newData.forEachIndexed { index, db ->
+                if (db.path == _selectDb.path) {
+                    selectIndex = index
+                    return@forEachIndexed
+                }
+            }
+        }
+        dbTabAdapter.set(newData, selectIndex)
+        if (selectIndex == -1) {
+            selectDb(null)
+        }
     }
 
     override fun onGone() {
     }
 
-    private fun selectDb(db: DbManager.Db) {
-        tableTabAdapter.set(db.tables)
+    private fun selectDb(db: DbManager.Db?) {
+        db?.let {
+            tableTabAdapter.set(db.tables)
+        } ?: run {
+            tableTabAdapter.set(emptyList())
+        }
+        selectTable(null)
     }
 
-    private fun selectTable(table: DbManager.Table) {
-        showTable(table)
+    private fun selectTable(table: DbManager.Table?) {
+        table?.let {
+            showTable(it)
+        } ?: run {
+            rv_db_key.layoutManager =
+                GridLayoutManager(context, 1, GridLayoutManager.VERTICAL, false)
+            rv_db_value.layoutManager =
+                GridLayoutManager(context, 1, GridLayoutManager.VERTICAL, false)
+            dbKeyAdapter.set(emptyList())
+            dbValueAdapter.set(emptyList())
+        }
     }
 
     private fun showTable(table: DbManager.Table) {

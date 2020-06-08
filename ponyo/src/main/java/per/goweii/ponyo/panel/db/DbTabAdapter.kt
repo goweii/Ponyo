@@ -19,11 +19,13 @@ class DbTabAdapter(
         val db: DbManager.Db
     )
 
-    fun set(data: List<DbManager.Db>) {
+    fun get() = datas
+
+    fun set(data: List<DbManager.Db>, selectIndex: Int = -1) {
         datas.clear()
         val newDatas = mutableListOf<Selectable>()
-        data.forEach {
-            newDatas.add(Selectable(false, it))
+        data.forEachIndexed { index, db ->
+            newDatas.add(Selectable(selectIndex == index, db))
         }
         datas.addAll(newDatas)
         notifyDataSetChanged()

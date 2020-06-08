@@ -66,7 +66,7 @@ class FilePanel : BasePanel() {
         rv_file_name.adapter = fileNameAdapter
     }
 
-    override fun onVisible() {
+    override fun onFirstVisible() {
         fileTabAdapter.set(mutableListOf<FileManager.FileEntity>().apply {
             add(FileManager.getRootDataDir(context).apply {
                 name = "内部存储"

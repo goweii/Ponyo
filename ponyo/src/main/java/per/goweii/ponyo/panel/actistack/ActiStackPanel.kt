@@ -15,7 +15,7 @@ class ActiStackPanel: BasePanel() {
         ActiStackManager.attach(tv_actistack)
     }
 
-    override fun onVisible() {
+    override fun onFirstVisible() {
     }
 
     override fun onGone() {
