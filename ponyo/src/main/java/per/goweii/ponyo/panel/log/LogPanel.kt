@@ -16,6 +16,8 @@ import per.goweii.ponyo.panel.BasePanel
 
 class LogPanel : BasePanel() {
 
+    private lateinit var rv_log: RecyclerView
+
     override fun getPanelLayoutRes(): Int = R.layout.panel_log
 
     override fun getPanelName(): String = "日志"
@@ -31,7 +33,7 @@ class LogPanel : BasePanel() {
             LogManager.nextPage()
             srl_log.finishLoadMore()
         }
-        val rv_log = view.findViewById<RecyclerView>(R.id.rv_log)
+        rv_log = view.findViewById<RecyclerView>(R.id.rv_log)
         val cb_a = view.findViewById<CheckBox>(R.id.cb_a)
         val cb_e = view.findViewById<CheckBox>(R.id.cb_e)
         val cb_w = view.findViewById<CheckBox>(R.id.cb_w)
@@ -121,6 +123,9 @@ class LogPanel : BasePanel() {
     }
 
     override fun onFirstVisible() {
+        rv_log.post {
+            LogManager.scrollBottom()
+        }
     }
 
     override fun onGone() {

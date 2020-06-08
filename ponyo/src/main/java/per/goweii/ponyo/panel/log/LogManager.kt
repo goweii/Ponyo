@@ -49,7 +49,7 @@ object LogManager : LogPrinter,
         }
     }
 
-    private fun scrollBottom() {
+    fun scrollBottom() {
         recyclerView?.scrollToPosition(adapter.itemCount - 1)
         recyclerView?.smoothScrollToPosition(adapter.itemCount - 1)
     }
