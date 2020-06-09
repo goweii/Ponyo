@@ -9,10 +9,7 @@ import android.net.Uri
 class AutoInitProvider : ContentProvider() {
 
     override fun onCreate(): Boolean {
-        val context = context
-        if (context is Application) {
-            AutoInit.init(context)
-        }
+        context?.run { AutoInit.init(applicationContext as Application) }
         return true
     }
 
