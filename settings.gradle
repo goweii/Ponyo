@@ -1,3 +1,5 @@
+include ':ponyo-device'
+include ':ponyo-leak'
 include ':ponyo-autoinit'
 include ':ponyo-crash'
 rootProject.name='Ponyo'
