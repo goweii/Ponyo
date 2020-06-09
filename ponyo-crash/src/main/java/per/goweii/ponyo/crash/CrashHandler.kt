@@ -21,11 +21,6 @@ class CrashHandler(
         application.registerActivityLifecycleCallbacks(this)
     }
 
-    private val logger = Ponlog.create().apply {
-        setAndroidLogPrinterEnable(true)
-        setFileLogPrinterEnable(true)
-    }
-
     private val activityLifecycleMethodNames = arrayOf(
         "handleLaunchActivity",
         "handleStartActivity",
@@ -36,7 +31,7 @@ class CrashHandler(
     )
 
     override fun uncaughtException(t: Thread, e: Throwable) {
-        logger.e { e }
+        Ponlog.e { e }
         if (t == Looper.getMainLooper().thread) {
             for (element in e.stackTrace) {
                 when (element.className) {
