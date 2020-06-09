@@ -14,6 +14,7 @@ object AutoInit {
         add("per.goweii.ponyo.Ponyo")
         add("per.goweii.ponyo.appstack.AppStack")
         add("per.goweii.ponyo.crash.Crash")
+        add("per.goweii.ponyo.device.Device")
     }
 
     internal fun init(application: Application) {
