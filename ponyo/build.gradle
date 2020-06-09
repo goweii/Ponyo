@@ -13,4 +13,6 @@ dependencies {
     api project(":ponyo-timemonitor")
     api project(':ponyo-appstack')
     api project(':ponyo-crash')
+    api project(':ponyo-device')
+    api project(':ponyo-leak')
 }
