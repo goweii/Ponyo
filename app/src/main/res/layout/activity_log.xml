@@ -70,7 +70,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Info"
-            android:textAllCaps="false" />
+            android:textAllCaps="false"
+            android:textSize="12sp" />
 
         <Button
             android:id="@+id/tv_print_debug"
