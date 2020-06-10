@@ -24,6 +24,12 @@
         android:text="start on create error activity"/>
 
     <Button
+        android:id="@+id/btn_start_on_draw_error_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="start on draw error activity"/>
+
+    <Button
         android:id="@+id/btn_add_on_draw_error_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

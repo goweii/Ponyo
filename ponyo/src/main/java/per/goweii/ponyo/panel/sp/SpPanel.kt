@@ -15,7 +15,7 @@ class SpPanel : BasePanel() {
     private lateinit var rv_sp_name: RecyclerView
     private lateinit var rv_sp: RecyclerView
 
-    override fun getPanelLayoutRes(): Int = R.layout.panel_sp
+    override fun getPanelLayoutRes(): Int = R.layout.ponyo_panel_sp
 
     override fun getPanelName(): String = "首选项"
 

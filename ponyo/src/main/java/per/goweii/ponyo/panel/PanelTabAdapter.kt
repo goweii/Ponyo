@@ -38,7 +38,7 @@ class PanelTabAdapter(
     override fun getItemCount(): Int = datas.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TabHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_tab, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.ponyo_item_tab, parent, false)
         return TabHolder(view)
     }
 

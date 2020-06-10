@@ -6,7 +6,7 @@ import per.goweii.ponyo.R
 import per.goweii.ponyo.panel.BasePanel
 
 class ActiStackPanel: BasePanel() {
-    override fun getPanelLayoutRes(): Int = R.layout.panel_actistack
+    override fun getPanelLayoutRes(): Int = R.layout.ponyo_panel_actistack
 
     override fun getPanelName(): String = "活动栈"
 

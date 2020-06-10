@@ -39,7 +39,7 @@
             android:clipToPadding="false"
             android:paddingTop="75dp"
             tools:itemCount="20"
-            tools:listitem="@layout/item_log" />
+            tools:listitem="@layout/ponyo_item_log" />
 
         <com.scwang.smart.refresh.footer.ClassicsFooter
             android:layout_width="match_parent"
@@ -67,14 +67,14 @@
         android:layout_alignParentBottom="true"
         android:layout_margin="5dp"
         android:alpha="0.8"
-        android:background="@drawable/log_more_bg"
+        android:background="@drawable/ponyo_log_more_bg"
         android:gravity="center"
         android:paddingStart="10dp"
         android:paddingTop="5dp"
         android:paddingEnd="10dp"
         android:paddingBottom="5dp"
         android:text="去底部"
-        android:textColor="@color/colorOnPrimary"
+        android:textColor="@color/ponyo_colorOnPrimary"
         android:textSize="12sp"
         android:visibility="invisible"
         tools:visibility="visible" />
@@ -98,10 +98,10 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@color/colorLogAssert"
+                android:background="@color/ponyo_colorLogAssert"
                 android:checked="true"
                 android:text="A"
-                android:textColor="@color/colorOnForeground"
+                android:textColor="@color/ponyo_colorOnForeground"
                 android:textSize="12sp" />
 
             <CheckBox
@@ -109,10 +109,10 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@color/colorLogError"
+                android:background="@color/ponyo_colorLogError"
                 android:checked="true"
                 android:text="E"
-                android:textColor="@color/colorOnForeground"
+                android:textColor="@color/ponyo_colorOnForeground"
                 android:textSize="12sp" />
 
             <CheckBox
@@ -120,10 +120,10 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@color/colorLogWarn"
+                android:background="@color/ponyo_colorLogWarn"
                 android:checked="true"
                 android:text="W"
-                android:textColor="@color/colorOnForeground"
+                android:textColor="@color/ponyo_colorOnForeground"
                 android:textSize="12sp" />
 
             <CheckBox
@@ -131,10 +131,10 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@color/colorLogInfo"
+                android:background="@color/ponyo_colorLogInfo"
                 android:checked="true"
                 android:text="I"
-                android:textColor="@color/colorOnForeground"
+                android:textColor="@color/ponyo_colorOnForeground"
                 android:textSize="12sp" />
 
             <CheckBox
@@ -142,10 +142,10 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@color/colorLogDebug"
+                android:background="@color/ponyo_colorLogDebug"
                 android:checked="true"
                 android:text="D"
-                android:textColor="@color/colorOnForeground"
+                android:textColor="@color/ponyo_colorOnForeground"
                 android:textSize="12sp" />
 
             <CheckBox
@@ -153,10 +153,10 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@color/colorLogVisible"
+                android:background="@color/ponyo_colorLogVisible"
                 android:checked="true"
                 android:text="V"
-                android:textColor="@color/colorOnForeground"
+                android:textColor="@color/ponyo_colorOnForeground"
                 android:textSize="12sp" />
 
         </LinearLayout>
@@ -194,7 +194,7 @@
                     android:alpha="0.8"
                     android:gravity="center"
                     android:text="TAG"
-                    android:textColor="@color/colorOnForeground"
+                    android:textColor="@color/ponyo_colorOnForeground"
                     android:textSize="12sp" />
 
                 <EditText
@@ -205,7 +205,7 @@
                     android:layout_weight="1"
                     android:background="#00000000"
                     android:gravity="center_vertical"
-                    android:textColor="@color/colorOnForeground"
+                    android:textColor="@color/ponyo_colorOnForeground"
                     android:textSize="12sp"
                     tools:text="Ponyo" />
 
@@ -236,7 +236,7 @@
                     android:alpha="0.8"
                     android:gravity="center"
                     android:text="搜索"
-                    android:textColor="@color/colorOnForeground"
+                    android:textColor="@color/ponyo_colorOnForeground"
                     android:textSize="12sp" />
 
                 <EditText
@@ -247,7 +247,7 @@
                     android:layout_weight="1"
                     android:background="#00000000"
                     android:gravity="center_vertical"
-                    android:textColor="@color/colorOnForeground"
+                    android:textColor="@color/ponyo_colorOnForeground"
                     android:textSize="12sp"
                     tools:text="Ponyo" />
 
@@ -287,7 +287,7 @@
                     android:alpha="0.8"
                     android:gravity="center"
                     android:text="快捷筛选"
-                    android:textColor="@color/colorOnForeground"
+                    android:textColor="@color/ponyo_colorOnForeground"
                     android:textSize="14sp" />
 
                 <TextView
@@ -297,7 +297,7 @@
                     android:alpha="0.8"
                     android:gravity="center"
                     android:text="复制"
-                    android:textColor="@color/colorOnForeground"
+                    android:textColor="@color/ponyo_colorOnForeground"
                     android:textSize="12sp" />
 
                 <TextView
@@ -306,7 +306,7 @@
                     android:layout_height="30dp"
                     android:alpha="0.8"
                     android:gravity="center"
-                    android:textColor="@color/colorOnForeground"
+                    android:textColor="@color/ponyo_colorOnForeground"
                     android:textSize="12sp"
                     tools:text="筛选Thread:main" />
 
@@ -316,7 +316,7 @@
                     android:layout_height="30dp"
                     android:alpha="0.8"
                     android:gravity="center"
-                    android:textColor="@color/colorOnForeground"
+                    android:textColor="@color/ponyo_colorOnForeground"
                     android:textSize="12sp"
                     tools:text="筛选TAG:Ponyo" />
 
@@ -326,7 +326,7 @@
                     android:layout_height="30dp"
                     android:alpha="0.8"
                     android:gravity="center"
-                    android:textColor="@color/colorOnForeground"
+                    android:textColor="@color/ponyo_colorOnForeground"
                     android:textSize="12sp"
                     tools:text="筛选Class:Ponyo." />
 
@@ -336,7 +336,7 @@
                     android:layout_height="30dp"
                     android:alpha="0.8"
                     android:gravity="center"
-                    android:textColor="@color/colorOnForeground"
+                    android:textColor="@color/ponyo_colorOnForeground"
                     android:textSize="12sp"
                     tools:text="筛选File:Ponyo.kt" />
 

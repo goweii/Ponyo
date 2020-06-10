@@ -33,7 +33,7 @@ class FileTabAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FileHolder {
         val view =
-            LayoutInflater.from(parent.context).inflate(R.layout.item_tab, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.ponyo_item_tab, parent, false)
         return FileHolder(view)
     }
 

@@ -5,7 +5,6 @@ import android.widget.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import per.goweii.ponyo.R
-import per.goweii.ponyo.log.Ponlog
 import per.goweii.ponyo.panel.BasePanel
 
 class FilePanel : BasePanel() {
@@ -32,7 +31,7 @@ class FilePanel : BasePanel() {
     private lateinit var tv_file_open_text_by_self: TextView
     private lateinit var tv_file_open_text_by_system: TextView
 
-    override fun getPanelLayoutRes(): Int = R.layout.panel_file
+    override fun getPanelLayoutRes(): Int = R.layout.ponyo_panel_file
 
     override fun getPanelName(): String = "文件"
 

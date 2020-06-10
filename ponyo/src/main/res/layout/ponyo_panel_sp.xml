@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:background="@color/colorBackground">
+    tools:background="@color/ponyo_colorBackground">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_sp_name"
@@ -13,7 +13,7 @@
         tools:itemCount="5"
         tools:orientation="horizontal"
         tools:layoutManager="LinearLayoutManager"
-        tools:listitem="@layout/item_tab" />
+        tools:listitem="@layout/ponyo_item_tab" />
 
     <View
         android:layout_width="match_parent"
@@ -25,6 +25,6 @@
         android:layout_height="match_parent"
         tools:itemCount="20"
         tools:layoutManager="LinearLayoutManager"
-        tools:listitem="@layout/item_sp" />
+        tools:listitem="@layout/ponyo_item_sp" />
 
 </LinearLayout>

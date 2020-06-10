@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBackground">
+    android:background="@color/ponyo_colorBackground">
 
     <HorizontalScrollView
         android:layout_width="match_parent"
@@ -15,10 +15,10 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/tv_actistack"
+                android:id="@+id/tv_device"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/colorOnBackground"
+                android:textColor="@color/ponyo_colorOnBackground"
                 android:textSize="12sp"
                 android:typeface="monospace" />
 

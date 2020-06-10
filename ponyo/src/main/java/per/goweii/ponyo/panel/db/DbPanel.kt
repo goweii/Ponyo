@@ -18,7 +18,7 @@ class DbPanel : BasePanel() {
     private lateinit var rv_db_key: RecyclerView
     private lateinit var rv_db_value: RecyclerView
 
-    override fun getPanelLayoutRes(): Int = R.layout.panel_db
+    override fun getPanelLayoutRes(): Int = R.layout.ponyo_panel_db
 
     override fun getPanelName(): String = "数据库"
 

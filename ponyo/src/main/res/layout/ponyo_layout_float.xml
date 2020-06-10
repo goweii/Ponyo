@@ -8,7 +8,7 @@
         android:id="@+id/wrapper"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorBackground"
+        android:background="@color/ponyo_colorBackground"
         tools:ignore="UselessParent">
 
         <per.goweii.ponyo.IconView
@@ -35,7 +35,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
-                android:background="@color/colorDivide" />
+                android:background="@color/ponyo_colorDivide" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/panel_tab"
@@ -45,7 +45,7 @@
                 android:padding="5dp"
                 tools:itemCount="5"
                 tools:layoutManager="LinearLayoutManager"
-                tools:listitem="@layout/item_tab"
+                tools:listitem="@layout/ponyo_item_tab"
                 tools:orientation="horizontal" />
 
         </LinearLayout>

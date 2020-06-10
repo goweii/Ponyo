@@ -8,7 +8,6 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.*
-import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
 import per.goweii.ponyo.R
@@ -18,7 +17,7 @@ class LogPanel : BasePanel() {
 
     private lateinit var rv_log: RecyclerView
 
-    override fun getPanelLayoutRes(): Int = R.layout.panel_log
+    override fun getPanelLayoutRes(): Int = R.layout.ponyo_panel_log
 
     override fun getPanelName(): String = "日志"
 

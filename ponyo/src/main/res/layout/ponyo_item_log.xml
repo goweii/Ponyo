@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/colorBackground"
+    android:background="@color/ponyo_colorBackground"
     android:orientation="vertical"
     android:padding="5dp">
 
@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:includeFontPadding="false"
         android:alpha="0.5"
-        tools:textColor="@color/colorLogDebug"
+        tools:textColor="@color/ponyo_colorLogDebug"
         android:textSize="10sp"
         tools:text="DEBUG 2020-05-01T08:47:39.000+0800" />
 
@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:includeFontPadding="false"
         android:alpha="0.5"
-        tools:textColor="@color/colorLogDebug"
+        tools:textColor="@color/ponyo_colorLogDebug"
         android:textSize="10sp"
         tools:text="LogTag [main]" />
 
@@ -33,7 +33,7 @@
         android:layout_height="wrap_content"
         android:includeFontPadding="false"
         android:alpha="0.5"
-        tools:textColor="@color/colorLogDebug"
+        tools:textColor="@color/ponyo_colorLogDebug"
         android:textSize="10sp"
         tools:text="Activiy.onCreate(MainActivity.kt:30)" />
 
@@ -42,7 +42,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:includeFontPadding="false"
-        tools:textColor="@color/colorLogDebug"
+        tools:textColor="@color/ponyo_colorLogDebug"
         android:textSize="11sp"
         tools:text="this is a log" />
 

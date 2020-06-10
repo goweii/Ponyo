@@ -25,7 +25,7 @@ class TmAdapter : RecyclerView.Adapter<TmAdapter.TmHolder>() {
     override fun getItemCount(): Int = datas.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TmHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_tm, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.ponyo_item_tm, parent, false)
         return TmHolder(view)
     }
 

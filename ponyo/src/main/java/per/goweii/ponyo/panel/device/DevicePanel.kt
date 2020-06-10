@@ -10,7 +10,7 @@ class DevicePanel: BasePanel() {
 
     private lateinit var tv_device: TextView
 
-    override fun getPanelLayoutRes(): Int = R.layout.panel_device
+    override fun getPanelLayoutRes(): Int = R.layout.ponyo_panel_device
 
     override fun getPanelName(): String = "设备信息"
 

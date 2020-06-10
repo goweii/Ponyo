@@ -19,5 +19,6 @@
         <activity android:name=".appstack.ActiStackActivity" />
         <activity android:name=".crash.TestCrashActivity" />
         <activity android:name=".crash.CrashOnCreateActivity" />
+        <activity android:name=".crash.CrashOnDrawActivity" />
     </application>
 </manifest>

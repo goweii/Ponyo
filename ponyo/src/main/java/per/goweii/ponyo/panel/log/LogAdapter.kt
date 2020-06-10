@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import per.goweii.ponyo.R
 import per.goweii.ponyo.log.Ponlog
-import java.text.SimpleDateFormat
 
 /**
  * @author CuiZhen
@@ -60,7 +59,7 @@ class LogAdapter : RecyclerView.Adapter<LogAdapter.LogHolder>() {
     override fun getItemCount(): Int = datas.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LogHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_log, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.ponyo_item_log, parent, false)
         return LogHolder(view)
     }
 
@@ -92,12 +91,12 @@ class LogAdapter : RecyclerView.Adapter<LogAdapter.LogHolder>() {
         @SuppressLint("SetTextI18n")
         fun bindData(data: LogEntity) {
             val color = when (data.level) {
-                Ponlog.Level.ASSERT -> itemView.context.resources.getColor(R.color.colorLogAssert)
-                Ponlog.Level.ERROR -> itemView.context.resources.getColor(R.color.colorLogError)
-                Ponlog.Level.WARN -> itemView.context.resources.getColor(R.color.colorLogWarn)
-                Ponlog.Level.INFO -> itemView.context.resources.getColor(R.color.colorLogInfo)
-                Ponlog.Level.DEBUG -> itemView.context.resources.getColor(R.color.colorLogDebug)
-                Ponlog.Level.VERBOSE -> itemView.context.resources.getColor(R.color.colorLogVisible)
+                Ponlog.Level.ASSERT -> itemView.context.resources.getColor(R.color.ponyo_colorLogAssert)
+                Ponlog.Level.ERROR -> itemView.context.resources.getColor(R.color.ponyo_colorLogError)
+                Ponlog.Level.WARN -> itemView.context.resources.getColor(R.color.ponyo_colorLogWarn)
+                Ponlog.Level.INFO -> itemView.context.resources.getColor(R.color.ponyo_colorLogInfo)
+                Ponlog.Level.DEBUG -> itemView.context.resources.getColor(R.color.ponyo_colorLogDebug)
+                Ponlog.Level.VERBOSE -> itemView.context.resources.getColor(R.color.ponyo_colorLogVisible)
             }
             tv_log_time.setTextColor(color)
             tv_log_tag.setTextColor(color)

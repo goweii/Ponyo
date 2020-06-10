@@ -24,7 +24,7 @@ class FileNameAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FileHolder {
         val view =
-            LayoutInflater.from(parent.context).inflate(R.layout.item_file_name, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.ponyo_item_file_name, parent, false)
         return FileHolder(view)
     }
 

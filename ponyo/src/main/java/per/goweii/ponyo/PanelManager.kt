@@ -54,7 +54,7 @@ internal class PanelManager(private val context: Context) {
             y = 0
         }
     private val floatView: View by lazy {
-        LayoutInflater.from(context).inflate(R.layout.layout_float, null).apply {
+        LayoutInflater.from(context).inflate(R.layout.ponyo_layout_float, null).apply {
             systemUiVisibility = systemUiVisibility or
                     View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
                     View.SYSTEM_UI_FLAG_LAYOUT_STABLE

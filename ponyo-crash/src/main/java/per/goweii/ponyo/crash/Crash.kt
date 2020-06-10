@@ -1,5 +1,6 @@
 package per.goweii.ponyo.crash
 
+import android.app.Activity
 import android.app.Application
 import android.os.Handler
 import android.os.Looper
@@ -21,6 +22,12 @@ class Crash {
                     }
                 }
             }
+        }
+
+        fun setCrashActivity(cls: Class<out Activity>) {
+            val defaultHandler = Thread.getDefaultUncaughtExceptionHandler()
+            if (defaultHandler !is CrashHandler) return
+            defaultHandler.customCrashActivity = cls
         }
     }
 }

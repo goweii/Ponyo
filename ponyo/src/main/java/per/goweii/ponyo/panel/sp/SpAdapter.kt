@@ -20,7 +20,7 @@ class SpAdapter : RecyclerView.Adapter<SpAdapter.SpHolder>() {
     override fun getItemCount(): Int = datas.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SpHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_sp, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.ponyo_item_sp, parent, false)
         return SpHolder(view)
     }
 

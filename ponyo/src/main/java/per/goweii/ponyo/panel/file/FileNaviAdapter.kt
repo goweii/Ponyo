@@ -32,7 +32,7 @@ class FileNaviAdapter(
     override fun getItemCount(): Int = datas.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FileHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_file_navi, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.ponyo_item_file_navi, parent, false)
         return FileHolder(view)
     }
 

@@ -8,13 +8,13 @@
         android:id="@+id/tv_sp_key"
         android:layout_width="120dp"
         android:layout_height="match_parent"
-        android:background="@drawable/rect_bg"
+        android:background="@drawable/ponyo_rect_bg"
         android:ellipsize="end"
         android:paddingStart="5dp"
         android:paddingTop="3dp"
         android:paddingEnd="5dp"
         android:paddingBottom="3dp"
-        android:textColor="@color/colorOnBackground"
+        android:textColor="@color/ponyo_colorOnBackground"
         android:textSize="12sp"
         tools:text="1321321321" />
 
@@ -22,14 +22,14 @@
         android:id="@+id/tv_sp_value"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/rect_bg"
+        android:background="@drawable/ponyo_rect_bg"
         android:maxLines="10"
         android:ellipsize="end"
         android:paddingStart="5dp"
         android:paddingTop="3dp"
         android:paddingEnd="5dp"
         android:paddingBottom="3dp"
-        android:textColor="@color/colorOnBackground"
+        android:textColor="@color/ponyo_colorOnBackground"
         android:textSize="12sp"
         tools:text="1321321321" />
 

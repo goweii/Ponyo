@@ -24,14 +24,12 @@ class TestCrashActivity : AppCompatActivity() {
         btn_start_on_create_error_activity.setOnClickListener {
             startActivity(Intent(this, CrashOnCreateActivity::class.java))
         }
+        btn_start_on_draw_error_activity.setOnClickListener {
+            startActivity(Intent(this, CrashOnDrawActivity::class.java))
+        }
         btn_add_on_draw_error_view.setOnClickListener {
             val view = CrashOnDrawView(this)
             fl_add_on_draw_error_view.addView(view)
         }
-    }
-
-    override fun onStop() {
-        super.onStop()
-        throw RuntimeException("onStop error")
     }
 }

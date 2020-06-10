@@ -8,7 +8,7 @@ import per.goweii.ponyo.panel.BasePanel
 
 class TmPanel: BasePanel() {
 
-    override fun getPanelLayoutRes(): Int = R.layout.panel_tm
+    override fun getPanelLayoutRes(): Int = R.layout.ponyo_panel_tm
 
     override fun getPanelName(): String = "耗时"
 
