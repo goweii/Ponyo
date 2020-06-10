@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import per.goweii.ponyo.panel.actistack.ActiStackPanel
 import per.goweii.ponyo.panel.db.DbPanel
+import per.goweii.ponyo.panel.device.DevicePanel
 import per.goweii.ponyo.panel.file.FilePanel
 import per.goweii.ponyo.panel.log.LogPanel
 import per.goweii.ponyo.panel.sp.SpPanel
@@ -25,6 +26,7 @@ object PanelProvider {
         add(DbPanel())
         add(SpPanel())
         add(FilePanel())
+        add(DevicePanel())
     }
 
     fun attach(container: FrameLayout, tab: RecyclerView) {

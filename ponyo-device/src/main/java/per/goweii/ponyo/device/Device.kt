@@ -1,15 +1,15 @@
 package per.goweii.ponyo.device
 
-import android.Manifest
 import android.app.Application
 import android.content.Context
 import android.content.pm.PackageInfo
-import android.content.res.Resources
-import android.net.ConnectivityManager
+import android.graphics.Point
 import android.os.Build
+import android.provider.Settings
 import android.telephony.TelephonyManager
-import android.util.DisplayMetrics
-import androidx.annotation.RequiresPermission
+import android.view.WindowManager
+import java.security.MessageDigest
+import java.security.NoSuchAlgorithmException
 
 object Device {
 
@@ -21,100 +21,71 @@ object Device {
         this.application = application
     }
 
-    /**
-     * 获取手机厂商
-     */
+    override fun toString(): String {
+        return """
+            |唯一标识:$uniqueId
+            |手机制造商:$manufacturer
+            |手机品牌:$brand
+            |设备型号:$model
+            |设备名:$device
+            |安卓ID:$androidId
+            |屏幕尺寸:${size.run { "[$x,$y]" }}
+            |系统版本:Android$sysVersionName($sysVersionCode)
+            |运营商:$operatorName
+            |应用包名:$packageName
+            |应用版本名:$appVersionName
+            |应用版本号:$appVersionCode
+        """.trimMargin()
+    }
+
+    val uniqueId : String
+        get() {
+            return md5("$manufacturer-$brand-$model-$device-$androidId-$size")
+        }
+
+    val androidId: String
+        get() {
+            return Settings.System.getString(application.contentResolver, Settings.Secure.ANDROID_ID)
+        }
+
+    val device: String
+        get() {
+            return Build.DEVICE
+        }
+
+    val manufacturer: String
+        get() {
+            return Build.MANUFACTURER
+        }
+
     val brand: String
         get() {
             return Build.BRAND
         }
 
-    /**
-     * 获取设备型号
-     */
     val model: String
         get() {
             return Build.MODEL
         }
 
-    /**
-     * 获取当前系统版本
-     */
-    val version: String
+    val sysVersionName: String
         get() {
             return Build.VERSION.RELEASE
         }
 
-    /**
-     * 获取当前系统版本
-     */
+    val sysVersionCode: Int
+        get() {
+            return Build.VERSION.SDK_INT
+        }
+
     val operatorName: String
         get() {
-            val tm = application.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-            return tm.simOperatorName
+            return telephonyManager.simOperatorName
         }
 
-    /**
-     * 获取联网方式
-     */
-    val networkState: String
-        @RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)
+    val size: Point
         get() {
-            var strNetworkType = "Unknown"
-            val connManager =
-                application.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-            val networkInfo = connManager.activeNetworkInfo
-            if (networkInfo != null && networkInfo.isAvailable) {
-                if (networkInfo.type == ConnectivityManager.TYPE_WIFI) {
-                    strNetworkType = "WIFI"
-                } else if (networkInfo.type == ConnectivityManager.TYPE_MOBILE) {
-                    val _strSubTypeName = networkInfo.subtypeName
-                    val networkType = networkInfo.subtype
-                    strNetworkType = when (networkType) {
-                        TelephonyManager.NETWORK_TYPE_GPRS,
-                        TelephonyManager.NETWORK_TYPE_EDGE,
-                        TelephonyManager.NETWORK_TYPE_CDMA,
-                        TelephonyManager.NETWORK_TYPE_1xRTT,
-                        TelephonyManager.NETWORK_TYPE_IDEN -> "2G"
-                        TelephonyManager.NETWORK_TYPE_UMTS,
-                        TelephonyManager.NETWORK_TYPE_EVDO_0,
-                        TelephonyManager.NETWORK_TYPE_EVDO_A,
-                        TelephonyManager.NETWORK_TYPE_HSDPA,
-                        TelephonyManager.NETWORK_TYPE_HSUPA,
-                        TelephonyManager.NETWORK_TYPE_HSPA,
-                        TelephonyManager.NETWORK_TYPE_EVDO_B,
-                        TelephonyManager.NETWORK_TYPE_EHRPD,
-                        TelephonyManager.NETWORK_TYPE_HSPAP -> "3G"
-                        TelephonyManager.NETWORK_TYPE_LTE -> "4G"
-                        else -> {
-                            if (_strSubTypeName.equals("TD-SCDMA", true) ||
-                                _strSubTypeName.equals("WCDMA", true) ||
-                                _strSubTypeName.equals("CDMA2000", true)
-                            ) {
-                                "3G"
-                            } else {
-                                _strSubTypeName
-                            }
-                        }
-                    }
-                }
-            }
-            return strNetworkType
-        }
-
-    val displayMetrics: DisplayMetrics
-        get() {
-            return Resources.getSystem().displayMetrics
-        }
-
-    val widthPixels: Int
-        get() {
-            return displayMetrics.widthPixels
-        }
-
-    val heightPixels: Int
-        get() {
-            return displayMetrics.heightPixels
+            return Point().apply { windowManager.defaultDisplay.getRealSize(this) }
         }
 
     val packageName: String
@@ -122,17 +93,13 @@ object Device {
             return application.packageName
         }
 
-    val packageInfo: PackageInfo
+    val appVersionName: String
         get() {
-            return application.packageManager.getPackageInfo(packageName, 0)!!
-        }
-
-    val versionName: String
-        get() {
+            packageInfo.firstInstallTime
             return packageInfo.versionName
         }
 
-    val versionCode: Long
+    val appVersionCode: Long
         get() {
             return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
                 packageInfo.versionCode.toLong()
@@ -140,5 +107,36 @@ object Device {
                 packageInfo.longVersionCode
             }
         }
+
+    private val packageInfo: PackageInfo
+        get() {
+            return application.packageManager.getPackageInfo(packageName, 0)!!
+        }
+
+    private val telephonyManager: TelephonyManager
+        get() {
+            return application.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+        }
+
+    private val windowManager: WindowManager
+        get() {
+            return application.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        }
+
+    private fun md5(text: String): String {
+        return try {
+            val md5 = MessageDigest.getInstance("MD5")
+            val digest = md5.digest(text.toByteArray())
+            val sb = StringBuilder()
+            for (b in digest) {
+                val s = Integer.toHexString(b.toInt() and 0xff)
+                if (s.length == 1) sb.append("0")
+                sb.append(s)
+            }
+            sb.toString()
+        } catch (e: NoSuchAlgorithmException) {
+            text.replace(" ", "")
+        }
+    }
 
 }
