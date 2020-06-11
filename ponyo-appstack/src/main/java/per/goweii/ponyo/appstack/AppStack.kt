@@ -9,7 +9,7 @@ import androidx.lifecycle.ProcessLifecycleOwner
 object AppStack : LifecycleObserver {
 
     lateinit var application: Application
-        internal set
+        private set
 
     private var appLifecycleListeners = arrayListOf<AppLifecycleListener>()
 

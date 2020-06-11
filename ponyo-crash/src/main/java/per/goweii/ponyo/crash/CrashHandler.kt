@@ -11,6 +11,7 @@ import android.os.Process
 import android.view.Choreographer
 import android.widget.Toast
 import per.goweii.ponyo.log.Ponlog
+import java.lang.ref.WeakReference
 
 /**
  * @author CuiZhen
@@ -108,7 +109,7 @@ class CrashHandler(
         }
         val iterator = activityStacks.iterator()
         while (iterator.hasNext()) {
-            iterator.next().finish()
+            iterator.next().get()?.finish()
             iterator.remove()
         }
         Process.killProcess(Process.myPid())
@@ -119,7 +120,8 @@ class CrashHandler(
         fun findCauseActivity(throwable: Throwable): Activity? {
             for (element in throwable.stackTrace) {
                 for (i in (activityStacks.size - 1) downTo 0) {
-                    val activity = activityStacks[i]
+                    val ref = activityStacks[i]
+                    val activity = ref.get() ?: continue
                     if (activity.javaClass.name == element.className) {
                         return activity
                     }
@@ -135,10 +137,20 @@ class CrashHandler(
         } ?: false
     }
 
-    private val activityStacks = mutableListOf<Activity>()
+    private val activityStacks = mutableListOf<WeakReference<Activity>>()
+        get() {
+            val iterator = field.iterator()
+            while (iterator.hasNext()) {
+                val ref = iterator.next()
+                if (ref.get() == null) {
+                    iterator.remove()
+                }
+            }
+            return field
+        }
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-        activityStacks.add(activity)
+        activityStacks.add(WeakReference(activity))
     }
 
     override fun onActivityStarted(activity: Activity) {
@@ -157,6 +169,12 @@ class CrashHandler(
     }
 
     override fun onActivityDestroyed(activity: Activity) {
-        activityStacks.remove(activity)
+        for (i in activityStacks.size - 1 downTo 0) {
+            val ref = activityStacks[i]
+            if (ref.get() == activity) {
+                activityStacks.removeAt(i)
+                break
+            }
+        }
     }
 }

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Application
 import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
+import java.lang.ref.WeakReference
 import kotlin.text.StringBuilder
 
 object ActivityStack : Application.ActivityLifecycleCallbacks {
@@ -11,6 +12,16 @@ object ActivityStack : Application.ActivityLifecycleCallbacks {
     private var activityLifecycleListeners = arrayListOf<ActivityLifecycleListener>()
 
     val activityInfos = arrayListOf<ActivityInfo>()
+        get() {
+            val iterator = field.iterator()
+            while (iterator.hasNext()) {
+                val activityInfo = iterator.next()
+                if (activityInfo.activityRef.get() == null) {
+                    iterator.remove()
+                }
+            }
+            return field
+        }
 
     fun registerStackUpdateListener(listener: ActivityStackUpdateListener) {
         activityStackUpdateListeners.add(listener)
@@ -38,7 +49,7 @@ object ActivityStack : Application.ActivityLifecycleCallbacks {
             sbf.append(prefix)
             if (!isLast) sbf.append("|—")
             else sbf.append("\\—")
-            sbf.append(fragmentInfo.fragment.toString())
+            sbf.append(fragmentInfo.fragmentRef.get().toString())
             sbf.append("\n")
             fragmentInfo.fragmentStack.fragmentInfos.forEachIndexed { i, info ->
                 val prefix2 = StringBuilder(prefix)
@@ -56,7 +67,7 @@ object ActivityStack : Application.ActivityLifecycleCallbacks {
             val lasta = ai == activityInfos.size - 1
             if (!lasta) sba.append("|—")
             else sba.append("\\—")
-            sba.append(activityInfo.activity.toString())
+            sba.append(activityInfo.activityRef.get().toString())
             sba.append("\n")
             activityInfo.fragmentStack.fragmentInfos.forEachIndexed { fi, fragmentInfo ->
                 val prefix1 = StringBuilder()
@@ -84,7 +95,7 @@ object ActivityStack : Application.ActivityLifecycleCallbacks {
         if (activity is FragmentActivity) {
             activity.supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentStack, false)
         }
-        val activityInfo = ActivityInfo(activity, fragmentStack)
+        val activityInfo = ActivityInfo(WeakReference(activity), fragmentStack)
         activityInfos.add(activityInfo)
         notifyStackUpdate()
         activityLifecycleListeners.forEach { it.onCreated(activity) }
@@ -113,7 +124,7 @@ object ActivityStack : Application.ActivityLifecycleCallbacks {
         var activityInfo: ActivityInfo? = null
         for (i in activityInfos.size - 1 downTo 0) {
             val info = activityInfos[i]
-            if (info.activity == activity) {
+            if (info.activityRef.get() == activity) {
                 activityInfo = info
                 break
             }
@@ -124,6 +135,7 @@ object ActivityStack : Application.ActivityLifecycleCallbacks {
         if (activity is FragmentActivity) {
             activity.supportFragmentManager.unregisterFragmentLifecycleCallbacks(activityInfo.fragmentStack)
         }
+        activityInfo.activityRef.clear()
         notifyStackUpdate()
         activityLifecycleListeners.forEach { it.onDestroyed(activity) }
     }
