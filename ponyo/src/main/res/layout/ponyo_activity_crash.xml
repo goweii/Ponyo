@@ -10,8 +10,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
         android:gravity="center"
         android:text="出错了"
         android:textColor="@color/ponyo_colorOnBackground"
@@ -26,6 +24,7 @@
         android:gravity="center"
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
+        android:layout_marginBottom="10dp"
         android:text="复制日志"
         android:textColor="@color/ponyo_colorPrimary"
         android:textSize="15sp"
@@ -35,16 +34,14 @@
         android:id="@+id/ponyo_crash_nsv_log"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp">
+        android:layout_marginStart="15sp"
+        android:layout_marginEnd="15sp"
+        android:layout_weight="1">
 
         <TextView
             android:id="@+id/ponyo_crash_tv_error"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="15sp"
-            android:layout_marginEnd="15sp"
             android:textColor="@color/ponyo_colorOnBackground"
             android:textSize="12sp"
             android:typeface="monospace" />
@@ -55,9 +52,9 @@
         android:layout_width="match_parent"
         android:layout_height="44dp"
         android:layout_marginStart="15dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="15dp"
         android:layout_marginEnd="15dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="15dp"
         android:orientation="horizontal">
 
         <TextView
