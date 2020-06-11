@@ -8,6 +8,7 @@ import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.ponyo_activity_crash.*
+import per.goweii.ponyo.crash.Crash
 import java.io.PrintWriter
 import java.io.StringWriter
 
@@ -32,8 +33,9 @@ class CrashActivity : AppCompatActivity() {
             System.exit(10)
         }
         ponyo_crash_btn_restart.setOnClickListener {
-            restart()
+            Crash.restartApp(applicationContext)
             finish()
+            Process.killProcess(Process.myPid())
         }
         showLog()
     }
@@ -56,26 +58,5 @@ class CrashActivity : AppCompatActivity() {
             if (c[i].toInt() in 65281..65374) c[i] = (c[i] - 65248)
         }
         return String(c)
-    }
-
-    private fun restart() {
-        val pi = try {
-            applicationContext.packageManager.getPackageInfo(packageName, 0)
-        } catch (e: Exception) {
-            return
-        }
-        val resolveIntent = Intent(Intent.ACTION_MAIN, null)
-        resolveIntent.addCategory(Intent.CATEGORY_LAUNCHER)
-        resolveIntent.setPackage(pi.packageName)
-        val resolves = applicationContext.packageManager.queryIntentActivities(resolveIntent, 0)
-        val resolve0 = resolves.iterator().next()
-        if (resolve0 != null) {
-            val packageName = resolve0.activityInfo.packageName
-            val className = resolve0.activityInfo.name
-            val intent = Intent(Intent.ACTION_MAIN)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            intent.component = ComponentName(packageName, className)
-            applicationContext.startActivity(intent)
-        }
     }
 }

@@ -85,10 +85,12 @@ class CrashHandler(
                 defaultHandler?.uncaughtException(t, e)
             }
         } else {
-            if (t == Looper.getMainLooper().thread) {
-                toastOnError()
-            } else {
-                mainHandler.post { toastOnError() }
+            if (BuildConfig.DEBUG) {
+                if (t == Looper.getMainLooper().thread) {
+                    toastOnError()
+                } else {
+                    mainHandler.post { toastOnError() }
+                }
             }
         }
     }
