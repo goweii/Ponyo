@@ -1,12 +1,11 @@
-package per.goweii.ponyo.appstack
+package per.goweii.ponyo.leak
 
 import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import java.lang.ref.WeakReference
 
-class FragmentStack : FragmentManager.FragmentLifecycleCallbacks() {
-    internal var fragmentStackUpdateListener: (() -> Unit)? = null
+internal class FragmentStack : FragmentManager.FragmentLifecycleCallbacks() {
 
     val fragmentInfos = arrayListOf<FragmentInfo>()
         get() {
@@ -27,31 +26,19 @@ class FragmentStack : FragmentManager.FragmentLifecycleCallbacks() {
     ) {
         super.onFragmentAttached(fragmentManager, fragment, context)
         val fragmentStack = FragmentStack()
-        fragmentStack.fragmentStackUpdateListener = {
-            fragmentStackUpdateListener?.invoke()
-        }
         fragment.childFragmentManager.registerFragmentLifecycleCallbacks(fragmentStack, false)
         val fragmentInfo = FragmentInfo(WeakReference(fragment), fragmentStack)
         fragmentInfos.add(fragmentInfo)
-        fragmentStackUpdateListener?.invoke()
     }
 
     override fun onFragmentDetached(fm: FragmentManager, fragment: Fragment) {
         super.onFragmentDetached(fm, fragment)
-        var fragmentInfo: FragmentInfo? = null
         for (i in fragmentInfos.size - 1 downTo 0) {
             val info = fragmentInfos[i]
             if (info.fragmentRef.get() == fragment) {
-                fragmentInfo = info
+                info.destroyed = true
                 break
             }
         }
-        fragmentInfo?.let { info ->
-            fragmentInfos.remove(info)
-            info.fragmentStack.fragmentStackUpdateListener = null
-            fragment.childFragmentManager.unregisterFragmentLifecycleCallbacks(info.fragmentStack)
-            info.fragmentRef.clear()
-        }
-        fragmentStackUpdateListener?.invoke()
     }
 }

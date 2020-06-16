@@ -44,7 +44,7 @@ object ActivityStack : Application.ActivityLifecycleCallbacks {
         return "$simpleName@$hexString"
     } ?: "Unknown@0"
 
-    fun copyStack(): StringBuilder {
+    fun copyStack(includeLeaks: Boolean = false): StringBuilder {
         fun getFragStack(
             fragmentInfo: FragmentInfo,
             isLast: Boolean,
@@ -134,13 +134,14 @@ object ActivityStack : Application.ActivityLifecycleCallbacks {
                 break
             }
         }
-        activityInfo ?: return
-        activityInfos.remove(activityInfo)
-        activityInfo.fragmentStack.fragmentStackUpdateListener = null
-        if (activity is FragmentActivity) {
-            activity.supportFragmentManager.unregisterFragmentLifecycleCallbacks(activityInfo.fragmentStack)
+        activityInfo?.let { info ->
+            activityInfos.remove(info)
+            info.fragmentStack.fragmentStackUpdateListener = null
+            if (activity is FragmentActivity) {
+                activity.supportFragmentManager.unregisterFragmentLifecycleCallbacks(info.fragmentStack)
+            }
+            info.activityRef.clear()
         }
-        activityInfo.activityRef.clear()
         notifyStackUpdate()
         activityLifecycleListeners.forEach { it.onDestroyed(activity) }
     }
