@@ -5,7 +5,6 @@ import android.app.Application
 import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
 import java.lang.ref.WeakReference
-import kotlin.text.StringBuilder
 
 object ActivityStack : Application.ActivityLifecycleCallbacks {
     private var activityStackUpdateListeners = arrayListOf<ActivityStackUpdateListener>()
@@ -39,6 +38,12 @@ object ActivityStack : Application.ActivityLifecycleCallbacks {
         activityLifecycleListeners.remove(listener)
     }
 
+    private fun Any?.nameWithHex(): String = this?.run {
+        val simpleName = this::class.java.simpleName
+        val hexString = Integer.toHexString(System.identityHashCode(this))
+        return "$simpleName@$hexString"
+    } ?: "Unknown@0"
+
     fun copyStack(): StringBuilder {
         fun getFragStack(
             fragmentInfo: FragmentInfo,
@@ -49,7 +54,7 @@ object ActivityStack : Application.ActivityLifecycleCallbacks {
             sbf.append(prefix)
             if (!isLast) sbf.append("|—")
             else sbf.append("\\—")
-            sbf.append(fragmentInfo.fragmentRef.get().toString())
+            sbf.append(fragmentInfo.fragmentRef.get().nameWithHex())
             sbf.append("\n")
             fragmentInfo.fragmentStack.fragmentInfos.forEachIndexed { i, info ->
                 val prefix2 = StringBuilder(prefix)
@@ -67,7 +72,7 @@ object ActivityStack : Application.ActivityLifecycleCallbacks {
             val lasta = ai == activityInfos.size - 1
             if (!lasta) sba.append("|—")
             else sba.append("\\—")
-            sba.append(activityInfo.activityRef.get().toString())
+            sba.append(activityInfo.activityRef.get().nameWithHex())
             sba.append("\n")
             activityInfo.fragmentStack.fragmentInfos.forEachIndexed { fi, fragmentInfo ->
                 val prefix1 = StringBuilder()

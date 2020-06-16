@@ -8,8 +8,6 @@ import kotlinx.coroutines.*
 import per.goweii.ponyo.log.LogBody
 import per.goweii.ponyo.log.LogPrinter
 import per.goweii.ponyo.log.Ponlog
-import per.goweii.ponyo.panel.log.LogManager.match
-import per.goweii.ponyo.panel.log.LogManager.matchTag
 import java.util.*
 
 /**
