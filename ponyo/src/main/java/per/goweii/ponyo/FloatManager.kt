@@ -132,12 +132,10 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
     }
 
     fun show() {
-        if (isShown()) return
         attach()
     }
 
     fun dismiss() {
-        if (!isShown()) return
         if (panelManager.isShown()) {
             panelManager.onDetachListener {
                 panelManager.onDetachListener(null)

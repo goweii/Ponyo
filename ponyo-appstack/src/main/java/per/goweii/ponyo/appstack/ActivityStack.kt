@@ -83,12 +83,12 @@ class ActivityStack private constructor() {
             else sba.append("\\—")
             sba.append(activityInfo.get().nameWithHex())
             sba.append("\n")
-            activityInfo.fragmentStack?.fragmentRefs?.forEachIndexed { fi, fragmentInfo ->
+            activityInfo.fragmentStack?.fragments?.forEachIndexed { fi, fragmentInfo ->
                 val prefix1 = StringBuilder()
                 if (!lasta) prefix1.append("|")
                 else prefix1.append(" ")
                 prefix1.append(" ")
-                val lastf = fi == activityInfo.fragmentStack.fragmentRefs.size - 1
+                val lastf = fi == activityInfo.fragmentStack.fragments.size - 1
                 sba.append(getFragStack(fragmentInfo, lastf, prefix1))
             }
         }

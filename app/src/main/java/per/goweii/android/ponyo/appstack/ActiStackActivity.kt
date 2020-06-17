@@ -4,8 +4,8 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_acti_stack.*
 import per.goweii.android.ponyo.R
-import per.goweii.ponyo.appstack.ActivityStack
 import per.goweii.ponyo.appstack.ActivityStackUpdateListener
+import per.goweii.ponyo.appstack.AppStack
 import per.goweii.ponyo.log.Ponlog
 
 class ActiStackActivity : AppCompatActivity(), ActivityStackUpdateListener {
@@ -14,7 +14,7 @@ class ActiStackActivity : AppCompatActivity(), ActivityStackUpdateListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_acti_stack)
 
-        ActivityStack.registerStackUpdateListener(this)
+        AppStack.activityStack.registerStackUpdateListener(this)
 
         supportFragmentManager.apply {
             beginTransaction().apply {
@@ -28,11 +28,11 @@ class ActiStackActivity : AppCompatActivity(), ActivityStackUpdateListener {
 
     override fun onDestroy() {
         super.onDestroy()
-        ActivityStack.unregisterStackUpdateListener(this)
+        AppStack.activityStack.unregisterStackUpdateListener(this)
     }
 
     override fun onStackUpdate() {
-        tv_activity_stack_log.text = ActivityStack.copyStack()
-        Ponlog.d {ActivityStack.copyStack() }
+        tv_activity_stack_log.text = AppStack.activityStack.copyStack()
+        Ponlog.d {AppStack.activityStack.copyStack() }
     }
 }

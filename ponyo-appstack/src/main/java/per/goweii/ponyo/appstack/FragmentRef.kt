@@ -1,10 +1,10 @@
 package per.goweii.ponyo.appstack
 
-import android.app.Fragment
+import androidx.fragment.app.Fragment
 import java.lang.ref.WeakReference
 
-data class FragmentRef(
-    val fragment: Fragment,
+class FragmentRef(
+    fragment: Fragment,
     val fragmentStack: FragmentStack
 ) : WeakReference<Fragment>(fragment) {
     companion object {
