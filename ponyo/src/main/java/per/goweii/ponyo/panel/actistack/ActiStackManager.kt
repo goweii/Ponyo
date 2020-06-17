@@ -1,8 +1,8 @@
 package per.goweii.ponyo.panel.actistack
 
 import android.widget.TextView
-import per.goweii.ponyo.appstack.ActivityStack
 import per.goweii.ponyo.appstack.ActivityStackUpdateListener
+import per.goweii.ponyo.appstack.AppStack
 
 object ActiStackManager: ActivityStackUpdateListener{
 
@@ -10,10 +10,10 @@ object ActiStackManager: ActivityStackUpdateListener{
 
     fun attach(tv: TextView){
         tv_actistack = tv
-        tv.text = ActivityStack.copyStack()
+        tv.text = AppStack.activityStack.copyStack()
     }
 
     override fun onStackUpdate() {
-        tv_actistack?.text = ActivityStack.copyStack()
+        tv_actistack?.text = AppStack.activityStack.copyStack()
     }
 }

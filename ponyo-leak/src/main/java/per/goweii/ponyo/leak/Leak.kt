@@ -20,14 +20,14 @@ object Leak {
             return "$simpleName@$hexString"
         }
 
-    fun findLeakClass(): List<LeakInfo> {
-        val leakInfos = arrayListOf<LeakInfo>()
+    fun findLeakClass(): List<LeakRef> {
+        val leakInfos = arrayListOf<LeakRef>()
         ActivityStack.activityInfos.forEach { activityInfo ->
             if (activityInfo.destroyed) {
                 activityInfo.activityRef.get()?.let { activity ->
                     val objTag = activity.identity
                     val objRef = WeakReference<Any>(activity)
-                    val leakInfo = LeakInfo(objTag, objRef)
+                    val leakInfo = LeakRef(objTag, objRef)
                     leakInfos.add(leakInfo)
                 }
             }
@@ -36,7 +36,7 @@ object Leak {
                     fragmentInfo.fragmentRef.get()?.let { fragment ->
                         val objTag = fragment.identity
                         val objRef = WeakReference<Any>(fragment)
-                        val leakInfo = LeakInfo(objTag, objRef)
+                        val leakInfo = LeakRef(objTag, objRef)
                         leakInfos.add(leakInfo)
                     }
                 }

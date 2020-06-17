@@ -3,5 +3,5 @@ apply from: "../basic.gradle"
 apply from: "../maven-upload.gradle"
 
 dependencies {
-    implementation 'com.squareup.leakcanary:shark-android:2.4'
+//    implementation 'com.squareup.leakcanary:shark-android:2.4'
 }

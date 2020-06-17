@@ -1,7 +1,6 @@
 package per.goweii.ponyo
 
 import android.app.Application
-import per.goweii.ponyo.appstack.ActivityStack
 import per.goweii.ponyo.appstack.AppStack
 import per.goweii.ponyo.crash.Crash
 import per.goweii.ponyo.log.Ponlog
@@ -26,8 +25,8 @@ object Ponyo : AppStack.AppLifecycleListener {
         Ponlog.addLogPrinter(LogManager)
         Ponlog.setJsonFormatter(GsonFormatter())
         TimeMonitor.registerTimeLineEndListener(TmManager)
-        ActivityStack.registerActivityLifecycleListener(TmManager)
-        ActivityStack.registerStackUpdateListener(ActiStackManager)
+        AppStack.activityStack.registerActivityLifecycleListener(TmManager)
+        AppStack.activityStack.registerStackUpdateListener(ActiStackManager)
         floatManager = FloatManager(application).icon(R.drawable.ponyo)
     }
 

@@ -4,23 +4,32 @@ import android.app.Activity
 import android.app.Application
 import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
-import java.lang.ref.WeakReference
 
-object ActivityStack : Application.ActivityLifecycleCallbacks {
+class ActivityStack private constructor() {
+    private val activityLifecycle = ActivityLifecycle()
+
     private var activityStackUpdateListeners = arrayListOf<ActivityStackUpdateListener>()
     private var activityLifecycleListeners = arrayListOf<ActivityLifecycleListener>()
 
-    val activityInfos = arrayListOf<ActivityInfo>()
+    val activities = arrayListOf<ActivityRef>()
         get() {
             val iterator = field.iterator()
             while (iterator.hasNext()) {
                 val activityInfo = iterator.next()
-                if (activityInfo.activityRef.get() == null) {
+                if (activityInfo.get() == null) {
                     iterator.remove()
                 }
             }
             return field
         }
+
+    companion object {
+        internal fun create(application: Application): ActivityStack {
+            val activityStack = ActivityStack()
+            application.registerActivityLifecycleCallbacks(activityStack.activityLifecycle)
+            return activityStack
+        }
+    }
 
     fun registerStackUpdateListener(listener: ActivityStackUpdateListener) {
         activityStackUpdateListeners.add(listener)
@@ -44,9 +53,9 @@ object ActivityStack : Application.ActivityLifecycleCallbacks {
         return "$simpleName@$hexString"
     } ?: "Unknown@0"
 
-    fun copyStack(includeLeaks: Boolean = false): StringBuilder {
+    fun copyStack(): StringBuilder {
         fun getFragStack(
-            fragmentInfo: FragmentInfo,
+            fragmentRef: FragmentRef,
             isLast: Boolean,
             prefix: StringBuilder
         ): StringBuilder {
@@ -54,32 +63,32 @@ object ActivityStack : Application.ActivityLifecycleCallbacks {
             sbf.append(prefix)
             if (!isLast) sbf.append("|—")
             else sbf.append("\\—")
-            sbf.append(fragmentInfo.fragmentRef.get().nameWithHex())
+            sbf.append(fragmentRef.get().nameWithHex())
             sbf.append("\n")
-            fragmentInfo.fragmentStack.fragmentInfos.forEachIndexed { i, info ->
+            fragmentRef.fragmentStack.fragments.forEachIndexed { i, info ->
                 val prefix2 = StringBuilder(prefix)
                 if (!isLast) prefix2.append("|")
                 else prefix2.append(" ")
                 prefix2.append(" ")
-                val lastf = i == fragmentInfo.fragmentStack.fragmentInfos.size - 1
+                val lastf = i == fragmentRef.fragmentStack.fragments.size - 1
                 sbf.append(getFragStack(info, lastf, prefix2))
             }
             return sbf
         }
 
         val sba = StringBuilder()
-        activityInfos.forEachIndexed { ai, activityInfo ->
-            val lasta = ai == activityInfos.size - 1
+        activities.forEachIndexed { ai, activityInfo ->
+            val lasta = ai == activities.size - 1
             if (!lasta) sba.append("|—")
             else sba.append("\\—")
-            sba.append(activityInfo.activityRef.get().nameWithHex())
+            sba.append(activityInfo.get().nameWithHex())
             sba.append("\n")
-            activityInfo.fragmentStack.fragmentInfos.forEachIndexed { fi, fragmentInfo ->
+            activityInfo.fragmentStack?.fragmentRefs?.forEachIndexed { fi, fragmentInfo ->
                 val prefix1 = StringBuilder()
                 if (!lasta) prefix1.append("|")
                 else prefix1.append(" ")
                 prefix1.append(" ")
-                val lastf = fi == activityInfo.fragmentStack.fragmentInfos.size - 1
+                val lastf = fi == activityInfo.fragmentStack.fragmentRefs.size - 1
                 sba.append(getFragStack(fragmentInfo, lastf, prefix1))
             }
         }
@@ -92,58 +101,57 @@ object ActivityStack : Application.ActivityLifecycleCallbacks {
         }
     }
 
-    override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-        val fragmentStack = FragmentStack()
-        fragmentStack.fragmentStackUpdateListener = {
+    private inner class ActivityLifecycle : Application.ActivityLifecycleCallbacks {
+
+        override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
+            val ref = ActivityRef.from(activity)
+            ref.fragmentStack?.fragmentStackUpdateListener = {
+                notifyStackUpdate()
+            }
+            activities.add(ref)
             notifyStackUpdate()
+            activityLifecycleListeners.forEach { it.onCreated(activity) }
         }
-        if (activity is FragmentActivity) {
-            activity.supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentStack, false)
+
+        override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
         }
-        val activityInfo = ActivityInfo(WeakReference(activity), fragmentStack)
-        activityInfos.add(activityInfo)
-        notifyStackUpdate()
-        activityLifecycleListeners.forEach { it.onCreated(activity) }
-    }
 
-    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
-    }
+        override fun onActivityStarted(activity: Activity) {
+            activityLifecycleListeners.forEach { it.onStarted(activity) }
+        }
 
-    override fun onActivityStarted(activity: Activity) {
-        activityLifecycleListeners.forEach { it.onStarted(activity) }
-    }
+        override fun onActivityResumed(activity: Activity) {
+            activityLifecycleListeners.forEach { it.onResumed(activity) }
+        }
 
-    override fun onActivityResumed(activity: Activity) {
-        activityLifecycleListeners.forEach { it.onResumed(activity) }
-    }
+        override fun onActivityPaused(activity: Activity) {
+            activityLifecycleListeners.forEach { it.onPaused(activity) }
+        }
 
-    override fun onActivityPaused(activity: Activity) {
-        activityLifecycleListeners.forEach { it.onPaused(activity) }
-    }
+        override fun onActivityStopped(activity: Activity) {
+            activityLifecycleListeners.forEach { it.onStopped(activity) }
+        }
 
-    override fun onActivityStopped(activity: Activity) {
-        activityLifecycleListeners.forEach { it.onStopped(activity) }
-    }
-
-    override fun onActivityDestroyed(activity: Activity) {
-        var activityInfo: ActivityInfo? = null
-        for (i in activityInfos.size - 1 downTo 0) {
-            val info = activityInfos[i]
-            if (info.activityRef.get() == activity) {
-                activityInfo = info
-                break
+        override fun onActivityDestroyed(activity: Activity) {
+            var activityRef: ActivityRef? = null
+            for (i in activities.size - 1 downTo 0) {
+                val ref = activities[i]
+                if (ref.get() == activity) {
+                    activityRef = ref
+                    break
+                }
             }
-        }
-        activityInfo?.let { info ->
-            activityInfos.remove(info)
-            info.fragmentStack.fragmentStackUpdateListener = null
-            if (activity is FragmentActivity) {
-                activity.supportFragmentManager.unregisterFragmentLifecycleCallbacks(info.fragmentStack)
+            activityRef?.let { ref ->
+                activities.remove(ref)
+                ref.fragmentStack?.fragmentStackUpdateListener = null
+                if (activity is FragmentActivity) {
+                    ref.fragmentStack?.recycle(activity.supportFragmentManager)
+                }
+                ref.clear()
             }
-            info.activityRef.clear()
+            notifyStackUpdate()
+            activityLifecycleListeners.forEach { it.onDestroyed(activity) }
         }
-        notifyStackUpdate()
-        activityLifecycleListeners.forEach { it.onDestroyed(activity) }
     }
 
 }

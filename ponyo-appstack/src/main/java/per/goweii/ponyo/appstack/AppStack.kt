@@ -8,16 +8,14 @@ import androidx.lifecycle.ProcessLifecycleOwner
 
 object AppStack : LifecycleObserver {
 
-    lateinit var application: Application
-        private set
+    lateinit var activityStack: ActivityStack
 
     private var appLifecycleListeners = arrayListOf<AppLifecycleListener>()
 
     fun initialize(application: Application) {
-        if (this::application.isInitialized) return
-        this.application = application
-        ProcessLifecycleOwner.get().lifecycle.addObserver(AppStack)
-        this.application.registerActivityLifecycleCallbacks(ActivityStack)
+        if (this::activityStack.isInitialized) return
+        activityStack = ActivityStack.create(application)
+        ProcessLifecycleOwner.get().lifecycle.addObserver(applicationLifecycle)
     }
 
     fun registerAppLifecycleListener(listener: AppLifecycleListener) {
@@ -28,34 +26,37 @@ object AppStack : LifecycleObserver {
         appLifecycleListeners.remove(listener)
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
-    fun onCreate() {
-        appLifecycleListeners.forEach { it.onCreate() }
-    }
+    private val applicationLifecycle = object : LifecycleObserver {
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_START)
-    fun onStart() {
-        appLifecycleListeners.forEach { it.onStart() }
-    }
+        @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
+        fun onCreate() {
+            appLifecycleListeners.forEach { it.onCreate() }
+        }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    fun onResume() {
-        appLifecycleListeners.forEach { it.onResume() }
-    }
+        @OnLifecycleEvent(Lifecycle.Event.ON_START)
+        fun onStart() {
+            appLifecycleListeners.forEach { it.onStart() }
+        }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-    fun onPause() {
-        appLifecycleListeners.forEach { it.onPause() }
-    }
+        @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+        fun onResume() {
+            appLifecycleListeners.forEach { it.onResume() }
+        }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-    fun onStop() {
-        appLifecycleListeners.forEach { it.onStop() }
-    }
+        @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+        fun onPause() {
+            appLifecycleListeners.forEach { it.onPause() }
+        }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    fun onDestroy() {
-        appLifecycleListeners.forEach { it.onDestroy() }
+        @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+        fun onStop() {
+            appLifecycleListeners.forEach { it.onStop() }
+        }
+
+        @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+        fun onDestroy() {
+            appLifecycleListeners.forEach { it.onDestroy() }
+        }
     }
 
     interface AppLifecycleListener {

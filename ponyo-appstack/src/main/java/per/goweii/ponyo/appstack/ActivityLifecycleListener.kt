@@ -1,17 +1,16 @@
 package per.goweii.ponyo.appstack
 
 import android.app.Activity
-import androidx.annotation.NonNull
 
 /**
  * @author CuiZhen
  * @date 2020/4/5
  */
 interface ActivityLifecycleListener {
-    fun onCreated(@NonNull activity: Activity)
-    fun onStarted(@NonNull activity: Activity)
-    fun onResumed(@NonNull activity: Activity)
-    fun onPaused(@NonNull activity: Activity)
-    fun onStopped(@NonNull activity: Activity)
-    fun onDestroyed(@NonNull activity: Activity)
+    fun onCreated(activity: Activity)
+    fun onStarted(activity: Activity)
+    fun onResumed(activity: Activity)
+    fun onPaused(activity: Activity)
+    fun onStopped(activity: Activity)
+    fun onDestroyed(activity: Activity)
 }
