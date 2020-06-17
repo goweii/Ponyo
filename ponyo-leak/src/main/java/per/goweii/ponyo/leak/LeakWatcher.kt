@@ -1,6 +1,8 @@
 package per.goweii.ponyo.leak
 
 import android.app.Application
+import android.os.Handler
+import android.os.Looper
 import java.lang.ref.ReferenceQueue
 import java.util.*
 
@@ -9,6 +11,8 @@ object LeakWatcher {
 
     private val watchedObjects = mutableMapOf<String, WatchedRef>()
     private val watchedQueue = ReferenceQueue<Any>()
+
+    private val mainHandler = Handler(Looper.getMainLooper())
 
     fun initialize(application: Application) {
         if (this::activityWatcher.isInitialized) return
@@ -33,7 +37,17 @@ object LeakWatcher {
     }
 
     private fun checkWatchedObjects() {
+        mainHandler.postDelayed({
+            Looper.myQueue().addIdleHandler {
+                GCExecutor.gc()
+                removeRecycledObjects()
+                if (watchedObjects.isNotEmpty()) {
+                    //Leak
 
+                }
+                return@addIdleHandler false
+            }
+        }, 5000)
     }
 
 }
