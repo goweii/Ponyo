@@ -3,5 +3,6 @@ apply from: "../basic.gradle"
 apply from: "../maven-upload.gradle"
 
 dependencies {
+    implementation project(":ponyo-log")
     implementation 'com.squareup.leakcanary:shark-android:2.4'
 }

@@ -20,5 +20,6 @@
         <activity android:name=".crash.TestCrashActivity" />
         <activity android:name=".crash.CrashOnCreateActivity" />
         <activity android:name=".crash.CrashOnDrawActivity" />
+        <activity android:name=".leak.LeakActivity" />
     </application>
 </manifest>

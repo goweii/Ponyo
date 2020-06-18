@@ -4,6 +4,7 @@ import android.app.Application
 import android.os.Handler
 import android.os.Looper
 import android.os.MessageQueue
+import per.goweii.ponyo.log.Ponlog
 import java.lang.ref.ReferenceQueue
 import java.util.*
 
@@ -11,28 +12,27 @@ internal object LeakWatcher {
     private lateinit var activityWatcher: ActivityWatcher
 
     private val watchedObjects = mutableMapOf<String, WatchedRef>()
-    private val watchedQueue = ReferenceQueue<Any>()
 
     fun initialize(application: Application) {
         if (this::activityWatcher.isInitialized) return
+        activityWatcher = ActivityWatcher()
         activityWatcher.watch(application)
     }
 
     fun watch(obj: Any) {
         removeRecycledObjects()
         val key = UUID.randomUUID().toString()
-        watchedObjects[key] = WatchedRef(key, obj, watchedQueue)
+        watchedObjects[key] = WatchedRef(key, obj)
         checkWatchedObjects()
     }
 
     private fun removeRecycledObjects() {
-        var ref: WatchedRef?
-        do {
-            ref = watchedQueue.poll() as WatchedRef?
-            if (ref != null) {
-                watchedObjects.remove(ref.key)
+        val iterator = watchedObjects.iterator()
+        while (iterator.hasNext()) {
+            if (iterator.next().value.get() == null) {
+                iterator.remove()
             }
-        } while (ref != null)
+        }
     }
 
     private fun checkWatchedObjects() {
@@ -51,6 +51,14 @@ internal object LeakWatcher {
         GCExecutor.gc()
         removeRecycledObjects()
         if (watchedObjects.isNotEmpty()) {
+            Ponlog.w {
+                val sb = StringBuilder()
+                sb.append("Some memory leaks may have occurred, you can view the details on panel. And the leaked classes are as follows:")
+                watchedObjects.forEach {
+                    sb.append("\n- ").append(it.value.identity)
+                }
+                sb.toString()
+            }
             Leak.leakListener?.onLeak()
         }
         false
