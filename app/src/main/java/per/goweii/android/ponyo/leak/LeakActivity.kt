@@ -10,20 +10,28 @@ import per.goweii.ponyo.leak.Leak
 class LeakActivity: AppCompatActivity() {
 
     companion object {
-        private var context: Context? = null
+        val leakContexts = arrayListOf<Context>()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_leak)
-        btn_leak.setOnClickListener {
-            context = this@LeakActivity
-        }
-        btn_remove.setOnClickListener {
-            context = null
+        btn_clear.setOnClickListener {
+            LeakFragmentHolder.leakFragments.clear()
+            LeakFragment.leakFragments.clear()
+            leakContexts.clear()
         }
         btn_dump.setOnClickListener {
-            Leak.dump()
+            Leak.dumpAndAnalyze()
         }
+        supportFragmentManager.apply {
+            beginTransaction().apply {
+                replace(
+                    R.id.fl_container,
+                    LeakFragment()
+                )
+            }.commit()
+        }
+        leakContexts.add(this@LeakActivity)
     }
 }

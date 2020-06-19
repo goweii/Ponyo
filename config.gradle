@@ -1,15 +1,15 @@
 ext {
     maven = [
-            useRemoteOrLocal: false,
+            useRemoteOrLocal: true,
             group           : "per.goweii.ponyo",
             version         : "1.3.0", //-SNAPSHOT
     ]
     mavenRemote = [
             nexusAccount : "admin",
             nexusPassword: "mbamaster123",
-            publicUrl    : "http://30l90c4575.qicp.vip/repository/maven-public/",
-            releaseUrl   : "http://30l90c4575.qicp.vip/repository/maven-releases/",
-            snapshotUrl  : "http://30l90c4575.qicp.vip/repository/maven-snapshots/",
+            publicUrl    : "http://192.168.2.61:8081/repository/maven-public/",
+            releaseUrl   : "http://192.168.2.61:8081/repository/maven-releases/",
+            snapshotUrl  : "http://192.168.2.61:8081/repository/maven-snapshots/",
     ]
     mavenLocal = [
             publicUrl  : "file://F://Maven/public/",

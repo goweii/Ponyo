@@ -5,14 +5,12 @@ import android.app.Application
 object Leak {
 
     private lateinit var application: Application
-    private lateinit var hprofDumper: HprofDumper
 
     internal var leakListener: LeakListener? = null
 
     fun initialize(application: Application) {
         if (this::application.isInitialized) return
         this.application = application
-        this.hprofDumper = HprofDumper(application)
         LeakWatcher.initialize(application)
     }
 
@@ -20,8 +18,10 @@ object Leak {
         this.leakListener = leakListener
     }
 
-    fun dump() {
-        hprofDumper.dump()
+    fun dumpAndAnalyze() {
+        HprofDumper.dump(application) {
+            HeapAnalyzerService.start(application, it)
+        }
     }
 
     interface LeakListener {

@@ -12,6 +12,18 @@ internal object LeakWatcher {
     private lateinit var activityWatcher: ActivityWatcher
 
     private val watchedObjects = mutableMapOf<String, WatchedRef>()
+    private val queue = ReferenceQueue<Any>()
+
+    val leakedObjects: List<WatchedRef>
+        get() {
+            val list = arrayListOf<WatchedRef>()
+            removeWeeklyObjects()
+            removeRecycledObjects()
+            watchedObjects.forEach {
+                list.add(it.value)
+            }
+            return list
+        }
 
     fun initialize(application: Application) {
         if (this::activityWatcher.isInitialized) return
@@ -20,10 +32,17 @@ internal object LeakWatcher {
     }
 
     fun watch(obj: Any) {
-        removeRecycledObjects()
+        removeWeeklyObjects()
         val key = UUID.randomUUID().toString()
-        watchedObjects[key] = WatchedRef(key, obj)
+        watchedObjects[key] = WatchedRef(key, obj, queue)
         checkWatchedObjects()
+    }
+
+    private fun removeWeeklyObjects() {
+        var ref: WatchedRef? = null
+        while (null != queue.poll()?.also { ref = it as WatchedRef }) {
+            watchedObjects.remove(ref!!.key)
+        }
     }
 
     private fun removeRecycledObjects() {
@@ -44,7 +63,10 @@ internal object LeakWatcher {
 
     private val mainRunnable = Runnable {
         Looper.myQueue().removeIdleHandler(idleHandler)
-        Looper.myQueue().addIdleHandler(idleHandler)
+        removeWeeklyObjects()
+        if (watchedObjects.isNotEmpty()) {
+            Looper.myQueue().addIdleHandler(idleHandler)
+        }
     }
 
     private val idleHandler = MessageQueue.IdleHandler {

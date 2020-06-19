@@ -1,11 +1,13 @@
 package per.goweii.ponyo.leak
 
+import java.lang.ref.ReferenceQueue
 import java.lang.ref.WeakReference
 
 internal class WatchedRef (
         val key: String,
-        obj: Any
-) : WeakReference<Any>(obj) {
+        obj: Any,
+        queue: ReferenceQueue<Any>
+) : WeakReference<Any>(obj, queue) {
     val watchTime = System.nanoTime()
 
     val identity: String
