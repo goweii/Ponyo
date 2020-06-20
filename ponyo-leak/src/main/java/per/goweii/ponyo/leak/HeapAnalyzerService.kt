@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Debug
+import per.goweii.ponyo.leak.HeapAnalysisFormatter.toFormatString
 import per.goweii.ponyo.log.Ponlog
 import shark.*
 import java.io.File
@@ -52,15 +53,7 @@ class HeapAnalyzerService : IntentService("HeapAnalyzerService"), OnAnalysisProg
             metadataExtractor = AndroidMetadataExtractor,
             proguardMapping = null
         )
-        Ponlog.w { "$heapAnalysis" }
-        when (heapAnalysis) {
-            is HeapAnalysisSuccess -> {
-                val retainedObjectCount = heapAnalysis.allLeaks.sumBy { it.leakTraces.size }
-                val leakTypeCount = heapAnalysis.applicationLeaks.size + heapAnalysis.libraryLeaks.size
-            }
-            is HeapAnalysisFailure -> {
-            }
-        }
+        Ponlog.w { heapAnalysis.toFormatString() }
     }
 
     override fun onAnalysisProgress(step: OnAnalysisProgressListener.Step) {
