@@ -30,7 +30,12 @@ class HeapAnalyzerService : IntentService("HeapAnalyzerService"), OnAnalysisProg
     override fun onCreate() {
         super.onCreate()
         heapAnalyzerNotification = HeapAnalyzerNotification(this)
-        startForeground(1, heapAnalyzerNotification.get(""))
+        heapAnalyzerNotification.startForeground(null)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        heapAnalyzerNotification.stopForeground()
     }
 
     override fun onHandleIntent(intent: Intent?) {
@@ -59,6 +64,6 @@ class HeapAnalyzerService : IntentService("HeapAnalyzerService"), OnAnalysisProg
     }
 
     override fun onAnalysisProgress(step: OnAnalysisProgressListener.Step) {
-        startForeground(1, heapAnalyzerNotification.get(step.name))
+        heapAnalyzerNotification.startForeground(step)
     }
 }

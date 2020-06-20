@@ -70,7 +70,7 @@ internal object LeakWatcher {
     }
 
     private val idleHandler = MessageQueue.IdleHandler {
-        GCExecutor.gc()
+        GCTrigger.gc()
         removeRecycledObjects()
         if (watchedObjects.isNotEmpty()) {
             Ponlog.w {

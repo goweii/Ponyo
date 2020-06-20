@@ -11,6 +11,7 @@ import java.util.*
 
 internal object HprofDumper : CoroutineScope by MainScope() {
 
+    @JvmStatic
     fun dump(application: Application, callback: (hprofFile: File) -> Unit) {
         launch {
             val hprofFile = withContext(Dispatchers.IO) {

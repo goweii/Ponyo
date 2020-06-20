@@ -1,6 +1,6 @@
 ext {
     maven = [
-            useRemoteOrLocal: true,
+            useRemoteOrLocal: false,
             group           : "per.goweii.ponyo",
             version         : "1.3.0", //-SNAPSHOT
     ]

@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="per.goweii.ponyo.leak">
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <application>
         <service android:name=".HeapAnalyzerService" />
     </application>

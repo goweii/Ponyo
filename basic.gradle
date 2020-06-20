@@ -19,9 +19,7 @@ android {
         jvmTarget = JavaVersion.VERSION_1_8
     }
 
-    android {
-        resourcePrefix project.name.replace("-", "_") + "_"
-    }
+    resourcePrefix project.name.replace("-", "_") + "_"
 }
 
 dependencies {

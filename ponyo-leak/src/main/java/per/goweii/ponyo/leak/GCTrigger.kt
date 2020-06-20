@@ -1,6 +1,6 @@
 package per.goweii.ponyo.leak
 
-internal object GCExecutor {
+internal object GCTrigger {
 
     fun gc() {
         Runtime.getRuntime().gc()
