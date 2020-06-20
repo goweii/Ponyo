@@ -23,8 +23,7 @@ object HeapAnalysisFormatter {
 === HEAP ANALYSIS RESULT ===
 ============================
 ${applicationLeaks.size} APPLICATION LEAKS
-${if (applicationLeaks.isNotEmpty()) "\n" + applicationLeaks.joinToString("\n\n") + "\n" else ""}
-
+${if (applicationLeaks.isNotEmpty()) "\n" + applicationLeaks.joinToString("\n\n") + "\n\n" else ""}
 ${libraryLeaks.size} LIBRARY LEAKS
 ${if (libraryLeaks.isNotEmpty()) "\n" + libraryLeaks.joinToString("\n\n") + "" else ""}"""
     }
