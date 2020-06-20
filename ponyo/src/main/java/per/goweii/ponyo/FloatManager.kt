@@ -38,6 +38,7 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
     ).toInt()
     private val windowManager: WindowManager =
         context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+
     @SuppressLint("RtlHardcoded")
     private val windowParams: WindowManager.LayoutParams =
         WindowManager.LayoutParams().apply {
@@ -72,7 +73,7 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
             scaleType = ImageView.ScaleType.CENTER_CROP
             elevation = TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP,
-                5F,
+                3F,
                 context.resources.displayMetrics
             )
             clipToOutline = true
@@ -101,6 +102,9 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
             }
         }
     }
+
+    private val visibleRunnable = Runnable { toVisible() }
+    private val invisibleRunnable = Runnable { toInvisible() }
 
     private var state: State = State.FLOAT
     private var dragStartX = 0f
@@ -147,16 +151,24 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
         }
     }
 
-    fun attach() {
+    private fun attach() {
         if (isShown()) return
         floatView.viewTreeObserver.addOnGlobalLayoutListener(this)
+        floatView.viewTreeObserver.addOnPreDrawListener(object :
+            ViewTreeObserver.OnPreDrawListener {
+            override fun onPreDraw(): Boolean {
+                floatView.viewTreeObserver.removeOnPreDrawListener(this)
+                runInvisible()
+                return true
+            }
+        })
         try {
             windowManager.addView(this.floatView, windowParams)
         } catch (e: Exception) {
         }
     }
 
-    fun detach() {
+    private fun detach() {
         if (!isShown()) return
         floatView.viewTreeObserver.removeOnGlobalLayoutListener(this)
         try {
@@ -165,7 +177,7 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
         }
     }
 
-    fun update() {
+    private fun update() {
         if (!isShown()) return
         try {
             windowManager.updateViewLayout(this.floatView, windowParams)
@@ -192,11 +204,13 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
     }
 
     override fun onDown(e: MotionEvent): Boolean {
+        runVisible()
         scroller.abortAnimation()
         return true
     }
 
     private fun onUp(e: MotionEvent) {
+        runInvisible()
         if (state != State.DRAGGING) {
             return
         }
@@ -337,6 +351,26 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
         } else {
             state = State.FLOAT
         }
+    }
+
+    private fun runVisible() {
+        floatView.removeCallbacks(visibleRunnable)
+        floatView.removeCallbacks(invisibleRunnable)
+        floatView.postDelayed(visibleRunnable, ViewConfiguration.getTapTimeout().toLong())
+    }
+
+    private fun runInvisible() {
+        floatView.removeCallbacks(visibleRunnable)
+        floatView.removeCallbacks(invisibleRunnable)
+        floatView.postDelayed(invisibleRunnable, 3000)
+    }
+
+    private fun toVisible() {
+        floatView.animate().alpha(1F).start()
+    }
+
+    private fun toInvisible() {
+        floatView.animate().alpha(0.6F).start()
     }
 
 }

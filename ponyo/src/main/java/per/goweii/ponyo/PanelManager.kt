@@ -9,7 +9,7 @@ import android.graphics.PixelFormat
 import android.graphics.RectF
 import android.os.Build
 import android.view.*
-import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
@@ -54,7 +54,7 @@ internal class PanelManager(private val context: Context) {
             y = 0
         }
     private val floatView: View by lazy {
-        LayoutInflater.from(context).inflate(R.layout.ponyo_layout_float, null).apply {
+        LayoutInflater.from(context).inflate(R.layout.ponyo_panel, null).apply {
             systemUiVisibility = systemUiVisibility or
                     View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
                     View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -241,7 +241,7 @@ internal class PanelManager(private val context: Context) {
 
     private val zoomAnimator: ValueAnimator by lazy {
         ValueAnimator.ofFloat(0F, 1F).apply {
-            interpolator = AccelerateDecelerateInterpolator()
+            interpolator = DecelerateInterpolator()
             duration = 400L
             addListener(object : Animator.AnimatorListener {
                 override fun onAnimationRepeat(animation: Animator) {
@@ -302,6 +302,7 @@ internal class PanelManager(private val context: Context) {
         }
         floatIcon.alpha = (1F - np).dece()
         floatPanel.alpha = np.dece()
+        floatWrapper.alpha = p.acce()
     }
 
     private fun startZooming2Panel() {
@@ -361,11 +362,13 @@ internal class PanelManager(private val context: Context) {
             rectF.right.toInt(),
             rectF.bottom.toInt()
         )
-        floatPanel.x = -rectF.left
-        floatPanel.y = -rectF.top
         val sx = rectF.width() / panelRectF.width()
         val sy = rectF.height() / panelRectF.height()
         val s = min(sx, sy)
+        floatPanel.pivotX = 0F
+        floatPanel.pivotY = 0F
+        floatPanel.scaleX = sx
+        floatPanel.scaleY = sy
         floatIcon.scaleX = s
         floatIcon.scaleY = s
     }
