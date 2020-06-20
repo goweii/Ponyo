@@ -5,6 +5,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.*
+import per.goweii.ponyo.Ponyo
 import per.goweii.ponyo.log.LogBody
 import per.goweii.ponyo.log.LogPrinter
 import per.goweii.ponyo.log.Ponlog
@@ -27,6 +28,28 @@ object LogManager : LogPrinter,
 
     private var offset: Int = 0
 
+    private var unreadAssertCount = 0
+        set(value) {
+            field = value
+            launch(Dispatchers.Main) {
+                Ponyo.onLoggerAssert(field)
+            }
+        }
+    private var unreadErrorCount = 0
+        set(value) {
+            field = value
+            launch(Dispatchers.Main) {
+                Ponyo.onLoggerError(field)
+            }
+        }
+    private var unreadWarnCount = 0
+        set(value) {
+            field = value
+            launch(Dispatchers.Main) {
+                Ponyo.onLoggerWarn(field)
+            }
+        }
+
     override fun print(level: Ponlog.Level, tag: String, body: LogBody, msg: String) {
         launch(this.coroutineContext) {
             val logEntity = LogEntity(level, tag, body, msg)
@@ -45,6 +68,31 @@ object LogManager : LogPrinter,
                 }
             }
         }
+        if (recyclerView?.isShown != true) {
+            when (level) {
+                Ponlog.Level.ASSERT -> {
+                    unreadAssertCount++
+                }
+                Ponlog.Level.ERROR -> {
+                    unreadErrorCount++
+                }
+                Ponlog.Level.WARN -> {
+                    unreadWarnCount++
+                }
+                Ponlog.Level.INFO -> {
+                }
+                Ponlog.Level.DEBUG -> {
+                }
+                Ponlog.Level.VERBOSE -> {
+                }
+            }
+        }
+    }
+
+    fun clearUnreadCount() {
+        unreadAssertCount = 0
+        unreadErrorCount = 0
+        unreadWarnCount = 0
     }
 
     fun scrollBottom() {
@@ -62,7 +110,7 @@ object LogManager : LogPrinter,
         }
     }
 
-    fun attachTo(rv: RecyclerView, tvMore: TextView, itemClicked: (logEntity: LogEntity)->Unit) {
+    fun attachTo(rv: RecyclerView, tvMore: TextView, itemClicked: (logEntity: LogEntity) -> Unit) {
         recyclerView = rv
         rv.itemAnimator = null
         this.tvMore = tvMore

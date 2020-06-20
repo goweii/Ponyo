@@ -65,18 +65,18 @@ class FilePanel : BasePanel() {
         rv_file_name.adapter = fileNameAdapter
     }
 
-    override fun onFirstVisible() {
-        fileTabAdapter.set(mutableListOf<FileManager.FileEntity>().apply {
-            add(FileManager.getRootDataDir(context).apply {
-                name = "内部存储"
+    override fun onVisible(firstVisible: Boolean) {
+        super.onVisible(firstVisible)
+        if (firstVisible) {
+            fileTabAdapter.set(mutableListOf<FileManager.FileEntity>().apply {
+                add(FileManager.getRootDataDir(context).apply {
+                    name = "内部存储"
+                })
+                add(FileManager.getRootExternalDir(context).apply {
+                    name = "外部存储"
+                })
             })
-            add(FileManager.getRootExternalDir(context).apply {
-                name = "外部存储"
-            })
-        })
-    }
-
-    override fun onGone() {
+        }
     }
 
     private fun onTabClick(fileEntity: FileManager.FileEntity) {

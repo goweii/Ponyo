@@ -52,4 +52,16 @@ object Ponyo : AppStack.AppLifecycleListener {
 
     override fun onDestroy() {
     }
+
+    fun onLoggerAssert(count: Int) {
+        floatManager.setLogAssertCount(count)
+    }
+
+    fun onLoggerError(count: Int) {
+        floatManager.setLogErrorCount(count)
+    }
+
+    fun onLoggerWarn(count: Int) {
+        floatManager.setLogWarnCount(count)
+    }
 }

@@ -21,8 +21,6 @@ class LogActivity : AppCompatActivity(), LogPrinter, CoroutineScope by MainScope
         val friends: MutableList<User>
     )
 
-    private val tvLogBoard by lazy { tv_log_board }
-    private val logStringBuilder = StringBuilder()
     private val logger = Ponlog.create().apply {
         setFileLogPrinterEnable(true)
         addLogPrinter(this@LogActivity)
@@ -120,7 +118,7 @@ class LogActivity : AppCompatActivity(), LogPrinter, CoroutineScope by MainScope
     }
 
     private fun startAutoLog() {
-        autoHandler.postDelayed(autoRunnable, 1000)
+        autoHandler.postDelayed(autoRunnable, 100)
     }
 
     private fun stopAutoLog() {
@@ -134,12 +132,5 @@ class LogActivity : AppCompatActivity(), LogPrinter, CoroutineScope by MainScope
     }
 
     override fun print(level: Ponlog.Level, tag: String, body: LogBody, msg: String) {
-        launch {
-            if (logStringBuilder.isNotEmpty()) {
-                logStringBuilder.append("\n")
-            }
-            logStringBuilder.append("[${level.name}]$tag:$msg")
-            tvLogBoard.text = logStringBuilder
-        }
     }
 }

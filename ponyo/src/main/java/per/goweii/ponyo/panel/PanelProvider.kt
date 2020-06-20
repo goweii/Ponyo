@@ -30,6 +30,7 @@ object PanelProvider {
         add(FilePanel())
         add(DevicePanel())
     }
+    private var currPanelIndex = -1
 
     fun attach(container: FrameLayout, tab: RecyclerView) {
         this.container = container
@@ -48,6 +49,10 @@ object PanelProvider {
     }
 
     fun onAttach() {
+        if (currPanelIndex != -1) {
+            val panel = panels[currPanelIndex]
+            panel.dispatchVisible(true)
+        }
     }
 
     fun onShow() {
@@ -57,18 +62,23 @@ object PanelProvider {
     }
 
     fun onDetach() {
+        if (currPanelIndex != -1) {
+            val panel = panels[currPanelIndex]
+            panel.dispatchVisible(false)
+        }
     }
 
     private fun selectPanel(index: Int) {
+        currPanelIndex = index
         tabAdapter.select(index)
         for (i in 0 until container.childCount) {
             val panel = panels[i]
             val panelView = container.getChildAt(i)
             if (i == index) {
-                panel.onVisible()
+                panel.dispatchVisible(true)
                 panelView.visibility = View.VISIBLE
             } else {
-                panel.onGone()
+                panel.dispatchVisible(false)
                 panelView.visibility = View.GONE
             }
         }

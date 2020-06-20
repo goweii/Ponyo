@@ -19,10 +19,4 @@ class TmPanel: BasePanel() {
         rv_tm.adapter = tmAdapter
         TmManager.attach(tmAdapter)
     }
-
-    override fun onFirstVisible() {
-    }
-
-    override fun onGone() {
-    }
 }

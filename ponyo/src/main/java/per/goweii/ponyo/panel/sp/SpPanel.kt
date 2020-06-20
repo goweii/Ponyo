@@ -29,11 +29,8 @@ class SpPanel : BasePanel() {
         rv_sp.adapter = spAdapter
     }
 
-    override fun onFirstVisible() {
-    }
-
-    override fun onVisible() {
-        super.onVisible()
+    override fun onVisible(firstVisible: Boolean) {
+        super.onVisible(firstVisible)
         var selected: String? = null
         spNameAdapter.get().forEach {
             if (it.selected) {

@@ -12,10 +12,4 @@ class LeakPanel: BasePanel() {
     override fun onPanelViewCreated(view: View) {
         LeakManager.attach(view)
     }
-
-    override fun onFirstVisible() {
-    }
-
-    override fun onGone() {
-    }
 }

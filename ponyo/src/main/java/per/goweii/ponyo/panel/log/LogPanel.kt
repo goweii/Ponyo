@@ -121,10 +121,14 @@ class LogPanel : BasePanel() {
         }
     }
 
-    override fun onFirstVisible() {
-        rv_log.post {
-            LogManager.scrollBottom()
+    override fun onVisible(firstVisible: Boolean) {
+        super.onVisible(firstVisible)
+        if (firstVisible) {
+            rv_log.post {
+                LogManager.scrollBottom()
+            }
         }
+        LogManager.clearUnreadCount()
     }
 
     override fun onGone() {

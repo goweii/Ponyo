@@ -36,11 +36,8 @@ class DbPanel : BasePanel() {
         rv_db_value.adapter = dbValueAdapter
     }
 
-    override fun onFirstVisible() {
-    }
-
-    override fun onVisible() {
-        super.onVisible()
+    override fun onVisible(firstVisible: Boolean) {
+        super.onVisible(firstVisible)
         var selectDb: DbManager.Db? = null
         dbTabAdapter.get().forEach {
             if (it.selected) {

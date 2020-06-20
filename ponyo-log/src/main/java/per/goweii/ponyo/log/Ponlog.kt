@@ -3,12 +3,12 @@ package per.goweii.ponyo.log
 object Ponlog {
 
     enum class Level(val value: Int) {
-        ERROR(1 shl 0),
-        WARN(1 shl 1),
-        INFO(1 shl 2),
-        DEBUG(1 shl 3),
-        VERBOSE(1 shl 4),
-        ASSERT(1 shl 5),
+        ASSERT(1 shl 0),
+        ERROR(1 shl 1),
+        WARN(1 shl 2),
+        INFO(1 shl 3),
+        DEBUG(1 shl 4),
+        VERBOSE(1 shl 5),
         ;
 
         companion object {

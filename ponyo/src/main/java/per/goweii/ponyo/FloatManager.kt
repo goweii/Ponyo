@@ -6,9 +6,12 @@ import android.graphics.*
 import android.os.Build
 import android.util.TypedValue
 import android.view.*
+import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
 import android.widget.Scroller
+import android.widget.TextView
+import androidx.core.content.ContextCompat
 import kotlin.math.abs
 import kotlin.math.atan2
 import kotlin.math.max
@@ -21,6 +24,14 @@ import kotlin.math.min
 @SuppressLint("ClickableViewAccessibility")
 internal class FloatManager(private val context: Context) : GestureDetector.OnGestureListener,
     ViewTreeObserver.OnGlobalLayoutListener {
+
+    private enum class State {
+        FLOAT, DRAGGING, FLING
+    }
+
+    private enum class Mode {
+        ICON, ASSERT, ERROR, WARN
+    }
 
     private val panelManager: PanelManager by lazy {
         PanelManager(context)
@@ -68,14 +79,8 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
     }
     private val dragPath: Path = Path()
 
-    private val floatView: ImageView by lazy {
-        ImageView(context).apply {
-            scaleType = ImageView.ScaleType.CENTER_CROP
-            elevation = TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP,
-                3F,
-                context.resources.displayMetrics
-            )
+    private val floatView: View by lazy {
+        LayoutInflater.from(context).inflate(R.layout.ponyo_float, null).apply {
             clipToOutline = true
             outlineProvider = object : ViewOutlineProvider() {
                 override fun getOutline(view: View, outline: Outline) {
@@ -102,9 +107,12 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
             }
         }
     }
-
-    private val visibleRunnable = Runnable { toVisible() }
-    private val invisibleRunnable = Runnable { toInvisible() }
+    private val iconView: ImageView by lazy {
+        floatView.findViewById<ImageView>(R.id.ponyo_iv_icon)
+    }
+    private val logView: TextView by lazy {
+        floatView.findViewById<TextView>(R.id.ponyo_tv_log)
+    }
 
     private var state: State = State.FLOAT
     private var dragStartX = 0f
@@ -112,12 +120,16 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
     private var dragStartEventX = 0f
     private var dragStartEventY = 0f
 
-    enum class State {
-        FLOAT, DRAGGING, FLING
-    }
+    private val visibleRunnable = Runnable { toVisible() }
+    private val invisibleRunnable = Runnable { toInvisible() }
+
+    private var currMode = Mode.ICON
+    private var lastSwitchModeTime = 0L
+    private var switchModeAnimRunning = false
+    private val autoSwitchModeRunnable = Runnable { autoSwitchMode() }
 
     fun icon(resId: Int) = apply {
-        this.floatView.setImageResource(resId)
+        this.iconView.setImageResource(resId)
         panelManager.icon(resId)
     }
 
@@ -372,5 +384,186 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
     private fun toInvisible() {
         floatView.animate().alpha(0.6F).start()
     }
+
+    private var unreadAssertCount = 0
+    private var unreadErrorCount = 0
+    private var unreadWarnCount = 0
+
+    fun setLogAssertCount(count: Int) {
+        unreadAssertCount = count
+        if (unreadAssertCount > 0) {
+            switchToMode(Mode.ASSERT)
+        } else {
+            switchToIconIfNeeded()
+        }
+    }
+
+    fun setLogErrorCount(count: Int) {
+        unreadErrorCount = count
+        if (unreadErrorCount > 0) {
+            switchToMode(Mode.ERROR)
+        } else {
+            switchToIconIfNeeded()
+        }
+    }
+
+    fun setLogWarnCount(count: Int) {
+        unreadWarnCount = count
+        if (unreadWarnCount > 0) {
+            switchToMode(Mode.WARN)
+        } else {
+            switchToIconIfNeeded()
+        }
+    }
+
+    private fun switchToIconIfNeeded() {
+        if (unreadAssertCount == 0 &&
+            unreadErrorCount == 0 &&
+            unreadWarnCount == 0
+        ) {
+            floatView.removeCallbacks(autoSwitchModeRunnable)
+            switchToMode(Mode.ICON, true)
+        }
+    }
+
+    private fun autoSwitchMode() {
+        switchToMode(nextMode)
+    }
+
+    private fun switchToMode(mode: Mode, force: Boolean = false) {
+        if (!force && switchModeAnimRunning) {
+            return
+        }
+        if (currMode == mode) {
+            switchToModeImmediately(true)
+            return
+        }
+        val currTime = System.currentTimeMillis()
+        if (!force && currTime - lastSwitchModeTime < 3000) {
+            return
+        }
+        lastSwitchModeTime = currTime
+        currMode = mode
+        floatView.removeCallbacks(autoSwitchModeRunnable)
+        floatView.postDelayed(autoSwitchModeRunnable, delay)
+        switchModeAnimRunning = true
+        floatView.animate()
+            .setInterpolator(AccelerateInterpolator())
+            .setDuration(100)
+            .scaleX(0F)
+            .withEndAction {
+                switchToModeImmediately(false)
+                floatView.animate()
+                    .setInterpolator(DecelerateInterpolator())
+                    .setDuration(100)
+                    .scaleX(1F)
+                    .withEndAction {
+                        switchModeAnimRunning = false
+                        switchToModeImmediately(true)
+                    }
+                    .start()
+            }
+            .start()
+    }
+
+    private fun switchToModeImmediately(onlyChangeCount: Boolean) {
+        fun formatCount(count: Int): String {
+            return when {
+                count < 0 -> "0"
+                count > 999 -> "999+"
+                else -> "$count"
+            }
+        }
+        when (currMode) {
+            Mode.ICON -> {
+                if (!onlyChangeCount) {
+                    logView.visibility = View.GONE
+                    logView.text = ""
+                    logView.setBackgroundColor(Color.TRANSPARENT)
+                }
+            }
+            Mode.ASSERT -> {
+                logView.text = formatCount(unreadAssertCount)
+                if (!onlyChangeCount) {
+                    logView.visibility = View.VISIBLE
+                    logView.setBackgroundColor(
+                        ContextCompat.getColor(
+                            context,
+                            R.color.ponyo_colorLogAssert
+                        )
+                    )
+                }
+            }
+            Mode.ERROR -> {
+                logView.text = formatCount(unreadErrorCount)
+                if (!onlyChangeCount) {
+                    logView.visibility = View.VISIBLE
+                    logView.setBackgroundColor(
+                        ContextCompat.getColor(
+                            context,
+                            R.color.ponyo_colorLogError
+                        )
+                    )
+                }
+            }
+            Mode.WARN -> {
+                logView.text = formatCount(unreadWarnCount)
+                if (!onlyChangeCount) {
+                    logView.visibility = View.VISIBLE
+                    logView.setBackgroundColor(
+                        ContextCompat.getColor(
+                            context,
+                            R.color.ponyo_colorLogWarn
+                        )
+                    )
+                }
+            }
+        }
+    }
+
+    private val nextMode: Mode
+        get() {
+            fun Mode.next(): Mode {
+                val nextIndex = when (ordinal) {
+                    Mode.values().size - 1 -> 0
+                    else -> ordinal + 1
+                }
+                return when (Mode.values()[nextIndex]) {
+                    Mode.ICON -> Mode.ICON
+                    Mode.ASSERT -> {
+                        if (unreadAssertCount > 0) {
+                            Mode.ASSERT
+                        } else {
+                            Mode.ASSERT.next()
+                        }
+                    }
+                    Mode.ERROR -> {
+                        if (unreadErrorCount > 0) {
+                            Mode.ERROR
+                        } else {
+                            Mode.ERROR.next()
+                        }
+                    }
+                    Mode.WARN -> {
+                        if (unreadWarnCount > 0) {
+                            Mode.WARN
+                        } else {
+                            Mode.WARN.next()
+                        }
+                    }
+                }
+            }
+            return currMode.next()
+        }
+
+    private val delay: Long
+        get() {
+            return when (currMode) {
+                Mode.ICON -> 5000L
+                Mode.ASSERT -> 3000L
+                Mode.ERROR -> 3000L
+                Mode.WARN -> 3000L
+            }
+        }
 
 }

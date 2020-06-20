@@ -18,11 +18,8 @@ class DevicePanel: BasePanel() {
         tv_device = view.findViewById(R.id.tv_device)
     }
 
-    override fun onFirstVisible() {
-    }
-
-    override fun onVisible() {
-        super.onVisible()
+    override fun onVisible(firstVisible: Boolean) {
+        super.onVisible(firstVisible)
         tv_device.text = Device.toString()
     }
 
