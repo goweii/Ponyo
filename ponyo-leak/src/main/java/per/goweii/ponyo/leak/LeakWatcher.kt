@@ -75,14 +75,14 @@ internal object LeakWatcher {
         if (watchedObjects.isNotEmpty()) {
             Ponlog.w {
                 val sb = StringBuilder()
-                sb.append("Some memory leaks may have occurred, you can view the details on panel. And the leaked classes are as follows:")
+                sb.append("${watchedObjects.size} leaks may have occurred, you can view the details on panel. And the leaked classes are as follows:")
                 watchedObjects.forEach {
                     sb.append("\n- ").append(it.value.identity)
                 }
                 sb.toString()
             }
-            Leak.leakListener?.onLeak()
         }
+        Leak.leakListener?.onLeak(watchedObjects.size)
         false
     }
 

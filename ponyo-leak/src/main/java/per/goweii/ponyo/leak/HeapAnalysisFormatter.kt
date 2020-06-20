@@ -18,8 +18,7 @@ object HeapAnalysisFormatter {
     }
 
     private fun HeapAnalysisSuccess.toFormatString(): String = run {
-        """
-============================
+        """============================
 === HEAP ANALYSIS RESULT ===
 ============================
 ${applicationLeaks.size} APPLICATION LEAKS

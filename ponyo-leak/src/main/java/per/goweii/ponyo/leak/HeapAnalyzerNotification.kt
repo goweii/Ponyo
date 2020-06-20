@@ -29,13 +29,20 @@ internal class HeapAnalyzerNotification(
         }
     }
 
-    fun startForeground(step: OnAnalysisProgressListener.Step?) {
+    fun startForeground(percent: Float, desc: String) {
+        val indeterminate = percent < 0F
+        val max = 10000
+        val progress = when  {
+            percent < 0 -> 0
+            percent > 1 -> 1
+            else -> (max * percent).toInt()
+        }
         val notification = notificationCompatBuilder
             .setSmallIcon(R.drawable.ponyo_leak_ic_notification)
             .setWhen(System.currentTimeMillis())
             .setContentTitle("Heap analyzer")
-            .setContentText(step.desc)
-            .setProgress(maxProgress, step.progress, step == null)
+            .setContentText(desc)
+            .setProgress(max, progress, indeterminate)
             .build()
         service.startForeground(100, notification)
     }
@@ -43,23 +50,4 @@ internal class HeapAnalyzerNotification(
     fun stopForeground() {
         service.stopForeground(true)
     }
-
-    private val maxProgress: Int = OnAnalysisProgressListener.Step.values().size
-
-    private val OnAnalysisProgressListener.Step?.progress: Int
-        get() = this?.ordinal ?: 0
-
-    private val OnAnalysisProgressListener.Step?.desc: String
-        get() = when (this) {
-            OnAnalysisProgressListener.Step.PARSING_HEAP_DUMP -> "Parsing heap dump"
-            OnAnalysisProgressListener.Step.EXTRACTING_METADATA -> "Extracting metadata"
-            OnAnalysisProgressListener.Step.FINDING_RETAINED_OBJECTS -> "Finding retained objects"
-            OnAnalysisProgressListener.Step.FINDING_PATHS_TO_RETAINED_OBJECTS -> "Finding paths to retained objects"
-            OnAnalysisProgressListener.Step.FINDING_DOMINATORS -> "Finding dominators"
-            OnAnalysisProgressListener.Step.COMPUTING_NATIVE_RETAINED_SIZE -> "Computing native retained size"
-            OnAnalysisProgressListener.Step.COMPUTING_RETAINED_SIZE -> "Computing retained size"
-            OnAnalysisProgressListener.Step.BUILDING_LEAK_TRACES -> "Building leak traces"
-            OnAnalysisProgressListener.Step.REPORTING_HEAP_ANALYSIS -> "Reporting heap analysis"
-            else -> "Waiting analyze"
-        }
 }
