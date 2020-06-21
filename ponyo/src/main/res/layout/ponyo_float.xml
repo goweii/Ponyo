@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:src="@drawable/ponyo" />
+        android:src="@drawable/ponyo_ic_float" />
 
     <TextView
         android:id="@+id/ponyo_tv_log"

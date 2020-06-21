@@ -1,6 +1,4 @@
-apply plugin: 'com.android.library'
-apply from: "../basic.gradle"
-apply from: "../maven-upload.gradle"
+apply from: "../lib-android.gradle"
 
 dependencies {
     implementation rootProject.ext.dependencies.recyclerview
@@ -15,4 +13,6 @@ dependencies {
     api project(':ponyo-crash')
     api project(':ponyo-device')
     api project(':ponyo-leak')
+    api project(':ponyo-startup')
+    kapt project(":ponyo-startup-compiler")
 }

@@ -1,6 +1,4 @@
-apply plugin: 'com.android.library'
-apply from: "../basic.gradle"
-apply from: "../maven-upload.gradle"
+apply from: "../lib-android.gradle"
 
 dependencies {
 }

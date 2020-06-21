@@ -1,0 +1,9 @@
+apply from: "../lib-java.gradle"
+
+dependencies {
+    implementation project(":ponyo-startup-annotation")
+    implementation 'com.squareup:javapoet:1.13.0'
+    //noinspection AnnotationProcessorOnCompilePath
+    implementation 'com.google.auto.service:auto-service:1.0-rc7'
+    kapt 'com.google.auto.service:auto-service:1.0-rc7'
+}

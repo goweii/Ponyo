@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-apply from: "../basic.gradle"
+apply from: "../android.gradle"
 
 android {
     defaultConfig {
@@ -16,12 +16,9 @@ android {
 
 dependencies {
     implementation project(":ponyo")
-    // implementation "per.goweii.ponyo:ponyo:1.1.0"
-    // implementation "per.goweii.ponyo:ponyo-log:1.1.0"
-    // implementation "per.goweii.ponyo:ponyo-timemonitor:1.1.0"
     implementation rootProject.ext.dependencies.constraintlayout
     implementation rootProject.ext.dependencies.room_runtime
     implementation rootProject.ext.dependencies.room_ktx
     kapt rootProject.ext.dependencies.room_compile
-    // debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.4'
+    kapt project(":ponyo-startup-compiler")
 }

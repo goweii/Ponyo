@@ -27,7 +27,7 @@ object Ponyo : AppStack.AppLifecycleListener {
         TimeMonitor.registerTimeLineEndListener(TmManager)
         AppStack.activityStack.registerActivityLifecycleListener(TmManager)
         AppStack.activityStack.registerStackUpdateListener(ActiStackManager)
-        floatManager = FloatManager(application).icon(R.drawable.ponyo)
+        floatManager = FloatManager(application).icon(R.drawable.ponyo_ic_float)
     }
 
     override fun onCreate() {
