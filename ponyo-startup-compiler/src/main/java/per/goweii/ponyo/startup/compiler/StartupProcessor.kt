@@ -2,7 +2,11 @@ package per.goweii.ponyo.startup.compiler
 
 import com.google.auto.service.AutoService
 import com.squareup.javapoet.*
+import com.squareup.javapoet.ClassName
+import com.squareup.javapoet.ParameterizedTypeName
+import per.goweii.ponyo.startup.annotation.Const
 import per.goweii.ponyo.startup.annotation.Startup
+import java.util.*
 import javax.annotation.processing.*
 import javax.lang.model.SourceVersion
 import javax.lang.model.element.Modifier
@@ -11,6 +15,7 @@ import javax.lang.model.type.TypeMirror
 import javax.lang.model.util.Elements
 import javax.lang.model.util.Types
 import javax.tools.Diagnostic
+
 
 /**
  * @author CuiZhen
@@ -46,24 +51,23 @@ class StartupProcessor : AbstractProcessor() {
         annotations: Set<TypeElement?>?,
         roundEnvironment: RoundEnvironment?
     ): Boolean {
-        if (annotations.isNullOrEmpty()) return true
-        roundEnvironment ?: return true
-        val elements = roundEnvironment.getElementsAnnotatedWith(Startup::class.java) ?: return true
+        if (annotations.isNullOrEmpty()) return false
+        roundEnvironment ?: return false
+        val elements =
+            roundEnvironment.getElementsAnnotatedWith(Startup::class.java) ?: return false
         for (element in elements) {
             if (!element.kind.isClass) continue
             val initializerTM: TypeMirror =
-                elementUtils.getTypeElement("per.goweii.ponyo.startup.Initializer").asType()
+                elementUtils.getTypeElement(Const.INITIALIZER_CLASS_NAME).asType()
             if (!typeUtils.isSubtype(element.asType(), initializerTM)) {
-                printError("StartupProcessor->", "必须实现Initializer接口")
+                printError("StartupProcessor->", "必须实现${Const.INITIALIZER_CLASS_NAME}接口")
                 continue
             }
             element as TypeElement
             val qualifiedName = element.qualifiedName.toString()
-            printInfo("qualifiedName->", qualifiedName)
             initializerClasses.add(qualifiedName)
         }
-        writeFile()
-        return true
+        return writeFile()
     }
 
     private val initializerClasses = arrayListOf<String>()
@@ -76,32 +80,42 @@ class StartupProcessor : AbstractProcessor() {
         messager.printMessage(Diagnostic.Kind.ERROR, "$prefix$msg")
     }
 
-    private fun writeFile() {
-        val fieldType = FieldSpec.builder(ArrayList::class.java, "initializers")
+    private fun writeFile(): Boolean {
+        if (initializerClasses.isEmpty()) {
+            return false
+        }
+        val packageName = initializerClasses.first()
+            .toLowerCase(Locale.US)
+            .run { substring(0, lastIndexOf(".")) }
+            .replace(".", "_")
+        val list = ClassName.get("java.util", "ArrayList")
+        val stringTypeName = TypeName.get(String::class.java)
+        val listOfString: TypeName = ParameterizedTypeName.get(list, stringTypeName)
+        val fieldType = FieldSpec.builder(listOfString, Const.GENERATED_LIST_FIELD)
             .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+            .initializer("new \$T()", listOfString)
             .build()
         val constructorStr = StringBuilder()
-        constructorStr.append("initializers = new ArrayList<per.goweii.ponyo.startup.Initializer>();\n")
-        constructorStr.append("try {\n")
         initializerClasses.forEach {
-            constructorStr.append("  initializers.add(Class.forName(\"$it\").newInstance());\n")
+            constructorStr.append("${Const.GENERATED_LIST_FIELD}.add(\"$it\");\n")
         }
-        constructorStr.append("} catch (java.lang.Exception e) {\n")
-        constructorStr.append("}\n")
         val constructorMethod = MethodSpec.constructorBuilder()
             .addModifiers(Modifier.PUBLIC)
             .addCode(CodeBlock.of(constructorStr.toString()))
             .build()
-        val classType = TypeSpec.classBuilder("StartupHolder")
+        val classType = TypeSpec.classBuilder(Const.GENERATED_CLASS_NAME)
             .addModifiers(Modifier.PUBLIC)
             .addField(fieldType)
             .addMethod(constructorMethod)
             .build()
-        val file = JavaFile.builder("per.goweii.ponyo.startup", classType)
+        val file = JavaFile.builder("${Const.GENERATED_PACKAGE_NAME}.$packageName", classType)
             .build()
-        try {
+        return try {
             file.writeTo(filer)
+            true
         } catch (e: Exception) {
+            printError("StartupProcessor->", e.toString())
+            false
         }
     }
 }
