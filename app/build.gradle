@@ -16,9 +16,9 @@ android {
 
 dependencies {
     implementation project(":ponyo")
+    kapt project(":ponyo-startup-compiler")
     implementation rootProject.ext.dependencies.constraintlayout
     implementation rootProject.ext.dependencies.room_runtime
     implementation rootProject.ext.dependencies.room_ktx
     kapt rootProject.ext.dependencies.room_compile
-    kapt project(":ponyo-startup-compiler")
 }
