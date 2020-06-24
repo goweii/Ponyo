@@ -13,8 +13,8 @@
     <color name="ponyo_colorLogAssert">#9C27B0</color>
     <color name="ponyo_colorLogError">#F44336</color>
     <color name="ponyo_colorLogWarn">#FFC107</color>
-    <color name="ponyo_colorLogInfo">#2196F3</color>
-    <color name="ponyo_colorLogDebug">#4CAF50</color>
+    <color name="ponyo_colorLogInfo">#4CAF50</color>
+    <color name="ponyo_colorLogDebug">#2196F3</color>
     <color name="ponyo_colorLogVisible">#7C9C99</color>
 
     <color name="ponyo_colorDivide">#22FFFFFF</color>
