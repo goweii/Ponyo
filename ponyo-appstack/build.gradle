@@ -1,6 +1,8 @@
 apply from: "../lib-android.gradle"
 
 dependencies {
-    implementation project(":ponyo-log")
     implementation rootProject.ext.dependencies.lifecycle_process
+    implementation project(":ponyo-log")
+    implementation project(':ponyo-startup')
+    kapt project(":ponyo-startup-compiler")
 }

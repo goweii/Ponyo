@@ -1,6 +1,8 @@
 apply from: "../lib-android.gradle"
 
 dependencies {
-    implementation project(":ponyo-log")
     implementation 'com.squareup.leakcanary:shark-android:2.4'
+    implementation project(":ponyo-log")
+    implementation project(':ponyo-startup')
+    kapt project(":ponyo-startup-compiler")
 }

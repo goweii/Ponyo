@@ -18,9 +18,7 @@ object Ponyo : AppStack.AppLifecycleListener {
     fun initialize(application: Application) {
         if (this::floatManager.isInitialized) return
         TM.APP_STARTUP.start("application initialize")
-        Crash.initialize(application)
         Crash.setCrashActivity(CrashActivity::class.java)
-        AppStack.initialize(application)
         AppStack.registerAppLifecycleListener(Ponyo)
         Ponlog.addLogPrinter(LogManager)
         Ponlog.setJsonFormatter(GsonFormatter())

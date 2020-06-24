@@ -1,6 +1,0 @@
-apply from: "../lib-android.gradle"
-
-dependencies {
-    implementation project(":ponyo-startup")
-    kapt project(":ponyo-startup-compiler")
-}

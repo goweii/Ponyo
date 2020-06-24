@@ -1,17 +1,17 @@
-package per.goweii.android.ponyo.startup
+package per.goweii.ponyo.leak
 
 import android.app.Application
-import per.goweii.ponyo.log.Ponlog
 import per.goweii.ponyo.startup.Initializer
 import per.goweii.ponyo.startup.annotation.Startup
 
-/**
- * @author CuiZhen
- * @date 2020/6/21
- */
 @Startup
-class StartupTest: Initializer {
+internal class LeakInitializer: Initializer {
+
+    override fun priority(): Int = Initializer.PRIORITY_INITIAL
+
     override fun initialize(application: Application, isMainProcess: Boolean) {
-        Ponlog.d { application.toString() }
+        if (isMainProcess) {
+            Leak.initialize(application)
+        }
     }
 }
