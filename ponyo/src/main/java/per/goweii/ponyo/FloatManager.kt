@@ -392,7 +392,7 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
     fun setLogAssertCount(count: Int) {
         unreadAssertCount = count
         if (unreadAssertCount > 0) {
-            switchToMode(Mode.ASSERT)
+            switchToMode(Mode.ASSERT, ignoreLastSwitchTime = true)
         } else {
             switchToIconIfNeeded()
         }
@@ -401,7 +401,7 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
     fun setLogErrorCount(count: Int) {
         unreadErrorCount = count
         if (unreadErrorCount > 0) {
-            switchToMode(Mode.ERROR)
+            switchToMode(Mode.ERROR, ignoreLastSwitchTime = true)
         } else {
             switchToIconIfNeeded()
         }
@@ -410,7 +410,7 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
     fun setLogWarnCount(count: Int) {
         unreadWarnCount = count
         if (unreadWarnCount > 0) {
-            switchToMode(Mode.WARN)
+            switchToMode(Mode.WARN, ignoreLastSwitchTime = true)
         } else {
             switchToIconIfNeeded()
         }
@@ -422,7 +422,7 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
             unreadWarnCount == 0
         ) {
             floatView.removeCallbacks(autoSwitchModeRunnable)
-            switchToMode(Mode.ICON, true)
+            switchToMode(Mode.ICON, ignoreAnimRunning = true, ignoreLastSwitchTime = true)
         }
     }
 
@@ -430,8 +430,12 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
         switchToMode(nextMode)
     }
 
-    private fun switchToMode(mode: Mode, force: Boolean = false) {
-        if (!force && switchModeAnimRunning) {
+    private fun switchToMode(
+        mode: Mode,
+        ignoreAnimRunning: Boolean = false,
+        ignoreLastSwitchTime: Boolean = false
+    ) {
+        if (!ignoreAnimRunning && switchModeAnimRunning) {
             return
         }
         if (currMode == mode) {
@@ -439,7 +443,7 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
             return
         }
         val currTime = System.currentTimeMillis()
-        if (!force && currTime - lastSwitchModeTime < 3000) {
+        if (!ignoreLastSwitchTime && currTime - lastSwitchModeTime < 3000) {
             return
         }
         lastSwitchModeTime = currTime
