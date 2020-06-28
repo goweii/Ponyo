@@ -1,4 +1,4 @@
-package per.goweii.ponyo.startup
+package per.goweii.ponyo.startup.utils
 
 import android.app.Application
 import android.content.Context

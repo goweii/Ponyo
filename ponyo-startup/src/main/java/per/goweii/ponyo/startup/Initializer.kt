@@ -8,12 +8,14 @@ import androidx.annotation.IntRange
  * @date 2020/6/21
  */
 interface Initializer {
+    fun initialize(application: Application, isMainProcess: Boolean)
+
     fun async(): Boolean = false
 
     @IntRange(from = PRIORITY_INITIAL.toLong(), to = PRIORITY_LAST.toLong())
     fun priority(): Int = PRIORITY_MIDDLE
 
-    fun initialize(application: Application, isMainProcess: Boolean)
+    fun depends(): Set<Class<out Initializer>> = emptySet()
 
     companion object {
         const val PRIORITY_INITIAL = 0

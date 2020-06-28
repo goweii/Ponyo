@@ -3,10 +3,9 @@ package per.goweii.ponyo.startup.compiler
 import com.google.auto.service.AutoService
 import com.squareup.javapoet.*
 import com.squareup.javapoet.ClassName
-import com.squareup.javapoet.ParameterizedTypeName
 import per.goweii.ponyo.startup.annotation.Const
+import per.goweii.ponyo.startup.annotation.InitMeta
 import per.goweii.ponyo.startup.annotation.Startup
-import java.util.*
 import javax.annotation.processing.*
 import javax.lang.model.SourceVersion
 import javax.lang.model.element.Modifier
@@ -16,14 +15,12 @@ import javax.lang.model.util.Elements
 import javax.lang.model.util.Types
 import javax.tools.Diagnostic
 
-
 /**
  * @author CuiZhen
  * @date 2020/6/21
  */
 @AutoService(Processor::class)
 class StartupProcessor : AbstractProcessor() {
-
     private lateinit var filer: Filer
     private lateinit var elementUtils: Elements
     private lateinit var typeUtils: Types
@@ -57,20 +54,22 @@ class StartupProcessor : AbstractProcessor() {
             roundEnvironment.getElementsAnnotatedWith(Startup::class.java) ?: return false
         for (element in elements) {
             if (!element.kind.isClass) continue
-            val initializerTM: TypeMirror =
-                elementUtils.getTypeElement(Const.INITIALIZER_CLASS_NAME).asType()
+            val initializerTypeElement = elementUtils.getTypeElement(Const.INITIALIZER_CLASS_NAME)
+            val initializerTM: TypeMirror = initializerTypeElement.asType()
             if (!typeUtils.isSubtype(element.asType(), initializerTM)) {
-                printError("StartupProcessor->", "必须实现${Const.INITIALIZER_CLASS_NAME}接口")
+                printError("StartupProcessor->", "mast implement ${Const.INITIALIZER_CLASS_NAME} interface")
                 continue
             }
             element as TypeElement
             val qualifiedName = element.qualifiedName.toString()
-            initializerClasses.add(qualifiedName)
+            val annotation = element.getAnnotation(Startup::class.java)
+            val initMeta = InitMeta(qualifiedName, annotation.activities)
+            initMetaList.add(initMeta)
         }
         return writeFile()
     }
 
-    private val initializerClasses = arrayListOf<String>()
+    private val initMetaList = arrayListOf<InitMeta>()
 
     private fun printInfo(prefix: String, msg: CharSequence) {
         messager.printMessage(Diagnostic.Kind.NOTE, "$prefix$msg")
@@ -81,34 +80,54 @@ class StartupProcessor : AbstractProcessor() {
     }
 
     private fun writeFile(): Boolean {
-        if (initializerClasses.isEmpty()) {
+        if (initMetaList.isEmpty()) {
             return false
         }
-        val packageName = initializerClasses.first()
-            .toLowerCase(Locale.US)
-            .run { substring(0, lastIndexOf(".")) }
-            .replace(".", "_")
-        val list = ClassName.get("java.util", "ArrayList")
-        val stringTypeName = TypeName.get(String::class.java)
-        val listOfString: TypeName = ParameterizedTypeName.get(list, stringTypeName)
-        val fieldType = FieldSpec.builder(listOfString, Const.GENERATED_LIST_FIELD)
-            .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-            .initializer("new \$T()", listOfString)
-            .build()
-        val constructorStr = StringBuilder()
-        initializerClasses.forEach {
-            constructorStr.append("${Const.GENERATED_LIST_FIELD}.add(\"$it\");\n")
+        return try {
+            initMetaList.forEach {
+                writeFile(it)
+            }
+            true
+        } catch (e: Exception) {
+            printError("StartupProcessor->", e.toString())
+            false
         }
+    }
+
+    @Throws(Exception::class)
+    private fun writeFile(meta: InitMeta): Boolean {
+        val initMeta = TypeName.get(InitMeta::class.java)
+        val fieldType = FieldSpec.builder(initMeta, Const.GENERATED_INIT_META_FIELD)
+            .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+            .build()
+        val initHolder = ClassName.get(Const.INIT_HOLDER_PACKAGE_NAME, Const.INIT_HOLDER_SIMPLE_CLASS_NAME)
+        val constructorStr = StringBuilder()
+        constructorStr.append("String className = \"${meta.className}\";")
+        constructorStr.append("\nString[] activities = new String[${meta.activities.size}];")
+        meta.activities.forEachIndexed { index, activity ->
+            constructorStr.append("\nactivities[$index] = \"$activity\";")
+        }
+        constructorStr.append("\n\$T im = new \$T(className, activities);")
+        constructorStr.append("\n${Const.GENERATED_INIT_META_FIELD} = im;\n")
         val constructorMethod = MethodSpec.constructorBuilder()
             .addModifiers(Modifier.PUBLIC)
-            .addCode(CodeBlock.of(constructorStr.toString()))
+            .addCode(CodeBlock.of(constructorStr.toString(), initMeta, initMeta))
             .build()
-        val classType = TypeSpec.classBuilder(Const.GENERATED_CLASS_NAME)
+        val getMethod = MethodSpec.methodBuilder(Const.INIT_HOLDER_GET_METHOD_NAME)
+            .addModifiers(Modifier.PUBLIC)
+            .addAnnotation(Override::class.java)
+            .returns(initMeta)
+            .addCode(CodeBlock.of("return ${Const.GENERATED_INIT_META_FIELD};"))
+            .build()
+        val className = meta.className.replace(".", "$")
+        val classType = TypeSpec.classBuilder(className)
+            .addSuperinterface(initHolder)
             .addModifiers(Modifier.PUBLIC)
             .addField(fieldType)
             .addMethod(constructorMethod)
+            .addMethod(getMethod)
             .build()
-        val file = JavaFile.builder("${Const.GENERATED_PACKAGE_NAME}.$packageName", classType)
+        val file = JavaFile.builder(Const.GENERATED_PACKAGE_NAME, classType)
             .build()
         return try {
             file.writeTo(filer)

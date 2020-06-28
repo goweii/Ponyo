@@ -1,4 +1,4 @@
-package per.goweii.ponyo.startup
+package per.goweii.ponyo.startup.utils
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -7,6 +7,7 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.os.Build
 import dalvik.system.DexFile
+import per.goweii.ponyo.startup.BuildConfig
 import java.io.File
 import java.io.IOException
 import java.util.*
@@ -32,12 +33,13 @@ object ClassFinder {
         IOException::class,
         InterruptedException::class
     )
-    fun findAllClassByPackageName(
+    fun findClasses(
         context: Context,
         packageName: String?
     ): Set<String> {
         val classNames: MutableSet<String> = HashSet()
-        val paths = getSourcePaths(context)
+        val paths =
+            getSourcePaths(context)
         val parserCtl = CountDownLatch(paths.size)
         for (path in paths) {
             DefaultPoolExecutor.getInstance().execute {
@@ -79,8 +81,12 @@ object ClassFinder {
         sourcePaths.add(applicationInfo.sourceDir)
         val extractedFilePrefix = sourceApk.name + EXTRACTED_NAME_EXT
         if (!isVMMultidexCapable) {
-            val totalDexNumber = getMultiDexPreferences(context).getInt(KEY_DEX_NUMBER, 1)
-            val dexDir = File(applicationInfo.dataDir, SECONDARY_FOLDER_NAME)
+            val totalDexNumber = getMultiDexPreferences(
+                context
+            ).getInt(KEY_DEX_NUMBER, 1)
+            val dexDir = File(applicationInfo.dataDir,
+                SECONDARY_FOLDER_NAME
+            )
             for (secondaryNumber in 2..totalDexNumber) {
                 val fileName = extractedFilePrefix + secondaryNumber + EXTRACTED_SUFFIX
                 val extractedFile = File(dexDir, fileName)
@@ -92,7 +98,11 @@ object ClassFinder {
             }
         }
         if (BuildConfig.DEBUG) {
-            sourcePaths.addAll(tryLoadInstantRunDexFile(applicationInfo))
+            sourcePaths.addAll(
+                tryLoadInstantRunDexFile(
+                    applicationInfo
+                )
+            )
         }
         return sourcePaths
     }

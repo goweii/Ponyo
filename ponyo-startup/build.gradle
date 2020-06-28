@@ -1,6 +1,7 @@
 apply from: "../lib-android.gradle"
 
 dependencies {
+    implementation project(":ponyo-log")
     api project(":ponyo-startup-annotation")
     kapt project(":ponyo-startup-compiler")
 }

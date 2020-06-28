@@ -6,11 +6,11 @@ import android.content.ContentValues
 import android.database.Cursor
 import android.net.Uri
 
-internal class StartupInitializer : ContentProvider() {
+internal class StartupProvider : ContentProvider() {
 
     override fun onCreate(): Boolean = try {
         val application = context!!.applicationContext as Application
-        Startup.initialize(application)
+        Starter.initialize(application)
         true
     } catch (e: Exception) {
         false

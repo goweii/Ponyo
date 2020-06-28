@@ -1,4 +1,4 @@
-package per.goweii.ponyo.startup
+package per.goweii.ponyo.startup.utils
 
 import java.util.concurrent.ThreadFactory
 import java.util.concurrent.atomic.AtomicInteger

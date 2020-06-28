@@ -18,10 +18,10 @@ object Ponyo : AppStack.AppLifecycleListener {
     fun initialize(application: Application) {
         if (this::floatManager.isInitialized) return
         TM.APP_STARTUP.start("application initialize")
-        Crash.setCrashActivity(CrashActivity::class.java)
-        AppStack.registerAppLifecycleListener(Ponyo)
         Ponlog.addLogPrinter(LogManager)
         Ponlog.setJsonFormatter(GsonFormatter())
+        Crash.setCrashActivity(CrashActivity::class.java)
+        AppStack.registerAppLifecycleListener(Ponyo)
         TimeMonitor.registerTimeLineEndListener(TmManager)
         AppStack.activityStack.registerActivityLifecycleListener(TmManager)
         AppStack.activityStack.registerStackUpdateListener(ActiStackManager)

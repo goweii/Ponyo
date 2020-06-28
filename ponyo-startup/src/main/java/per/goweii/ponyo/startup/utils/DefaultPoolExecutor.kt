@@ -1,4 +1,4 @@
-package per.goweii.ponyo.startup
+package per.goweii.ponyo.startup.utils
 
 import java.util.concurrent.*
 
@@ -36,7 +36,8 @@ class DefaultPoolExecutor private constructor(
     companion object {
         private val CPU_COUNT = Runtime.getRuntime().availableProcessors()
         private val INIT_THREAD_COUNT = CPU_COUNT + 1
-        private val MAX_THREAD_COUNT = INIT_THREAD_COUNT
+        private val MAX_THREAD_COUNT =
+            INIT_THREAD_COUNT
         private const val SURPLUS_THREAD_LIFE = 30L
 
         @Volatile
@@ -46,14 +47,15 @@ class DefaultPoolExecutor private constructor(
             if (null == instance) {
                 synchronized(DefaultPoolExecutor::class.java) {
                     if (null == instance) {
-                        instance = DefaultPoolExecutor(
-                            INIT_THREAD_COUNT,
-                            MAX_THREAD_COUNT,
-                            SURPLUS_THREAD_LIFE,
-                            TimeUnit.SECONDS,
-                            ArrayBlockingQueue(64),
-                            DefaultThreadFactory()
-                        )
+                        instance =
+                            DefaultPoolExecutor(
+                                INIT_THREAD_COUNT,
+                                MAX_THREAD_COUNT,
+                                SURPLUS_THREAD_LIFE,
+                                TimeUnit.SECONDS,
+                                ArrayBlockingQueue(64),
+                                DefaultThreadFactory()
+                            )
                     }
                 }
             }

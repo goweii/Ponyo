@@ -6,4 +6,6 @@ package per.goweii.ponyo.startup.annotation
  */
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.BINARY)
-annotation class Startup
+annotation class Startup(
+    val activities: Array<String> = []
+)

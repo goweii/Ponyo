@@ -3,7 +3,7 @@
     <application>
         <provider
             android:authorities="${applicationId}.ponyo.startup.startupprovider"
-            android:name="per.goweii.ponyo.startup.StartupInitializer"
+            android:name="per.goweii.ponyo.startup.StartupProvider"
             android:exported="false" />
     </application>
 </manifest>
