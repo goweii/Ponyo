@@ -1,6 +1,6 @@
 ext {
     maven = [
-            useRemoteOrLocal: true,
+            useRemoteOrLocal: false,
             group           : "per.goweii.ponyo",
             version         : "1.4.0", //-SNAPSHOT
     ]
@@ -12,9 +12,9 @@ ext {
             snapshotUrl  : "http://192.168.2.61:8081/repository/maven-snapshots/",
     ]
     mavenLocal = [
-            publicUrl  : "file://C://Repository/maven-public/",
-            releaseUrl : "file://C://Repository/maven-releases/",
-            snapshotUrl: "file://C://Repository/maven-snapshots/",
+            publicUrl  : "file://C://Android/Repository/maven-public/",
+            releaseUrl : "file://C://Android/Repository/maven-releases/",
+            snapshotUrl: "file://C://Android/Repository/maven-snapshots/",
     ]
     android = [
             compileSdkVersion: 29,
