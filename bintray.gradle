@@ -2,7 +2,7 @@ apply plugin: 'com.jfrog.bintray'
 apply plugin: 'com.github.dcendents.android-maven'
 
 project.group = PROJ_GROUP
-project.version = rootProject.ext.android.versionName
+project.version = PROJ_VERSION
 project.archivesBaseName = project.name
 
 task sourcesJar(type: Jar) {
