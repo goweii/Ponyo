@@ -1,3 +1,6 @@
 apply plugin: 'com.android.library'
 apply from: "../android.gradle"
-apply from: "../maven-upload.gradle"
+apply from: "../bintray.gradle"
+
+android {
+}

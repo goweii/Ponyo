@@ -1,6 +1,5 @@
 apply plugin: 'com.android.library'
 apply from: "../lib-android.gradle"
-apply from: "../maven-upload.gradle"
 
 dependencies {
     implementation project(":ponyo-log")
