@@ -2,6 +2,8 @@ package per.goweii.ponyo.startup.annotation
 
 data class InitMeta(
     val className: String,
+    val async: Boolean,
+    val priority: Int,
     val activities: Array<String>,
     val fragments: Array<String>
 ) {

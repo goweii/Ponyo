@@ -1,14 +1,16 @@
 package per.goweii.ponyo.startup
 
+import per.goweii.ponyo.startup.annotation.InitMeta
+
 internal class SyncRunner(
-    private val initializers: ArrayList<Initializer>
+    private val initMetas: ArrayList<InitMeta>
 ) {
     fun execute() {
-        initializers.sortBy {
-            it.priority()
+        initMetas.sortBy {
+            it.priority
         }
-        initializers.forEach {
-            Starter.initialize(it)
+        initMetas.forEach {
+            Starter.initialize(it.className)
         }
     }
 }

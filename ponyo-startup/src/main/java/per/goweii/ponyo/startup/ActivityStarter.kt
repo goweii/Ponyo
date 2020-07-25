@@ -8,21 +8,17 @@ import androidx.fragment.app.FragmentActivity
 internal class ActivityStarter : Application.ActivityLifecycleCallbacks {
 
     companion object {
-        fun create(application: Application): ActivityStarter {
+        fun register(application: Application): ActivityStarter {
             return ActivityStarter().also {
                 application.registerActivityLifecycleCallbacks(it)
             }
         }
     }
 
-    fun recycle(application: Application) {
-        application.unregisterActivityLifecycleCallbacks(this)
-    }
-
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
         Starter.initializeFollowActivity(activity.javaClass)
         if (activity is FragmentActivity) {
-            FragmentStarter.create(activity.supportFragmentManager)
+            FragmentStarter.register(activity.supportFragmentManager)
         }
     }
 

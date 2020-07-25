@@ -9,8 +9,6 @@ import java.io.File
 @Startup
 class AppInitializer: Initializer {
 
-    override fun priority(): Int = Initializer.PRIORITY_MIDDLE
-
     override fun initialize(application: Application, isMainProcess: Boolean) {
         if (isMainProcess) {
             val dir = File(application.filesDir, "log")

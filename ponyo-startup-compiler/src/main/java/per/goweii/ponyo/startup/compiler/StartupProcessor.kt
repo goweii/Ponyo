@@ -63,7 +63,13 @@ class StartupProcessor : AbstractProcessor() {
             element as TypeElement
             val qualifiedName = element.qualifiedName.toString()
             val annotation = element.getAnnotation(Startup::class.java)
-            val initMeta = InitMeta(qualifiedName, annotation.activities, annotation.fragments)
+            val initMeta = InitMeta(
+                qualifiedName,
+                annotation.async,
+                annotation.priority,
+                annotation.activities,
+                annotation.fragments
+            )
             initMetaList.add(initMeta)
         }
         return writeFile()
@@ -100,9 +106,11 @@ class StartupProcessor : AbstractProcessor() {
         val fieldType = FieldSpec.builder(initMeta, Const.GENERATED_INIT_META_FIELD)
             .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
             .build()
-        val initHolder = ClassName.get(Const.INIT_HOLDER_PACKAGE_NAME, Const.INIT_HOLDER_SIMPLE_CLASS_NAME)
+        val initHolder = ClassName.get(Const.INIT_META_PROVIDER_PACKAGE_NAME, Const.INIT_META_PROVIDER_SIMPLE_CLASS_NAME)
         val constructorStr = StringBuilder()
         constructorStr.append("String className = \"${meta.className}\";")
+        constructorStr.append("\nboolean async = ${meta.async};")
+        constructorStr.append("\nint priority = ${meta.priority};")
         constructorStr.append("\nString[] activities = new String[${meta.activities.size}];")
         meta.activities.forEachIndexed { index, activity ->
             constructorStr.append("\nactivities[$index] = \"$activity\";")
@@ -111,13 +119,13 @@ class StartupProcessor : AbstractProcessor() {
         meta.fragments.forEachIndexed { index, fragment ->
             constructorStr.append("\nfragments[$index] = \"$fragment\";")
         }
-        constructorStr.append("\n\$T im = new \$T(className, activities, fragments);")
+        constructorStr.append("\n\$T im = new \$T(className, async, priority, activities, fragments);")
         constructorStr.append("\n${Const.GENERATED_INIT_META_FIELD} = im;\n")
         val constructorMethod = MethodSpec.constructorBuilder()
             .addModifiers(Modifier.PUBLIC)
             .addCode(CodeBlock.of(constructorStr.toString(), initMeta, initMeta))
             .build()
-        val getMethod = MethodSpec.methodBuilder(Const.INIT_HOLDER_GET_METHOD_NAME)
+        val getMethod = MethodSpec.methodBuilder(Const.INIT_META_PROVIDER_GET_METHOD_NAME)
             .addModifiers(Modifier.PUBLIC)
             .addAnnotation(Override::class.java)
             .returns(initMeta)

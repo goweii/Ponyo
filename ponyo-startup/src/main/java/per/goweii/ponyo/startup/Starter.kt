@@ -6,7 +6,7 @@ import android.os.Process
 import androidx.fragment.app.Fragment
 import per.goweii.ponyo.log.Ponlog
 import per.goweii.ponyo.startup.annotation.Const
-import per.goweii.ponyo.startup.annotation.InitHolder
+import per.goweii.ponyo.startup.annotation.InitMetaProvider
 import per.goweii.ponyo.startup.annotation.InitMeta
 import per.goweii.ponyo.startup.utils.ClassFinder
 import java.io.BufferedReader
@@ -16,60 +16,63 @@ import java.io.FileReader
 object Starter {
     private lateinit var application: Application
 
-    private var activityStarter: ActivityStarter? = null
-
     private val initMetas = mutableMapOf<String, InitMeta>()
-    private val activityInitMap = mutableMapOf<String, ArrayList<String>>()
-    private val fragmentInitMap = mutableMapOf<String, ArrayList<String>>()
     private val initializerCache = mutableMapOf<String, Initializer>()
+
+    private lateinit var followStarter: FollowStarter
 
     internal fun initialize(application: Application) {
         if (this::application.isInitialized) return
         this.application = application
+        this.followStarter = FollowStarter(application)
         findInitMetas().forEach { initMetas[it.className] = it }
-        activityStarter = ActivityStarter.create(application)
         val initRunner = InitRunner()
         initMetas.values.forEach { initMeta ->
             if (initMeta.activities.isNullOrEmpty() && initMeta.fragments.isNullOrEmpty()) {
-                initRunner.add(initMeta.className)
+                initRunner.add(initMeta)
             } else {
-                for (activity in initMeta.activities) {
-                    activityInitMap[activity]?.add(initMeta.className)
-                        ?: run { activityInitMap[activity] = arrayListOf(initMeta.className) }
-                }
-                for (fragment in initMeta.fragments) {
-                    fragmentInitMap[fragment]?.add(initMeta.className)
-                        ?: run { fragmentInitMap[fragment] = arrayListOf(initMeta.className) }
+                followStarter.addInitMeta(initMeta)
+            }
+        }
+        initRunner.run()
+    }
+
+    fun getInitMeta(className: String): InitMeta? {
+        return initMetas[className]
+    }
+
+    fun initializeFollowActivity(activityClass: Class<out Activity>) {
+        initializeFollowActivity(activityClass.name)
+    }
+
+    fun initializeFollowActivity(activityName: String) {
+        val initNames = followStarter.getActivityInitNames(activityName) ?: return
+        val initRunner = InitRunner()
+        initNames.forEach {
+            initMetas[it]?.let { initMeta ->
+                if (!initMeta.isInitialized) {
+                    initRunner.add(initMeta)
                 }
             }
         }
         initRunner.run()
     }
 
-    fun initializeFollowActivity(activityClass: Class<out Activity>) {
-        val activityName = activityClass.name
-        activityInitMap[activityName]?.let { list ->
-            val initRunner = InitRunner()
-            list.forEach {
-                if (!isInitialized(it)) {
-                    initRunner.add(it)
-                }
-            }
-            initRunner.run()
-        }
+    fun initializeFollowFragment(fragmentClass: Class<out Fragment>) {
+        initializeFollowActivity(fragmentClass.name)
     }
 
-    fun initializeFollowFragment(fragmentClass: Class<out Fragment>) {
-        val fragmentName = fragmentClass.name
-        fragmentInitMap[fragmentName]?.let { list ->
-            val initRunner = InitRunner()
-            list.forEach {
-                if (!isInitialized(it)) {
-                    initRunner.add(it)
+    fun initializeFollowFragment(fragmentName: String) {
+        val initNames = followStarter.getFragmentInitNames(fragmentName) ?: return
+        val initRunner = InitRunner()
+        initNames.forEach {
+            initMetas[it]?.let { initMeta ->
+                if (!initMeta.isInitialized) {
+                    initRunner.add(initMeta)
                 }
             }
-            initRunner.run()
         }
+        initRunner.run()
     }
 
     fun initialize(block: Application.(isMainProcess: Boolean) -> Unit) {
@@ -95,48 +98,30 @@ object Starter {
                 initialize(dependInitializer)
             }
         }
-        if (!isInitialized(initializer::class.java.name)) {
-            try {
-                Ponlog.i { "start init ${initializer::class.java.name}" }
-                initializer.initialize(application, isMainProcess())
-                setInitialized(initializer::class.java.name)
-                Ponlog.i { "success init ${initializer::class.java.name}" }
-            } catch (e: Throwable) {
-                Ponlog.e { "error init ${initializer::class.java.name}" }
-                e.printStackTrace()
-            }
+        if (isInitialized(initializer::class.java.name)) return
+        try {
+            Ponlog.i { "start init ${initializer::class.java.name}" }
+            initializer.initialize(application, isMainProcess())
+            setInitialized(initializer::class.java.name)
+            Ponlog.i { "success init ${initializer::class.java.name}" }
+        } catch (e: Throwable) {
+            e.printStackTrace()
+            Ponlog.e { "error init ${initializer::class.java.name}" }
         }
     }
 
     private fun setInitialized(className: String) {
-        initMetas[className]?.isInitialized = true
+        val initMeta = initMetas[className]
+        initMeta?.isInitialized = true
         initializerCache.remove(className)
-        val activityInitIt = activityInitMap.iterator()
-        while (activityInitIt.hasNext()) {
-            val entry = activityInitIt.next()
-            entry.value.remove(className)
-            if (entry.value.isEmpty()) {
-                activityInitIt.remove()
-            }
-        }
-        val fragmentInitIt = fragmentInitMap.iterator()
-        while (fragmentInitIt.hasNext()) {
-            val entry = fragmentInitIt.next()
-            entry.value.remove(className)
-            if (entry.value.isEmpty()) {
-                fragmentInitIt.remove()
-            }
-        }
-        if (activityInitMap.isEmpty() && fragmentInitMap.isEmpty()) {
-            activityStarter?.recycle(application)
-        }
+        followStarter.setInitialized(className)
     }
 
     private fun isInitialized(className: String): Boolean {
         return initMetas[className]?.isInitialized ?: false
     }
 
-    internal fun getOrCreateInitializer(className: String): Initializer {
+    private fun getOrCreateInitializer(className: String): Initializer {
         var initializer = initializerCache[className]
         if (initializer == null) {
             val initCls = Class.forName(className)
@@ -156,7 +141,7 @@ object Starter {
         holders.forEach { holderName ->
             val holderCls = Class.forName(holderName)
             val holder = holderCls.getConstructor().newInstance()
-            holder as InitHolder
+            holder as InitMetaProvider
             set.add(holder.getInitMeta())
         }
         return set

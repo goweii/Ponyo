@@ -8,7 +8,7 @@ import per.goweii.ponyo.startup.annotation.Startup
  * @author CuiZhen
  * @date 2020/6/21
  */
-@Startup()
+@Startup
 class DependTestInitializer: Initializer {
     override fun initialize(application: Application, isMainProcess: Boolean) {
     }

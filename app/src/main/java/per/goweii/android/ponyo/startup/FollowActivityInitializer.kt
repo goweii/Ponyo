@@ -10,9 +10,12 @@ import per.goweii.ponyo.startup.annotation.Startup
  * @author CuiZhen
  * @date 2020/6/21
  */
-@Startup(priority = Startup.PRIORITY_LAST)
-class TestInitializer: Initializer {
-
+@Startup(
+    activities = [
+        "per.goweii.android.ponyo.appstack.ActiStackActivity"
+    ]
+)
+class FollowActivityInitializer : Initializer {
     override fun initialize(application: Application, isMainProcess: Boolean) {
         Ponlog.d { application.toString() }
     }
