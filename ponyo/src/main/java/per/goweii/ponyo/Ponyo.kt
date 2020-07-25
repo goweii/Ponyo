@@ -17,12 +17,14 @@ object Ponyo : AppStack.AppLifecycleListener {
 
     fun initialize(application: Application) {
         if (this::floatManager.isInitialized) return
-        TM.APP_STARTUP.start("application initialize")
         Ponlog.addLogPrinter(LogManager)
         Ponlog.setJsonFormatter(GsonFormatter())
-        Crash.setCrashActivity(CrashActivity::class.java)
-        AppStack.registerAppLifecycleListener(Ponyo)
+        TM.APP_STARTUP.start("application initialize")
         TimeMonitor.registerTimeLineEndListener(TmManager)
+        Crash.initialize(application)
+        Crash.setCrashActivity(CrashActivity::class.java)
+        AppStack.initialize(application)
+        AppStack.registerAppLifecycleListener(Ponyo)
         AppStack.activityStack.registerActivityLifecycleListener(TmManager)
         AppStack.activityStack.registerStackUpdateListener(ActiStackManager)
         floatManager = FloatManager(application).icon(R.drawable.ponyo_ic_float)

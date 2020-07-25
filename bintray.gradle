@@ -3,7 +3,6 @@ apply plugin: 'com.github.dcendents.android-maven'
 
 project.group = PROJ_GROUP
 project.version = PROJ_VERSION
-project.archivesBaseName = project.name
 
 task sourcesJar(type: Jar) {
     from android.sourceSets.main.java.srcDirs
@@ -41,19 +40,19 @@ install {
     repositories.mavenInstaller {
         pom.project {
             name PROJ_NAME
-            description PROJ_DESCRIPTION //project description
-            url PROJ_WEBSITEURL //project weiste url
+            description PROJ_DESCRIPTION
+            url PROJ_WEBSITEURL
 
-            packaging 'aar'
-            groupId project.group  //group
-            artifactId project.archivesBaseName //artifactId
-            version project.version  //version
+            packaging PROJ_PACKAGING
+            groupId project.group
+            artifactId project.name
+            version project.version
 
             licenses {
                 license {
-                    name 'The Apache Software License, Version 2.0'
-                    url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                    distribution 'repo'
+                    name LICENSE_NAME
+                    url LICENSE_URL
+                    distribution LICENSE_DISTRIBUTION
                 }
             }
             scm {
@@ -86,7 +85,7 @@ bintray {
     pkg {
         repo = 'maven'
         name = PROJ_NAME
-        licenses = ['Apache-2.0']
+        licenses = [LICENSE_NAME]
         vcsUrl = PROJ_VCSURL
         websiteUrl = PROJ_WEBSITEURL
         issueTrackerUrl = PROJ_ISSUETRACKERURL

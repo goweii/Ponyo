@@ -1,7 +1,9 @@
 package per.goweii.ponyo.startup
 
+import android.app.Activity
 import android.app.Application
 import android.os.Process
+import androidx.fragment.app.Fragment
 import per.goweii.ponyo.log.Ponlog
 import per.goweii.ponyo.startup.annotation.Const
 import per.goweii.ponyo.startup.annotation.InitHolder
@@ -14,24 +16,60 @@ import java.io.FileReader
 object Starter {
     private lateinit var application: Application
 
-    private val initCache = mutableMapOf<String, Initializer?>()
-    private val initializedList = arrayListOf<String>()
+    private var activityStarter: ActivityStarter? = null
+
+    private val initMetas = mutableMapOf<String, InitMeta>()
+    private val activityInitMap = mutableMapOf<String, ArrayList<String>>()
+    private val fragmentInitMap = mutableMapOf<String, ArrayList<String>>()
+    private val initializerCache = mutableMapOf<String, Initializer>()
 
     internal fun initialize(application: Application) {
         if (this::application.isInitialized) return
         this.application = application
+        findInitMetas().forEach { initMetas[it.className] = it }
+        activityStarter = ActivityStarter.create(application)
         val initRunner = InitRunner()
-        val activityStarter = ActivityStarter(application)
-        findFromPackage().forEach { initMeta ->
-            if (initMeta.activities.isNullOrEmpty()) {
+        initMetas.values.forEach { initMeta ->
+            if (initMeta.activities.isNullOrEmpty() && initMeta.fragments.isNullOrEmpty()) {
                 initRunner.add(initMeta.className)
             } else {
                 for (activity in initMeta.activities) {
-                    activityStarter.add(activity, initMeta.className)
+                    activityInitMap[activity]?.add(initMeta.className)
+                        ?: run { activityInitMap[activity] = arrayListOf(initMeta.className) }
+                }
+                for (fragment in initMeta.fragments) {
+                    fragmentInitMap[fragment]?.add(initMeta.className)
+                        ?: run { fragmentInitMap[fragment] = arrayListOf(initMeta.className) }
                 }
             }
         }
         initRunner.run()
+    }
+
+    fun initializeFollowActivity(activityClass: Class<out Activity>) {
+        val activityName = activityClass.name
+        activityInitMap[activityName]?.let { list ->
+            val initRunner = InitRunner()
+            list.forEach {
+                if (!isInitialized(it)) {
+                    initRunner.add(it)
+                }
+            }
+            initRunner.run()
+        }
+    }
+
+    fun initializeFollowFragment(fragmentClass: Class<out Fragment>) {
+        val fragmentName = fragmentClass.name
+        fragmentInitMap[fragmentName]?.let { list ->
+            val initRunner = InitRunner()
+            list.forEach {
+                if (!isInitialized(it)) {
+                    initRunner.add(it)
+                }
+            }
+            initRunner.run()
+        }
     }
 
     fun initialize(block: Application.(isMainProcess: Boolean) -> Unit) {
@@ -39,13 +77,15 @@ object Starter {
     }
 
     fun initialize(initializerClass: Class<out Initializer>) {
-        val initializer = getOrCreateInitializer(initializerClass.name)
-        initialize(initializer)
+        val initializerName = initializerClass.name
+        initialize(initializerName)
     }
 
     fun initialize(initializerName: String) {
-        val initializer = getOrCreateInitializer(initializerName)
-        initialize(initializer)
+        if (!isInitialized(initializerName)) {
+            val initializer = getOrCreateInitializer(initializerName)
+            initialize(initializer)
+        }
     }
 
     fun initialize(initializer: Initializer) {
@@ -57,29 +97,57 @@ object Starter {
         }
         if (!isInitialized(initializer::class.java.name)) {
             try {
-                Ponlog.d { "start init ${initializer::class.java.name}" }
+                Ponlog.i { "start init ${initializer::class.java.name}" }
                 initializer.initialize(application, isMainProcess())
-                initializedList.add(initializer::class.java.name)
-                Ponlog.d { "success init ${initializer::class.java.name}" }
+                setInitialized(initializer::class.java.name)
+                Ponlog.i { "success init ${initializer::class.java.name}" }
             } catch (e: Throwable) {
-                Ponlog.d { "error init ${initializer::class.java.name}" }
+                Ponlog.e { "error init ${initializer::class.java.name}" }
                 e.printStackTrace()
             }
         }
     }
 
-    fun isInitialized(className: String): Boolean {
-        return initializedList.contains(className)
+    private fun setInitialized(className: String) {
+        initMetas[className]?.isInitialized = true
+        initializerCache.remove(className)
+        val activityInitIt = activityInitMap.iterator()
+        while (activityInitIt.hasNext()) {
+            val entry = activityInitIt.next()
+            entry.value.remove(className)
+            if (entry.value.isEmpty()) {
+                activityInitIt.remove()
+            }
+        }
+        val fragmentInitIt = fragmentInitMap.iterator()
+        while (fragmentInitIt.hasNext()) {
+            val entry = fragmentInitIt.next()
+            entry.value.remove(className)
+            if (entry.value.isEmpty()) {
+                fragmentInitIt.remove()
+            }
+        }
+        if (activityInitMap.isEmpty() && fragmentInitMap.isEmpty()) {
+            activityStarter?.recycle(application)
+        }
+    }
+
+    private fun isInitialized(className: String): Boolean {
+        return initMetas[className]?.isInitialized ?: false
     }
 
     internal fun getOrCreateInitializer(className: String): Initializer {
-        var initializer = initCache[className]
+        var initializer = initializerCache[className]
         if (initializer == null) {
             val initCls = Class.forName(className)
             initializer = initCls.newInstance() as Initializer
-            initCache[className] = initializer
+            initializerCache[className] = initializer
         }
         return initializer
+    }
+
+    private fun findInitMetas(): Set<InitMeta> {
+        return findFromPackage()
     }
 
     private fun findFromPackage(): Set<InitMeta> {

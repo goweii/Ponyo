@@ -63,7 +63,7 @@ class StartupProcessor : AbstractProcessor() {
             element as TypeElement
             val qualifiedName = element.qualifiedName.toString()
             val annotation = element.getAnnotation(Startup::class.java)
-            val initMeta = InitMeta(qualifiedName, annotation.activities)
+            val initMeta = InitMeta(qualifiedName, annotation.activities, annotation.fragments)
             initMetaList.add(initMeta)
         }
         return writeFile()
@@ -107,7 +107,11 @@ class StartupProcessor : AbstractProcessor() {
         meta.activities.forEachIndexed { index, activity ->
             constructorStr.append("\nactivities[$index] = \"$activity\";")
         }
-        constructorStr.append("\n\$T im = new \$T(className, activities);")
+        constructorStr.append("\nString[] fragments = new String[${meta.fragments.size}];")
+        meta.fragments.forEachIndexed { index, fragment ->
+            constructorStr.append("\nfragments[$index] = \"$fragment\";")
+        }
+        constructorStr.append("\n\$T im = new \$T(className, activities, fragments);")
         constructorStr.append("\n${Const.GENERATED_INIT_META_FIELD} = im;\n")
         val constructorMethod = MethodSpec.constructorBuilder()
             .addModifiers(Modifier.PUBLIC)

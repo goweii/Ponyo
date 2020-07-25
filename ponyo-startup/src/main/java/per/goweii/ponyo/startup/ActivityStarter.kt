@@ -3,33 +3,26 @@ package per.goweii.ponyo.startup
 import android.app.Activity
 import android.app.Application
 import android.os.Bundle
+import androidx.fragment.app.FragmentActivity
 
-internal class ActivityStarter(
-    application: Application
-) : Application.ActivityLifecycleCallbacks {
-    private val map = mutableMapOf<String, ArrayList<String>>()
+internal class ActivityStarter : Application.ActivityLifecycleCallbacks {
 
-    init {
-        application.registerActivityLifecycleCallbacks(this)
+    companion object {
+        fun create(application: Application): ActivityStarter {
+            return ActivityStarter().also {
+                application.registerActivityLifecycleCallbacks(it)
+            }
+        }
     }
 
-    fun add(activityName: String, initName: String): ActivityStarter {
-        map[activityName]?.add(initName) ?: run {
-            map[activityName] = arrayListOf(initName)
-        }
-        return this
+    fun recycle(application: Application) {
+        application.unregisterActivityLifecycleCallbacks(this)
     }
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-        val activityName = activity::class.java.name
-        map[activityName]?.let { list ->
-            val initRunner = InitRunner()
-            list.forEach {
-                if (!Starter.isInitialized(it)) {
-                    initRunner.add(it)
-                }
-            }
-            initRunner.run()
+        Starter.initializeFollowActivity(activity.javaClass)
+        if (activity is FragmentActivity) {
+            FragmentStarter.create(activity.supportFragmentManager)
         }
     }
 

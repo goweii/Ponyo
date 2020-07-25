@@ -4,6 +4,8 @@ apply from: "../android.gradle"
 android {
     defaultConfig {
         applicationId "per.goweii.android.ponyo"
+        versionCode 1
+        versionName "1.0.0"
     }
     buildTypes {
         release {
@@ -15,8 +17,8 @@ android {
 }
 
 dependencies {
-    //implementation 'per.goweii.ponyo:Ponyo:1.0.0'
-    //kapt 'per.goweii.ponyo:Ponyo:ponyo-startup-compiler:1.0.0'
+//    implementation 'per.goweii.ponyo:Ponyo:1.0.0'
+//    kapt 'per.goweii.ponyo:Ponyo:ponyo-startup-compiler:1.0.0'
     implementation project(":ponyo")
     kapt project(":ponyo-startup-compiler")
     implementation rootProject.ext.dependencies.constraintlayout

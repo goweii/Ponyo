@@ -1,6 +1,3 @@
 apply plugin: 'com.android.library'
 apply from: "../android.gradle"
 apply from: "../bintray.gradle"
-
-android {
-}
