@@ -11,16 +11,15 @@ import java.util.*
 internal object LeakWatcher {
     private lateinit var activityWatcher: ActivityWatcher
 
-    private val watchedObjects = mutableMapOf<String, WatchedRef>()
     private val queue = ReferenceQueue<Any>()
-
-    val leakedObjects: List<WatchedRef>
+    private val watchedObjects = mutableMapOf<String, WatchedRef>()
+    private val leakedObjects: List<WatchedRef>
         get() {
             val list = arrayListOf<WatchedRef>()
-            removeWeeklyObjects()
-            removeRecycledObjects()
-            watchedObjects.forEach {
-                list.add(it.value)
+            watchedObjects.values.forEach {
+                if (!it.needReDetect && !it.isRecycled) {
+                    list.add(it)
+                }
             }
             return list
         }
@@ -48,7 +47,7 @@ internal object LeakWatcher {
     private fun removeRecycledObjects() {
         val iterator = watchedObjects.iterator()
         while (iterator.hasNext()) {
-            if (iterator.next().value.get() == null) {
+            if (iterator.next().value.isRecycled) {
                 iterator.remove()
             }
         }
@@ -56,7 +55,7 @@ internal object LeakWatcher {
 
     private fun checkWatchedObjects() {
         mainHandler.removeCallbacks(mainRunnable)
-        mainHandler.postDelayed(mainRunnable, 5000)
+        mainHandler.postDelayed(mainRunnable, LeakConfig.perDetectDelay.toLong())
     }
 
     private val mainHandler = Handler(Looper.getMainLooper())
@@ -72,18 +71,37 @@ internal object LeakWatcher {
     private val idleHandler = MessageQueue.IdleHandler {
         GCTrigger.gc()
         removeRecycledObjects()
-        if (watchedObjects.isNotEmpty()) {
-            Ponlog.w {
-                val sb = StringBuilder()
-                sb.append("${watchedObjects.size} leaks may have occurred, you can view the details on panel. And the leaked classes are as follows:")
-                watchedObjects.forEach {
-                    sb.append("\n- ").append(it.value.identity)
-                }
-                sb.toString()
+        var needReDetect = false
+        var needReport = false
+        watchedObjects.values.forEach {
+            it.doneOnceDetected()
+            if (it.needReDetect) {
+                needReDetect = true
+            } else if (!it.isReported) {
+                needReport = true
             }
         }
-        Leak.leakListener?.onLeak(watchedObjects.size)
+        if (needReDetect) {
+            checkWatchedObjects()
+        }
+        if (needReport) {
+            reportLeaked()
+        }
         false
+    }
+
+    private fun reportLeaked() {
+        val leakedObjects = leakedObjects
+        leakedObjects.forEach { it.setReported() }
+        Leak.leakListener?.onLeak(leakedObjects.size)
+        Ponlog.w {
+            val sb = StringBuilder()
+            sb.append("${leakedObjects.size} leaks:")
+            leakedObjects.forEach {
+                sb.append("\n- ").append(it.identity)
+            }
+            sb.toString()
+        }
     }
 
 }
