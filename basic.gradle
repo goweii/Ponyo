@@ -1,0 +1,5 @@
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation rootProject.ext.dependencies.kotlin_stdlib
+    //implementation rootProject.ext.dependencies.kotlin_reflect
+}

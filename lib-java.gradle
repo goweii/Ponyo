@@ -1,2 +1,2 @@
 apply plugin: 'java-library'
-apply from: "../java.gradle"
+apply from: "../basic-java.gradle"

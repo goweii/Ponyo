@@ -2,6 +2,8 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
+apply from: "../basic.gradle"
+
 android {
     compileSdkVersion rootProject.ext.android.compileSdkVersion
     buildToolsVersion rootProject.ext.android.buildToolsVersion
@@ -21,9 +23,6 @@ android {
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation rootProject.ext.dependencies.kotlin_stdlib
-    implementation rootProject.ext.dependencies.kotlin_reflect
     implementation rootProject.ext.dependencies.kotlinx_coroutines_core
     implementation rootProject.ext.dependencies.kotlinx_coroutines_android
     implementation rootProject.ext.dependencies.androidx_appcompat
