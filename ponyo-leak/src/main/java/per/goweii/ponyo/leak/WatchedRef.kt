@@ -18,9 +18,11 @@ internal class WatchedRef(
     var detectedTimes = 0
         private set
 
-    val isRecycled: Boolean = get() == null
+    val isRecycled: Boolean
+        get() = get() == null
 
-    val needReDetect: Boolean = detectedTimes < LeakConfig.maxDetectTimes
+    val needReDetect: Boolean
+        get() = detectedTimes < LeakConfig.maxDetectTimes
 
     var isReported: Boolean = false
         private set
