@@ -1,15 +1,19 @@
 package per.goweii.android.ponyo
 
 import android.app.Application
-import per.goweii.ponyo.crash.Crash
+import android.content.Context
 import per.goweii.ponyo.log.Ponlog
-import java.io.File
 
 /**
  * @author CuiZhen
  * @date 2020/3/28
  */
 class App : Application() {
+
+    override fun attachBaseContext(base: Context?) {
+        Ponlog.d("App") { "attachBaseContext" }
+        super.attachBaseContext(base)
+    }
 
     override fun onCreate() {
         Ponlog.d("App") { "onCreate" }
