@@ -1,5 +1,5 @@
-<manifest package="per.goweii.ponyo"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="per.goweii.ponyo">
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <application>
         <provider
@@ -13,7 +13,7 @@
         </provider>
         <activity
             android:name=".CrashActivity"
-            android:theme="@style/ponyo_CrashTheme"
-            android:process=":ponyocrash" />
+            android:process=":ponyocrash"
+            android:theme="@style/ponyo_CrashTheme" />
     </application>
 </manifest>
