@@ -1,0 +1,24 @@
+apply plugin:'maven'
+
+group PROJ_GROUP
+version PROJ_VERSION
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            snapshotRepository(url: REPO_SNAPSHOT) {
+                authentication(
+                        userName: NEXUS_ACCOUNT,
+                        password: NEXUS_PASSWORD
+                )
+            }
+            repository(url: REPO_RELEASE) {
+                authentication(
+                        userName: NEXUS_ACCOUNT,
+                        password: NEXUS_PASSWORD
+                )
+            }
+            pom.packaging = PROJ_PACKAGING
+        }
+    }
+}

@@ -17,10 +17,10 @@ android {
 }
 
 dependencies {
-    debugImplementation 'com.github.goweii.Ponyo:ponyo:1.5.0'
-    kapt 'com.github.goweii.Ponyo:ponyo-startup-compiler:1.5.0'
-//    implementation project(":ponyo")
-//    kapt project(":ponyo-startup-compiler")
+//    debugImplementation 'com.github.goweii.Ponyo:ponyo:1.5.0'
+//    kapt 'com.github.goweii.Ponyo:ponyo-startup-compiler:1.5.0'
+    implementation project(":ponyo")
+    kapt project(":ponyo-startup-compiler")
     implementation rootProject.ext.dependencies.constraintlayout
     implementation rootProject.ext.dependencies.room_runtime
     implementation rootProject.ext.dependencies.room_ktx
