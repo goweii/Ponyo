@@ -29,7 +29,7 @@ object Starter {
         if (this::application.isInitialized) return
         this.application = application
         this.followStarter = FollowStarter(application)
-        findInitMetas().forEach { initMetas[it.className] = it }
+        InitMetaCenter().loadInitMeta(initMetas)
         val initRunner = InitRunner()
         initMetas.values.forEach { initMeta ->
             if (initMeta.activities.isNullOrEmpty() && initMeta.fragments.isNullOrEmpty()) {
@@ -135,62 +135,6 @@ object Starter {
             }
         }
         return initializer
-    }
-
-    private fun findInitMetas(): Set<InitMeta> {
-        if (BuildConfig.DEBUG && "debug" == BuildConfig.BUILD_TYPE) {
-            return findFromPackageAndSave()
-        }
-        val currVersion = AppVersionUtils.getVersion(application)
-        val saveVersion = getSpVersion()
-        if (!TextUtils.equals(currVersion, saveVersion)) {
-            return findFromPackageAndSave()
-        }
-        return getFromSp() ?: findFromPackageAndSave()
-    }
-
-    private fun findFromPackageAndSave(): Set<InitMeta> {
-        val set = mutableSetOf<InitMeta>()
-        val holders = ClassFinder.findClasses(application, Const.GENERATED_PACKAGE_NAME)
-        holders.forEach { holderName ->
-            val holderCls = Class.forName(holderName)
-            val holder = holderCls.getConstructor().newInstance()
-            holder as InitMetaProvider
-            set.add(holder.getInitMeta())
-        }
-        saveToSp(set)
-        return set
-    }
-
-    private const val SP_NAME = "startup"
-    private const val SP_KEY_APP_VERSION = "app_version"
-    private const val SP_KEY_INIT_METAS = "init_metas"
-
-    private fun getFromSp(): Set<InitMeta>? {
-        val sp = application.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE)
-        val value = sp.getString(SP_KEY_INIT_METAS, null) ?: return null
-        return try {
-            InitMeta.fromSpValue(value)
-        } catch (e: Exception) {
-            saveToSp(null)
-            null
-        }
-    }
-
-    private fun getSpVersion(): String {
-        val sp = application.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE)
-        return sp.getString(SP_KEY_APP_VERSION, null) ?: ""
-    }
-
-    private fun saveToSp(initMetas: Set<InitMeta>?) {
-        val sp = application.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE)
-        sp.edit {
-            initMetas?.let {
-                val value = InitMeta.toSpValue(initMetas)
-                putString(SP_KEY_APP_VERSION, AppVersionUtils.getVersion(application))
-                putString(SP_KEY_INIT_METAS, value)
-            } ?: clear()
-        }
     }
 
     private fun isMainProcess(): Boolean {

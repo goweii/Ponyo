@@ -21,7 +21,7 @@ class RegisterCodeGenerator {
     static void insertInitCodeTo(ScanMeta registerSetting) {
         if (registerSetting != null && !registerSetting.classList.isEmpty()) {
             RegisterCodeGenerator processor = new RegisterCodeGenerator(registerSetting)
-            File file = RegisterTransform.fileContainsInitClass
+            File file = StartupTransform.fileContainsInitClass
             if (file.getName().endsWith('.jar'))
                 processor.insertInitCodeIntoJarFile(file)
         }
