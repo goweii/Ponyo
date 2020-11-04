@@ -14,6 +14,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import per.goweii.ponyo.panel.PanelProvider
+import java.security.Key
 import kotlin.math.min
 import kotlin.math.pow
 
@@ -22,7 +23,6 @@ import kotlin.math.pow
  * @date 2020/3/28
  */
 internal class PanelManager(private val context: Context) {
-
     enum class State {
         FLOAT, PANEL
     }
@@ -35,6 +35,7 @@ internal class PanelManager(private val context: Context) {
     }
     private val windowManager: WindowManager =
         context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+
     @SuppressLint("RtlHardcoded")
     private val windowParams: WindowManager.LayoutParams =
         WindowManager.LayoutParams().apply {
@@ -45,7 +46,7 @@ internal class PanelManager(private val context: Context) {
             } else {
                 WindowManager.LayoutParams.TYPE_SYSTEM_ALERT - 1
             }
-            format = PixelFormat.RGBA_8888
+            format = PixelFormat.TRANSPARENT
             gravity = Gravity.TOP or Gravity.LEFT
             flags = WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
             width = WindowManager.LayoutParams.MATCH_PARENT
@@ -69,6 +70,21 @@ internal class PanelManager(private val context: Context) {
                     PanelProvider.onDetach()
                 }
             })
+            floatRoot.setCallback(object : FloatRootView.Callback {
+                override fun dispatchKeyEvent(event: KeyEvent): Boolean {
+                    if (event.action == KeyEvent.ACTION_UP && event.keyCode == KeyEvent.KEYCODE_BACK) {
+                        if (isShown) {
+                            dismiss(null)
+                            return true
+                        }
+                    }
+                    return false
+                }
+            })
+        }
+    }
+    private val floatRoot: FloatRootView by lazy {
+        floatView.findViewById<FloatRootView>(R.id.root).apply {
         }
     }
     private val floatWrapper: View by lazy {
@@ -156,8 +172,8 @@ internal class PanelManager(private val context: Context) {
         onDetachListener = listener
     }
 
-    fun show(rectF: RectF) {
-        floatRectF.set(rectF)
+    fun show(rectF: RectF?) {
+        rectF?.let { floatRectF.set(it) }
         if (!floatView.isAttachedToWindow) {
             attach()
         } else {
@@ -180,8 +196,8 @@ internal class PanelManager(private val context: Context) {
         return floatView.isAttachedToWindow
     }
 
-    fun dismiss(rectF: RectF) {
-        floatRectF.set(rectF)
+    fun dismiss(rectF: RectF?) {
+        rectF?.let { floatRectF.set(it) }
         if (floatView.isAttachedToWindow) {
             if (zoomAnimator.isRunning) {
                 when (state) {
@@ -198,8 +214,8 @@ internal class PanelManager(private val context: Context) {
         }
     }
 
-    fun toggle(rectF: RectF) {
-        floatRectF.set(rectF)
+    fun toggle(rectF: RectF?) {
+        rectF?.let { floatRectF.set(it) }
         if (!floatView.isAttachedToWindow) {
             attach()
         } else {

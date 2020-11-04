@@ -36,7 +36,6 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
     private val panelManager: PanelManager by lazy {
         PanelManager(context)
     }
-
     private val fenceRect: RectF by lazy {
         val rect = Rect()
         windowManager.defaultDisplay.getRectSize(rect)
@@ -49,7 +48,6 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
     ).toInt()
     private val windowManager: WindowManager =
         context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-
     @SuppressLint("RtlHardcoded")
     private val windowParams: WindowManager.LayoutParams =
         WindowManager.LayoutParams().apply {
@@ -58,7 +56,7 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
             } else {
                 WindowManager.LayoutParams.TYPE_SYSTEM_ALERT
             }
-            format = PixelFormat.RGBA_8888
+            format = PixelFormat.TRANSPARENT
             gravity = Gravity.TOP or Gravity.LEFT
             flags = WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or
                     WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
