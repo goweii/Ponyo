@@ -1,3 +1,4 @@
+include ':ponyo-startup-gradle-plugin'
 rootProject.name='Ponyo'
 include ':app'
 include ':ponyo'

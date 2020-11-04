@@ -1,24 +1,38 @@
 apply from: "config.gradle"
 
 buildscript {
-    ext.kotlin_version = '1.3.72'
+    ext.kotlin_version = '1.4.10'
     ext.kotlin_coroutines_version = '1.3.2'
     repositories {
+        if (USE_NEXUS.toBoolean()) {
+            maven { url uri(NEXUS_RELEASE) }
+            maven { url uri(NEXUS_SNAPSHOT) }
+        } else {
+            maven { url uri(LOCAL_RELEASE) }
+            maven { url uri(LOCAL_SNAPSHOT) }
+        }
         google()
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.0.1'
+        classpath 'com.android.tools.build:gradle:4.1.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
+        classpath "$PROJ_GROUP:ponyo-startup-gradle-plugin:$PROJ_VERSION"
     }
 }
 
 allprojects {
     repositories {
         flatDir { dirs 'libs' }
-        maven { url REPO_RELEASE }
+        if (USE_NEXUS.toBoolean()) {
+            maven { url uri(NEXUS_RELEASE) }
+            maven { url uri(NEXUS_SNAPSHOT) }
+        } else {
+            maven { url uri("../$LOCAL_RELEASE") }
+            maven { url uri("../$LOCAL_SNAPSHOT") }
+        }
         maven { url "https://jitpack.io" }
         google()
         jcenter()

@@ -1,0 +1,7 @@
+apply plugin: 'groovy'
+apply from: "../lib-java.gradle"
+
+dependencies {
+    implementation gradleApi()
+    implementation localGroovy()
+}

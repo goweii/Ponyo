@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'per.goweii.ponyo.startup'
 apply from: "../basic-android.gradle"
 
 android {
@@ -17,10 +18,8 @@ android {
 }
 
 dependencies {
-    debugImplementation 'per.goweii.ponyo:ponyo:1.1.0'
-    kapt 'per.goweii.ponyo:ponyo-startup-compiler:1.1.0'
-//    implementation project(":ponyo")
-//    kapt project(":ponyo-startup-compiler")
+    debugImplementation "$PROJ_GROUP:ponyo:$PROJ_VERSION"
+    kapt "$PROJ_GROUP:ponyo-startup-compiler:$PROJ_VERSION"
     implementation rootProject.ext.dependencies.constraintlayout
     implementation rootProject.ext.dependencies.room_runtime
     implementation rootProject.ext.dependencies.room_ktx
