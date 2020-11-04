@@ -19,7 +19,7 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
-        classpath "$PROJ_GROUP:ponyo-startup-gradle-plugin:$PROJ_VERSION"
+        classpath "$PROJ_GROUP:ponyo-startup-gradle-plugin:1.2.6"
     }
 }
 

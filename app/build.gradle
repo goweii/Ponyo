@@ -18,8 +18,8 @@ android {
 }
 
 dependencies {
-    debugImplementation "$PROJ_GROUP:ponyo:$PROJ_VERSION"
-    kapt "$PROJ_GROUP:ponyo-startup-compiler:$PROJ_VERSION"
+    debugImplementation "$PROJ_GROUP:ponyo:1.2.0"
+    kapt "$PROJ_GROUP:ponyo-startup-compiler:1.2.0"
     implementation rootProject.ext.dependencies.constraintlayout
     implementation rootProject.ext.dependencies.room_runtime
     implementation rootProject.ext.dependencies.room_ktx
