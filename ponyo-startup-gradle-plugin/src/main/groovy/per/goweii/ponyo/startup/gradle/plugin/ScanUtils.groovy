@@ -8,7 +8,7 @@ import org.objectweb.asm.Opcodes
 import java.util.jar.JarEntry
 import java.util.jar.JarFile
 
-class ScanUtil {
+class ScanUtils {
 
     /**
      * scan jar file
@@ -22,11 +22,11 @@ class ScanUtil {
             while (enumeration.hasMoreElements()) {
                 JarEntry jarEntry = (JarEntry) enumeration.nextElement()
                 String entryName = jarEntry.getName()
-                if (entryName.startsWith(ScanSetting.ROUTER_CLASS_PACKAGE_NAME)) {
+                if (entryName.startsWith(ScanConst.ROUTER_CLASS_PACKAGE_NAME)) {
                     InputStream inputStream = file.getInputStream(jarEntry)
                     scanClass(inputStream)
                     inputStream.close()
-                } else if (ScanSetting.GENERATE_TO_CLASS_FILE_NAME == entryName) {
+                } else if (ScanConst.GENERATE_TO_CLASS_FILE_NAME == entryName) {
                     // mark this jar file contains LogisticsCenter.class
                     // After the scan is complete, we will generate register code into this file
                     RegisterTransform.fileContainsInitClass = destFile
@@ -41,7 +41,7 @@ class ScanUtil {
     }
 
     static boolean shouldProcessClass(String entryName) {
-        return entryName != null && entryName.startsWith(ScanSetting.ROUTER_CLASS_PACKAGE_NAME)
+        return entryName != null && entryName.startsWith(ScanConst.ROUTER_CLASS_PACKAGE_NAME)
     }
 
     /**

@@ -7,22 +7,17 @@ import org.apache.commons.io.FileUtils
 import org.gradle.api.Project
 
 class RegisterTransform extends Transform {
-
     Project project
-    static ArrayList<ScanSetting> registerList
+    static ArrayList<ScanMeta> registerList
     static File fileContainsInitClass;
 
     RegisterTransform(Project project) {
         this.project = project
     }
 
-    /**
-     * name of this transform
-     * @return
-     */
     @Override
     String getName() {
-        return ScanSetting.PLUGIN_NAME
+        return ScanConst.PLUGIN_NAME
     }
 
     @Override
@@ -30,10 +25,6 @@ class RegisterTransform extends Transform {
         return TransformManager.CONTENT_CLASS
     }
 
-    /**
-     * The plugin will scan all classes in the project
-     * @return
-     */
     @Override
     Set<QualifiedContent.Scope> getScopes() {
         return TransformManager.SCOPE_FULL_PROJECT
@@ -44,20 +35,18 @@ class RegisterTransform extends Transform {
         return false
     }
 
-
     @Override
-    void transform(Context context, Collection<TransformInput> inputs
-                   , Collection<TransformInput> referencedInputs
-                   , TransformOutputProvider outputProvider
-                   , boolean isIncremental) throws IOException, TransformException, InterruptedException {
-
+    void transform(
+            Context context,
+            Collection<TransformInput> inputs,
+            Collection<TransformInput> referencedInputs,
+            TransformOutputProvider outputProvider,
+            boolean isIncremental
+    ) throws IOException, TransformException, InterruptedException {
         Logger.i('Start scan register info in jar file.')
-
         long startTime = System.currentTimeMillis()
         boolean leftSlash = File.separator == '/'
-
         inputs.each { TransformInput input ->
-
             // scan all jars
             input.jarInputs.each { JarInput jarInput ->
                 String destName = jarInput.name
@@ -72,8 +61,8 @@ class RegisterTransform extends Transform {
                 File dest = outputProvider.getContentLocation(destName + "_" + hexName, jarInput.contentTypes, jarInput.scopes, Format.JAR)
 
                 //scan jar file to find classes
-                if (ScanUtil.shouldProcessPreDexJar(src.absolutePath)) {
-                    ScanUtil.scanJar(src, dest)
+                if (ScanUtils.shouldProcessPreDexJar(src.absolutePath)) {
+                    ScanUtils.scanJar(src, dest)
                 }
                 FileUtils.copyFile(src, dest)
 
@@ -89,8 +78,8 @@ class RegisterTransform extends Transform {
                     if (!leftSlash) {
                         path = path.replaceAll("\\\\", "/")
                     }
-                    if(file.isFile() && ScanUtil.shouldProcessClass(path)){
-                        ScanUtil.scanClass(file)
+                    if(file.isFile() && ScanUtils.shouldProcessClass(path)){
+                        ScanUtils.scanClass(file)
                     }
                 }
 

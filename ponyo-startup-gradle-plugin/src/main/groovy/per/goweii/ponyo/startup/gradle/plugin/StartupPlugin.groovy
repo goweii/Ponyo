@@ -14,8 +14,8 @@ class StartupPlugin implements Plugin<Project> {
             Logger.i('Project enable ponyo-startup plugin')
             def android = project.extensions.getByType(AppExtension)
             def transformImpl = new RegisterTransform(project)
-            ArrayList<ScanSetting> list = new ArrayList<>(1)
-            list.add(new ScanSetting('InitMetaProvider'))
+            ArrayList<ScanMeta> list = new ArrayList<>(1)
+            list.add(new ScanMeta('InitMetaProvider'))
             RegisterTransform.registerList = list
             android.registerTransform(transformImpl)
         }

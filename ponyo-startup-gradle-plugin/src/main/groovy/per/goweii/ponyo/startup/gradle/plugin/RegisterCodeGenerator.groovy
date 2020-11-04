@@ -12,13 +12,13 @@ import java.util.zip.ZipEntry
  * @author billy.qi email: qiyilike@163.com
  */
 class RegisterCodeGenerator {
-    ScanSetting extension
+    ScanMeta extension
 
-    private RegisterCodeGenerator(ScanSetting extension) {
+    private RegisterCodeGenerator(ScanMeta extension) {
         this.extension = extension
     }
 
-    static void insertInitCodeTo(ScanSetting registerSetting) {
+    static void insertInitCodeTo(ScanMeta registerSetting) {
         if (registerSetting != null && !registerSetting.classList.isEmpty()) {
             RegisterCodeGenerator processor = new RegisterCodeGenerator(registerSetting)
             File file = RegisterTransform.fileContainsInitClass
@@ -47,10 +47,8 @@ class RegisterCodeGenerator {
                 ZipEntry zipEntry = new ZipEntry(entryName)
                 InputStream inputStream = file.getInputStream(jarEntry)
                 jarOutputStream.putNextEntry(zipEntry)
-                if (ScanSetting.GENERATE_TO_CLASS_FILE_NAME == entryName) {
-
+                if (ScanConst.GENERATE_TO_CLASS_FILE_NAME == entryName) {
                     Logger.i('Insert init code to class >> ' + entryName)
-
                     def bytes = referHackWhenInit(inputStream)
                     jarOutputStream.write(bytes)
                 } else {
@@ -94,7 +92,7 @@ class RegisterCodeGenerator {
                                   String signature, String[] exceptions) {
             MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions)
             //generate code into this method
-            if (name == ScanSetting.GENERATE_TO_METHOD_NAME) {
+            if (name == ScanConst.GENERATE_TO_METHOD_NAME) {
                 mv = new RouteMethodVisitor(Opcodes.ASM5, mv)
             }
             return mv
@@ -116,8 +114,8 @@ class RegisterCodeGenerator {
                     mv.visitLdcInsn(name)//类名
                     // generate invoke register method into LogisticsCenter.loadRouterMap()
                     mv.visitMethodInsn(Opcodes.INVOKESTATIC
-                            , ScanSetting.GENERATE_TO_CLASS_NAME
-                            , ScanSetting.REGISTER_METHOD_NAME
+                            , ScanConst.GENERATE_TO_CLASS_NAME
+                            , ScanConst.REGISTER_METHOD_NAME
                             , "(Ljava/lang/String;)V"
                             , false)
                 }
