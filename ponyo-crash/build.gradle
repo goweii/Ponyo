@@ -1,7 +1,7 @@
 apply from: "../lib-android.gradle"
+apply plugin: 'kotlin-android'
 
 dependencies {
     implementation project(":ponyo-log")
     implementation project(':ponyo-startup')
-    kapt project(":ponyo-startup-compiler")
 }

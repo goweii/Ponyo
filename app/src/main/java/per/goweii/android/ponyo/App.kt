@@ -2,7 +2,6 @@ package per.goweii.android.ponyo
 
 import android.app.Application
 import android.content.Context
-import per.goweii.ponyo.log.Ponlog
 
 /**
  * @author CuiZhen
@@ -11,17 +10,17 @@ import per.goweii.ponyo.log.Ponlog
 class App : Application() {
 
     override fun attachBaseContext(base: Context?) {
-        Ponlog.d("App") { "attachBaseContext" }
+//        Ponlog.d("App") { "attachBaseContext" }
         super.attachBaseContext(base)
     }
 
     override fun onCreate() {
-        Ponlog.d("App") { "onCreate" }
+//        Ponlog.d("App") { "onCreate" }
         super.onCreate()
     }
 
     override fun onTerminate() {
         super.onTerminate()
-        Ponlog.closeFilePrinter()
+//        Ponlog.closeFilePrinter()
     }
 }

@@ -3,11 +3,14 @@ package per.goweii.ponyo.startup.gradle.plugin
 import com.android.build.api.transform.*
 import com.android.build.gradle.internal.pipeline.TransformManager
 import org.gradle.api.Project
+import org.apache.commons.codec.digest.DigestUtils
+import org.apache.commons.io.FileUtils
 
 class StartupTransform extends Transform {
-    Project project
-    static ArrayList<ScanMeta> registerList
-    static File fileContainsInitClass;
+    final Project project
+
+    List<ScanMeta> scanMetas = new ArrayList<>()
+    File fileCenterClass = null
 
     StartupTransform(Project project) {
         this.project = project
@@ -15,7 +18,7 @@ class StartupTransform extends Transform {
 
     @Override
     String getName() {
-        return ScanConst.PLUGIN_NAME
+        return ScanConst.TRANSFORM_NAME
     }
 
     @Override
@@ -36,34 +39,70 @@ class StartupTransform extends Transform {
     @Override
     void transform(TransformInvocation transformInvocation) throws TransformException, InterruptedException, IOException {
         super.transform(transformInvocation)
-
+        long startTime = System.currentTimeMillis()
+        transformInvocation.inputs.each { TransformInput input ->
+            transformDir(transformInvocation, input)
+            //transformJar(transformInvocation, input)
+        }
+        generateClass()
+        long endTime = System.currentTimeMillis()
+        Logger.i("transform cost:" + (endTime - startTime) + "ms")
     }
 
-    @Override
-    void transform(
-            Context context,
-            Collection<TransformInput> inputs,
-            Collection<TransformInput> referencedInputs,
-            TransformOutputProvider outputProvider,
-            boolean isIncremental
-    ) throws IOException, TransformException, InterruptedException {
-        inputs.each { TransformInput input ->
-            input.directoryInputs.each { DirectoryInput directoryInput ->
-                String root = directoryInput.file.absolutePath
-                if (!root.endsWith(File.separator)){
-                    root += File.separator
+    private void transformDir(
+            TransformInvocation transformInvocation,
+            TransformInput input
+    ) {
+        boolean leftSlash = File.separator == '/'
+        input.directoryInputs.each { directoryInput ->
+            File dest = transformInvocation.outputProvider.getContentLocation(
+                    directoryInput.name,
+                    directoryInput.contentTypes,
+                    directoryInput.scopes,
+                    Format.DIRECTORY
+            )
+            String root = directoryInput.file.absolutePath
+            if (!root.endsWith(File.separator))
+                root += File.separator
+            directoryInput.file.eachFileRecurse { File file ->
+                def path = file.absolutePath.replace(root, '')
+                if (!leftSlash) {
+                    path = path.replaceAll("\\\\", "/")
                 }
-                directoryInput.file.eachFileRecurse { File file ->
-                    if(file.isFile()){
-                        def path = file.absolutePath.replace(root, '')
-                        ScanUtils.scanClass(file, path)
-                    }
+                if(file.isFile() && ScanUtils.shouldProcessClass(path)){
+                    ScanUtils.scanClass(file, path)
                 }
             }
-            input.jarInputs.each { JarInput jarInput ->
-                File file = jarInput.file
-                ScanUtils.scanJar(file)
+            FileUtils.copyDirectory(directoryInput.file, dest)
+        }
+    }
+
+    private void transformJar(
+            TransformInvocation transformInvocation,
+            TransformInput input
+    ) {
+        input.jarInputs.each { jarInput ->
+            String destName = jarInput.name
+            def hexName = DigestUtils.md5Hex(jarInput.file.absolutePath)
+            if (destName.endsWith(".jar")) {
+                destName = destName.substring(0, destName.length() - 4)
             }
+            File src = jarInput.file
+            File dest = transformInvocation.outputProvider.getContentLocation(
+                    destName + "_" + hexName,
+                    jarInput.contentTypes,
+                    jarInput.scopes,
+                    Format.JAR
+            )
+            if (ScanUtils.shouldProcessPreDexJar(src.absolutePath)) {
+                ScanUtils.scanJar(src)
+            }
+            FileUtils.copyFile(src, dest)
+        }
+    }
+
+    private void generateClass() {
+        if (fileCenterClass) {
         }
     }
 }

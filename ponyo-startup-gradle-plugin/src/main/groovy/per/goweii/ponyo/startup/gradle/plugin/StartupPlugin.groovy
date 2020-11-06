@@ -10,6 +10,7 @@ class StartupPlugin implements Plugin<Project> {
     void apply(Project project) {
         def isApp = project.plugins.hasPlugin(AppPlugin)
         if (isApp) {
+            Logger.make(project)
             def android = project.extensions.getByType(AppExtension)
             def startupTransform = new StartupTransform(project)
             android.registerTransform(startupTransform)

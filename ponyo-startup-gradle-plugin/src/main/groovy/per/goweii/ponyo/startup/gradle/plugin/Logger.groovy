@@ -11,19 +11,19 @@ class Logger {
 
     static void i(String info) {
         if (null != info && null != logger) {
-            logger.info("Ponyo-startup::Register >>> " + info)
+            logger.info("Ponyo-startup->" + info)
         }
     }
 
     static void e(String error) {
         if (null != error && null != logger) {
-            logger.error("Ponyo-startup::Register >>> " + error)
+            logger.error("Ponyo-startup->" + error)
         }
     }
 
     static void w(String warning) {
         if (null != warning && null != logger) {
-            logger.warn("Ponyo-startup::Register >>> " + warning)
+            logger.warn("Ponyo-startup->" + warning)
         }
     }
 }

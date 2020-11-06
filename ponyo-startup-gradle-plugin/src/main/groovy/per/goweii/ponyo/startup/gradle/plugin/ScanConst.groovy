@@ -1,7 +1,7 @@
 package per.goweii.ponyo.startup.gradle.plugin
 
 class ScanConst {
-    static final String PLUGIN_NAME = "per.goweii.ponyo.startup"
+    static final String TRANSFORM_NAME = "PonyoStartup"
 
     static final String GENERATE_TO_CLASS_NAME = 'per/goweii/ponyo/startup/InitMetaCenter'
     static final String GENERATE_TO_CLASS_FILE_NAME = GENERATE_TO_CLASS_NAME + '.class'

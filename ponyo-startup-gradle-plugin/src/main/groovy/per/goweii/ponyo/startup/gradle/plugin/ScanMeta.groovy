@@ -1,10 +1,9 @@
 package per.goweii.ponyo.startup.gradle.plugin
 
 class ScanMeta {
-    String interfaceName = ''
-    ArrayList<String> classList = new ArrayList<>()
-
-    ScanMeta(String interfaceName){
-        this.interfaceName = ScanConst.INTERFACE_PACKAGE_NAME + interfaceName
-    }
+    String className = null
+    Boolean async = false
+    int priority = 0
+    List<String> activities = new ArrayList<>()
+    List<String> fragments = new ArrayList<>()
 }

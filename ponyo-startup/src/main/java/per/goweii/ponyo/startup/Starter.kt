@@ -2,17 +2,10 @@ package per.goweii.ponyo.startup
 
 import android.app.Activity
 import android.app.Application
-import android.content.Context
 import android.os.Process
-import android.text.TextUtils
-import androidx.core.content.edit
 import androidx.fragment.app.Fragment
 import per.goweii.ponyo.log.Ponlog
-import per.goweii.ponyo.startup.annotation.Const
-import per.goweii.ponyo.startup.annotation.InitMetaProvider
 import per.goweii.ponyo.startup.annotation.InitMeta
-import per.goweii.ponyo.startup.utils.AppVersionUtils
-import per.goweii.ponyo.startup.utils.ClassFinder
 import java.io.BufferedReader
 import java.io.File
 import java.io.FileReader

@@ -8,19 +8,27 @@ import java.util.jar.JarFile
 
 class ScanUtils {
 
-    static void scanJar(File jarFile) {
-        if (jarFile) {
-            def file = new JarFile(jarFile)
-            Enumeration enumeration = file.entries()
+    static boolean shouldProcessPreDexJar(String path) {
+        return !path.contains("com.android.support") && !path.contains("/android/m2repository")
+    }
+
+    static boolean shouldProcessClass(String entryName) {
+        return entryName != null
+    }
+
+    static void scanJar(File file) {
+        if (file) {
+            def jarFile = new JarFile(file)
+            Enumeration<JarEntry> enumeration = jarFile.entries()
             while (enumeration.hasMoreElements()) {
-                JarEntry jarEntry = (JarEntry) enumeration.nextElement()
+                JarEntry jarEntry = enumeration.nextElement()
                 String entryName = jarEntry.getName()
                 if (!entryName.endsWith(".class")) continue
-                InputStream inputStream = file.getInputStream(jarEntry)
+                InputStream inputStream = jarFile.getInputStream(jarEntry)
                 scanClass(inputStream, entryName)
                 inputStream.close()
             }
-            file.close()
+            jarFile.close()
         }
     }
 
