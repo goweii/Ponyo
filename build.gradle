@@ -18,7 +18,13 @@ buildscript {
 allprojects {
     repositories {
         flatDir { dirs 'libs' }
-        maven { url REPO_RELEASE }
+        if (USE_NEXUS.toBoolean()) {
+            maven { url uri(NEXUS_RELEASE) }
+            maven { url uri(NEXUS_SNAPSHOT) }
+        } else {
+            maven { url uri("$LOCAL_RELEASE") }
+            maven { url uri("$LOCAL_SNAPSHOT") }
+        }
         maven { url "https://jitpack.io" }
         google()
         jcenter()

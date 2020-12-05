@@ -6,17 +6,22 @@ version PROJ_VERSION
 uploadArchives {
     repositories {
         mavenDeployer {
-            snapshotRepository(url: REPO_SNAPSHOT) {
-                authentication(
-                        userName: NEXUS_ACCOUNT,
-                        password: NEXUS_PASSWORD
-                )
-            }
-            repository(url: REPO_RELEASE) {
-                authentication(
-                        userName: NEXUS_ACCOUNT,
-                        password: NEXUS_PASSWORD
-                )
+            if (USE_NEXUS.toBoolean()) {
+                snapshotRepository(url: NEXUS_SNAPSHOT) {
+                    authentication(
+                            userName: NEXUS_ACCOUNT,
+                            password: NEXUS_PASSWORD
+                    )
+                }
+                repository(url: NEXUS_RELEASE) {
+                    authentication(
+                            userName: NEXUS_ACCOUNT,
+                            password: NEXUS_PASSWORD
+                    )
+                }
+            } else {
+                snapshotRepository(url: uri("$LOCAL_SNAPSHOT"))
+                repository(url: uri("$LOCAL_RELEASE"))
             }
             pom.packaging = PROJ_PACKAGING
         }
