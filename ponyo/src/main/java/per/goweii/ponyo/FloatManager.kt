@@ -21,7 +21,7 @@ import kotlin.math.min
  * @author CuiZhen
  * @date 2020/3/28
  */
-@SuppressLint("ClickableViewAccessibility")
+@SuppressLint("ClickableViewAccessibility", "InflateParams")
 internal class FloatManager(private val context: Context) : GestureDetector.OnGestureListener,
     ViewTreeObserver.OnGlobalLayoutListener {
 
@@ -82,15 +82,15 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
             clipToOutline = true
             outlineProvider = object : ViewOutlineProvider() {
                 override fun getOutline(view: View, outline: Outline) {
-                    val radius = (min(
-                        this@FloatManager.floatView.measuredWidth,
-                        this@FloatManager.floatView.measuredHeight
-                    ).toFloat() / 2F)
+                    val radius = min(
+                        view.width,
+                        view.height
+                    ).toFloat() / 2F
                     outline.setRoundRect(
                         0,
                         0,
-                        this@FloatManager.floatView.measuredWidth,
-                        this@FloatManager.floatView.measuredHeight,
+                        view.width,
+                        view.height,
                         radius
                     )
                 }
@@ -175,6 +175,7 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
         try {
             windowManager.addView(this.floatView, windowParams)
         } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
@@ -184,6 +185,7 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
         try {
             windowManager.removeView(this.floatView)
         } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
@@ -192,6 +194,7 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
         try {
             windowManager.updateViewLayout(this.floatView, windowParams)
         } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 

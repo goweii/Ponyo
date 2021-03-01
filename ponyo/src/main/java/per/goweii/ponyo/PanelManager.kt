@@ -22,6 +22,7 @@ import kotlin.math.pow
  * @author CuiZhen
  * @date 2020/3/28
  */
+@SuppressLint("InflateParams")
 internal class PanelManager(private val context: Context) {
     enum class State {
         FLOAT, PANEL
@@ -42,9 +43,9 @@ internal class PanelManager(private val context: Context) {
             windowAnimations = 0
             rotationAnimation = 0
             type = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY - 1
+                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
             } else {
-                WindowManager.LayoutParams.TYPE_SYSTEM_ALERT - 1
+                WindowManager.LayoutParams.TYPE_SYSTEM_ALERT
             }
             format = PixelFormat.TRANSPARENT
             gravity = Gravity.TOP or Gravity.LEFT
@@ -68,17 +69,6 @@ internal class PanelManager(private val context: Context) {
                 override fun onViewDetachedFromWindow(v: View?) {
                     onDetachListener?.invoke()
                     PanelProvider.onDetach()
-                }
-            })
-            floatRoot.setCallback(object : FloatRootView.Callback {
-                override fun dispatchKeyEvent(event: KeyEvent): Boolean {
-                    if (event.action == KeyEvent.ACTION_UP && event.keyCode == KeyEvent.KEYCODE_BACK) {
-                        if (isShown) {
-                            dismiss(null)
-                            return true
-                        }
-                    }
-                    return false
                 }
             })
         }
@@ -151,6 +141,7 @@ internal class PanelManager(private val context: Context) {
         try {
             windowManager.addView(floatView, windowParams)
         } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
@@ -161,6 +152,7 @@ internal class PanelManager(private val context: Context) {
         try {
             windowManager.removeView(floatView)
         } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 

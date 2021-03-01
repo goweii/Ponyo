@@ -1,4 +1,0 @@
-apply from: "../lib-java.gradle"
-
-dependencies {
-}

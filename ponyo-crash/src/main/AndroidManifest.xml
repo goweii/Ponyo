@@ -1,3 +1,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="per.goweii.ponyo.crash">
+
+    <application>
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <meta-data
+                android:name="per.goweii.ponyo.crash.CrashInitializer"
+                android:value="@string/androidx_startup" />
+        </provider>
+    </application>
 </manifest>

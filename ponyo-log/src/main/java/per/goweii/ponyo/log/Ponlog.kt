@@ -1,7 +1,6 @@
 package per.goweii.ponyo.log
 
 object Ponlog {
-
     enum class Level(val value: Int) {
         ASSERT(1 shl 0),
         ERROR(1 shl 1),
