@@ -143,6 +143,8 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
 
     fun toggle() {
         panelManager.toggle(currRectF())
+        detach()
+        floatView.post { attach() }
     }
 
     fun show() {
