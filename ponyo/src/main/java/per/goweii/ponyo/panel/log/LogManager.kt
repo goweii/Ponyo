@@ -19,8 +19,7 @@ import java.util.*
  * @date 2020/3/29
  */
 @Suppress("EXPERIMENTAL_API_USAGE")
-object Manager : CoroutineScope by CoroutineScope(newSingleThreadContext("LogCounterContext")),
-    Logcat.OnCatchListener {
+object LogManager : Logcat.OnCatchListener {
     private const val prePageCount = 100
 
     private val adapter: LogAdapter by lazy { LogAdapter() }
@@ -34,23 +33,17 @@ object Manager : CoroutineScope by CoroutineScope(newSingleThreadContext("LogCou
     private var unreadAssertCount = 0
         set(value) {
             field = value
-            launch(Dispatchers.Main) {
-                Ponyo.onLoggerAssert(field)
-            }
+            Ponyo.onLoggerAssert(field)
         }
     private var unreadErrorCount = 0
         set(value) {
             field = value
-            launch(Dispatchers.Main) {
-                Ponyo.onLoggerError(field)
-            }
+            Ponyo.onLoggerError(field)
         }
     private var unreadWarnCount = 0
         set(value) {
             field = value
-            launch(Dispatchers.Main) {
-                Ponyo.onLoggerWarn(field)
-            }
+            Ponyo.onLoggerWarn(field)
         }
 
     fun start() {
@@ -96,6 +89,7 @@ object Manager : CoroutineScope by CoroutineScope(newSingleThreadContext("LogCou
         recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
+                loadPage()
                 showMore()
             }
         })
@@ -103,6 +97,12 @@ object Manager : CoroutineScope by CoroutineScope(newSingleThreadContext("LogCou
 
     override fun onCatch(logLines: List<LogLine>) {
         addLog(logLines)
+    }
+
+    fun clear() {
+        logs.clear()
+        offset = logs.size
+        adapter.clear()
     }
 
     private var a: Boolean = true
@@ -160,7 +160,7 @@ object Manager : CoroutineScope by CoroutineScope(newSingleThreadContext("LogCou
         showMore()
     }
 
-    fun lastPage(): Boolean {
+    private fun prevPage(): Boolean {
         if (offset == 0) {
             return false
         }
@@ -178,22 +178,33 @@ object Manager : CoroutineScope by CoroutineScope(newSingleThreadContext("LogCou
         return true
     }
 
-    fun nextPage() {
-        offset = logs.size
-        adapter.clear()
+    private var pageLoading = false
+
+    private fun loadPage() {
+        if (pageLoading) return
+        val lm = layoutManager ?: return
+        val firstIndex = lm.findFirstVisibleItemPosition()
+        if (firstIndex <= 10) {
+            pageLoading = true
+            recyclerView?.post {
+                prevPage()
+                pageLoading = false
+            }
+        }
     }
 
     private fun addLog(logLines: List<LogLine>) {
         logs.addAll(logLines)
-        recyclerView ?: return
-        adapter.addAll(data = logLines)
-        if (!showMore()) {
-            if (adapter.itemCount > prePageCount) {
-                val count = adapter.itemCount - prePageCount
-                offset += count
-                adapter.remove(count = count)
+        recyclerView?.let {
+            adapter.addAll(data = logLines)
+            if (!showMore()) {
+                if (adapter.itemCount > prePageCount) {
+                    val count = adapter.itemCount - prePageCount
+                    offset += count
+                    adapter.remove(count = count)
+                }
+                scrollBottom()
             }
-            scrollBottom()
         }
         if (recyclerView?.isShown != true) {
             var assertCount = 0

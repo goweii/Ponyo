@@ -22,7 +22,7 @@ class LogPanel : BasePanel() {
 
     @SuppressLint("SetTextI18n")
     override fun onPanelViewCreated(view: View) {
-        rv_log = view.findViewById<RecyclerView>(R.id.rv_log)
+        rv_log = view.findViewById(R.id.rv_log)
         val cb_a = view.findViewById<CheckBox>(R.id.cb_a)
         val cb_e = view.findViewById<CheckBox>(R.id.cb_e)
         val cb_w = view.findViewById<CheckBox>(R.id.cb_w)
@@ -30,7 +30,7 @@ class LogPanel : BasePanel() {
         val cb_i = view.findViewById<CheckBox>(R.id.cb_i)
         val cb_v = view.findViewById<CheckBox>(R.id.cb_v)
         val listener = CompoundButton.OnCheckedChangeListener { buttonView, isChecked ->
-            Manager.notifyLevel(
+            LogManager.notifyLevel(
                 cb_a.isChecked,
                 cb_e.isChecked,
                 cb_w.isChecked,
@@ -53,7 +53,7 @@ class LogPanel : BasePanel() {
             }
 
             override fun afterTextChanged(s: Editable) {
-                Manager.notifyTag(s.toString())
+                LogManager.notifyTag(s.toString())
             }
         })
         val et_search = view.findViewById<EditText>(R.id.et_search)
@@ -65,7 +65,7 @@ class LogPanel : BasePanel() {
             }
 
             override fun afterTextChanged(s: Editable) {
-                Manager.notifySearch(s.toString())
+                LogManager.notifySearch(s.toString())
             }
         })
         val fl_dialog = view.findViewById<FrameLayout>(R.id.fl_dialog)
@@ -75,10 +75,22 @@ class LogPanel : BasePanel() {
             fl_dialog.visibility = View.GONE
         }
         fl_dialog.visibility = View.GONE
+        val iv_clear = view.findViewById<ImageView>(R.id.iv_clear)
+        iv_clear.setOnClickListener {
+            LogManager.clear()
+        }
+        val iv_tag_clear = view.findViewById<ImageView>(R.id.iv_tag_clear)
+        iv_tag_clear.setOnClickListener {
+            et_tag.setText("")
+        }
+        val iv_search_clear = view.findViewById<ImageView>(R.id.iv_search_clear)
+        iv_search_clear.setOnClickListener {
+            et_search.setText("")
+        }
 
         val tv_more = view.findViewById<TextView>(R.id.tv_more)
 
-        Manager.attachTo(rv_log, tv_more) { logLine ->
+        LogManager.attachTo(rv_log, tv_more) { logLine ->
             fl_dialog.visibility = View.VISIBLE
             tv_dialog_copy.setOnClickListener {
                 val cm = it.context.applicationContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
@@ -97,10 +109,10 @@ class LogPanel : BasePanel() {
         super.onVisible(firstVisible)
         if (firstVisible) {
             rv_log.post {
-                Manager.scrollBottom()
+                LogManager.scrollBottom()
             }
         }
-        Manager.clearUnreadCount()
+        LogManager.clearUnreadCount()
     }
 
     override fun onGone() {

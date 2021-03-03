@@ -4,7 +4,7 @@ import android.app.Application
 import per.goweii.ponyo.appstack.AppStack
 import per.goweii.ponyo.crash.Crash
 import per.goweii.ponyo.panel.actistack.ActiStackManager
-import per.goweii.ponyo.panel.log.Manager
+import per.goweii.ponyo.panel.log.LogManager
 import per.goweii.ponyo.panel.tm.TM
 import per.goweii.ponyo.panel.tm.TmManager
 import per.goweii.ponyo.timemonitor.TimeMonitor
@@ -15,7 +15,7 @@ object Ponyo : AppStack.AppLifecycleListener {
 
     fun initialize(application: Application) {
         if (this::floatManager.isInitialized) return
-        Manager.start()
+        LogManager.start()
         TM.APP_STARTUP.start("application initialize")
         TimeMonitor.registerTimeLineEndListener(TmManager)
         Crash.setCrashActivity(CrashActivity::class.java)

@@ -15,7 +15,7 @@
     <color name="ponyo_colorLogWarn">#FFC107</color>
     <color name="ponyo_colorLogInfo">#4CAF50</color>
     <color name="ponyo_colorLogDebug">#2196F3</color>
-    <color name="ponyo_colorLogVisible">#7C9C99</color>
+    <color name="ponyo_colorLogVisible">#C2C5C4</color>
 
     <color name="ponyo_colorDivide">#22FFFFFF</color>
 </resources>
