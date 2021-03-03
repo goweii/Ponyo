@@ -5,59 +5,202 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.scwang.smart.refresh.layout.SmartRefreshLayout
-        android:id="@+id/srl_log"
+    <LinearLayout
+        android:id="@+id/ll_tab"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/ponyo_panel_padding"
+        android:orientation="vertical">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cv_level"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/ponyo_tab_height"
+            android:alpha="0.9"
+            app:cardCornerRadius="@dimen/ponyo_corner_radius"
+            app:cardElevation="0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/cb_a"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/ponyo_colorLogAssert"
+                    android:checked="true"
+                    android:text="A"
+                    android:textColor="@color/ponyo_colorOnForeground"
+                    android:textSize="12sp" />
+
+                <CheckBox
+                    android:id="@+id/cb_e"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/ponyo_colorLogError"
+                    android:checked="true"
+                    android:text="E"
+                    android:textColor="@color/ponyo_colorOnForeground"
+                    android:textSize="12sp" />
+
+                <CheckBox
+                    android:id="@+id/cb_w"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/ponyo_colorLogWarn"
+                    android:checked="true"
+                    android:text="W"
+                    android:textColor="@color/ponyo_colorOnForeground"
+                    android:textSize="12sp" />
+
+                <CheckBox
+                    android:id="@+id/cb_i"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/ponyo_colorLogInfo"
+                    android:checked="true"
+                    android:text="I"
+                    android:textColor="@color/ponyo_colorOnForeground"
+                    android:textSize="12sp" />
+
+                <CheckBox
+                    android:id="@+id/cb_d"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/ponyo_colorLogDebug"
+                    android:checked="true"
+                    android:text="D"
+                    android:textColor="@color/ponyo_colorOnForeground"
+                    android:textSize="12sp" />
+
+                <CheckBox
+                    android:id="@+id/cb_v"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/ponyo_colorLogVisible"
+                    android:checked="true"
+                    android:text="V"
+                    android:textColor="@color/ponyo_colorOnForeground"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <LinearLayout
+            android:layout_marginTop="@dimen/ponyo_panel_padding"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/ponyo_tab_height"
+            android:orientation="horizontal">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cv_tag"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:alpha="0.9"
+                app:cardBackgroundColor="#55ffffff"
+                app:cardCornerRadius="@dimen/ponyo_corner_radius"
+                app:cardElevation="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:alpha="0.8"
+                        android:gravity="center"
+                        android:text="TAG"
+                        android:textColor="@color/ponyo_colorOnForeground"
+                        android:textSize="12sp" />
+
+                    <EditText
+                        android:id="@+id/et_tag"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="5dp"
+                        android:layout_weight="1"
+                        android:background="#00000000"
+                        android:gravity="center_vertical"
+                        android:textColor="@color/ponyo_colorOnForeground"
+                        android:textSize="12sp"
+                        tools:text="Ponyo" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <View
+                android:layout_width="@dimen/ponyo_panel_padding"
+                android:layout_height="0dp"
+                android:visibility="invisible" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cv_search"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:alpha="0.9"
+                app:cardBackgroundColor="#55ffffff"
+                app:cardCornerRadius="@dimen/ponyo_corner_radius"
+                app:cardElevation="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingStart="@dimen/ponyo_panel_padding"
+                    android:paddingEnd="@dimen/ponyo_panel_padding">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:alpha="0.8"
+                        android:gravity="center"
+                        android:text="搜索"
+                        android:textColor="@color/ponyo_colorOnForeground"
+                        android:textSize="12sp" />
+
+                    <EditText
+                        android:id="@+id/et_search"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="5dp"
+                        android:layout_weight="1"
+                        android:background="#00000000"
+                        android:gravity="center_vertical"
+                        android:textColor="@color/ponyo_colorOnForeground"
+                        android:textSize="12sp"
+                        tools:text="Ponyo" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_log"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:srlEnableAutoLoadMore="false"
-        app:srlEnableOverScrollBounce="false"
-        app:srlEnableOverScrollDrag="false"
-        app:srlFooterTranslationViewId="@+id/tv_more"
-        app:srlHeaderInsetStart="75dp">
-
-        <com.scwang.smart.refresh.header.ClassicsHeader
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:srlClassicsSpinnerStyle="FixedBehind"
-            app:srlDrawableArrowSize="0dp"
-            app:srlDrawableMarginRight="0dp"
-            app:srlDrawableProgressSize="0dp"
-            app:srlDrawableSize="0dp"
-            app:srlFinishDuration="0"
-            app:srlTextFailed="没有更多日志"
-            app:srlTextFinish="加载成功"
-            app:srlTextPulling="下拉加载上一页"
-            app:srlTextRefreshing="加载中"
-            app:srlTextRelease="释放加载"
-            app:srlTextSizeTime="0dp"
-            app:srlTextSizeTitle="12sp" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_log"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:paddingTop="75dp"
-            tools:itemCount="20"
-            tools:listitem="@layout/ponyo_item_log" />
-
-        <com.scwang.smart.refresh.footer.ClassicsFooter
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:srlClassicsSpinnerStyle="FixedBehind"
-            app:srlDrawableArrowSize="0dp"
-            app:srlDrawableMarginRight="0dp"
-            app:srlDrawableProgressSize="0dp"
-            app:srlDrawableSize="0dp"
-            app:srlFinishDuration="0"
-            app:srlTextFailed="已清空"
-            app:srlTextFinish="已清空"
-            app:srlTextLoading="清空中"
-            app:srlTextPulling="上拉清空日志"
-            app:srlTextRelease="释放清空"
-            app:srlTextSizeTitle="12sp" />
-
-    </com.scwang.smart.refresh.layout.SmartRefreshLayout>
+        android:layout_below="@+id/ll_tab"
+        android:clipToPadding="false"
+        android:padding="@dimen/ponyo_panel_padding_half"
+        tools:itemCount="20"
+        tools:listitem="@layout/ponyo_item_log" />
 
     <TextView
         android:id="@+id/tv_more"
@@ -65,7 +208,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_margin="5dp"
+        android:layout_margin="@dimen/ponyo_panel_padding"
         android:alpha="0.8"
         android:background="@drawable/ponyo_log_more_bg"
         android:gravity="center"
@@ -78,184 +221,6 @@
         android:textSize="12sp"
         android:visibility="invisible"
         tools:visibility="visible" />
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cv_level"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:layout_margin="5dp"
-        android:alpha="0.9"
-        app:cardCornerRadius="5dp"
-        app:cardElevation="0dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <CheckBox
-                android:id="@+id/cb_a"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@color/ponyo_colorLogAssert"
-                android:checked="true"
-                android:text="A"
-                android:textColor="@color/ponyo_colorOnForeground"
-                android:textSize="12sp" />
-
-            <CheckBox
-                android:id="@+id/cb_e"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@color/ponyo_colorLogError"
-                android:checked="true"
-                android:text="E"
-                android:textColor="@color/ponyo_colorOnForeground"
-                android:textSize="12sp" />
-
-            <CheckBox
-                android:id="@+id/cb_w"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@color/ponyo_colorLogWarn"
-                android:checked="true"
-                android:text="W"
-                android:textColor="@color/ponyo_colorOnForeground"
-                android:textSize="12sp" />
-
-            <CheckBox
-                android:id="@+id/cb_i"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@color/ponyo_colorLogInfo"
-                android:checked="true"
-                android:text="I"
-                android:textColor="@color/ponyo_colorOnForeground"
-                android:textSize="12sp" />
-
-            <CheckBox
-                android:id="@+id/cb_d"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@color/ponyo_colorLogDebug"
-                android:checked="true"
-                android:text="D"
-                android:textColor="@color/ponyo_colorOnForeground"
-                android:textSize="12sp" />
-
-            <CheckBox
-                android:id="@+id/cb_v"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@color/ponyo_colorLogVisible"
-                android:checked="true"
-                android:text="V"
-                android:textColor="@color/ponyo_colorOnForeground"
-                android:textSize="12sp" />
-
-        </LinearLayout>
-
-    </androidx.cardview.widget.CardView>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/cv_level"
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="5dp"
-        android:orientation="horizontal">
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cv_tag"
-            android:layout_width="0dp"
-            android:layout_height="30dp"
-            android:layout_marginEnd="2.5dp"
-            android:layout_weight="1"
-            android:alpha="0.9"
-            app:cardBackgroundColor="#55ffffff"
-            app:cardCornerRadius="5dp"
-            app:cardElevation="0dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingStart="5dp"
-                android:paddingEnd="5dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:alpha="0.8"
-                    android:gravity="center"
-                    android:text="TAG"
-                    android:textColor="@color/ponyo_colorOnForeground"
-                    android:textSize="12sp" />
-
-                <EditText
-                    android:id="@+id/et_tag"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="5dp"
-                    android:layout_weight="1"
-                    android:background="#00000000"
-                    android:gravity="center_vertical"
-                    android:textColor="@color/ponyo_colorOnForeground"
-                    android:textSize="12sp"
-                    tools:text="Ponyo" />
-
-            </LinearLayout>
-
-        </androidx.cardview.widget.CardView>
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cv_search"
-            android:layout_width="0dp"
-            android:layout_height="30dp"
-            android:layout_marginStart="2.5dp"
-            android:layout_weight="1"
-            android:alpha="0.9"
-            app:cardBackgroundColor="#55ffffff"
-            app:cardCornerRadius="5dp"
-            app:cardElevation="0dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingStart="5dp"
-                android:paddingEnd="5dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:alpha="0.8"
-                    android:gravity="center"
-                    android:text="搜索"
-                    android:textColor="@color/ponyo_colorOnForeground"
-                    android:textSize="12sp" />
-
-                <EditText
-                    android:id="@+id/et_search"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="5dp"
-                    android:layout_weight="1"
-                    android:background="#00000000"
-                    android:gravity="center_vertical"
-                    android:textColor="@color/ponyo_colorOnForeground"
-                    android:textSize="12sp"
-                    tools:text="Ponyo" />
-
-            </LinearLayout>
-
-        </androidx.cardview.widget.CardView>
-
-    </LinearLayout>
 
     <FrameLayout
         android:id="@+id/fl_dialog"
@@ -301,16 +266,6 @@
                     android:textSize="12sp" />
 
                 <TextView
-                    android:id="@+id/tv_dialog_thread"
-                    android:layout_width="match_parent"
-                    android:layout_height="30dp"
-                    android:alpha="0.8"
-                    android:gravity="center"
-                    android:textColor="@color/ponyo_colorOnForeground"
-                    android:textSize="12sp"
-                    tools:text="筛选Thread:main" />
-
-                <TextView
                     android:id="@+id/tv_dialog_tag"
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
@@ -319,26 +274,6 @@
                     android:textColor="@color/ponyo_colorOnForeground"
                     android:textSize="12sp"
                     tools:text="筛选TAG:Ponyo" />
-
-                <TextView
-                    android:id="@+id/tv_dialog_class"
-                    android:layout_width="match_parent"
-                    android:layout_height="30dp"
-                    android:alpha="0.8"
-                    android:gravity="center"
-                    android:textColor="@color/ponyo_colorOnForeground"
-                    android:textSize="12sp"
-                    tools:text="筛选Class:Ponyo." />
-
-                <TextView
-                    android:id="@+id/tv_dialog_file"
-                    android:layout_width="match_parent"
-                    android:layout_height="30dp"
-                    android:alpha="0.8"
-                    android:gravity="center"
-                    android:textColor="@color/ponyo_colorOnForeground"
-                    android:textSize="12sp"
-                    tools:text="筛选File:Ponyo.kt" />
 
             </LinearLayout>
 

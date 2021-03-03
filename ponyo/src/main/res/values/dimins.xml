@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="ponyo_panel_padding">6dp</dimen>
+    <dimen name="ponyo_panel_padding_half">3dp</dimen>
+    <dimen name="ponyo_tab_height">30dp</dimen>
+    <dimen name="ponyo_corner_radius">3dp</dimen>
+    <dimen name="ponyo_log_bg_stroke_width">1dp</dimen>
+</resources>

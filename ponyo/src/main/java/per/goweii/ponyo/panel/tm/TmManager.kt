@@ -5,6 +5,7 @@ import android.text.TextUtils
 import android.view.ViewTreeObserver
 import per.goweii.ponyo.appstack.ActivityLifecycleListener
 import per.goweii.ponyo.timemonitor.TimeLineEndListener
+import java.util.*
 
 object TmManager : TimeLineEndListener, ActivityLifecycleListener {
 
@@ -33,23 +34,27 @@ object TmManager : TimeLineEndListener, ActivityLifecycleListener {
         tmAdapter?.set(datas)
     }
 
+    private fun Activity.tmTag(): String {
+        return "${this::class.java.simpleName}(${Objects.hashCode(this)})"
+    }
+
     override fun onCreated(activity: Activity) {
-        TM.APP_STARTUP.record("activity created")
+        TM.APP_STARTUP.record("${activity.tmTag()} created")
         activity.window.decorView.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener{
             override fun onPreDraw(): Boolean {
                 activity.window.decorView.viewTreeObserver.removeOnPreDrawListener(this)
-                TM.APP_STARTUP.end("activity draw")
+                TM.APP_STARTUP.end("${activity.tmTag()} draw")
                 return true
             }
         })
     }
 
     override fun onStarted(activity: Activity) {
-        TM.APP_STARTUP.record("activity started")
+        TM.APP_STARTUP.record("${activity.tmTag()} started")
     }
 
     override fun onResumed(activity: Activity) {
-        TM.APP_STARTUP.record("activity resumed")
+        TM.APP_STARTUP.record("${activity.tmTag()} resumed")
     }
 
     override fun onPaused(activity: Activity) {

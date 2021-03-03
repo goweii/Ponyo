@@ -7,7 +7,6 @@ import android.os.Build
 import android.text.format.Formatter
 import androidx.core.content.FileProvider
 import kotlinx.coroutines.*
-import per.goweii.ponyo.log.Ponlog
 import java.io.BufferedReader
 import java.io.File
 import java.io.FileReader
@@ -122,7 +121,7 @@ object FileManager : CoroutineScope by MainScope() {
             context.startActivity(intent)
             Intent.createChooser(intent, "请选择对应的软件打开该文件")
         } catch (e: Exception) {
-            Ponlog.e { e }
+            e.printStackTrace()
         }
     }
 

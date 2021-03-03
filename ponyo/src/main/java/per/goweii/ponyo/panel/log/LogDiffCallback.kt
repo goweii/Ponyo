@@ -1,10 +1,11 @@
 package per.goweii.ponyo.panel.log
 
 import androidx.recyclerview.widget.DiffUtil
+import per.goweii.ponyo.log.LogLine
 
 class LogDiffCallback(
-    private val oldList: List<LogEntity>,
-    private val newList: List<LogEntity>
+    private val oldList: List<LogLine>,
+    private val newList: List<LogLine>
 ): DiffUtil.Callback() {
     override fun getOldListSize(): Int {
         return oldList.size
@@ -19,6 +20,6 @@ class LogDiffCallback(
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldList[oldItemPosition] == newList[newItemPosition]
+        return oldList[oldItemPosition].message == newList[newItemPosition].message
     }
 }

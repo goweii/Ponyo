@@ -9,7 +9,6 @@ import android.text.TextWatcher
 import android.view.View
 import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
-import com.scwang.smart.refresh.layout.SmartRefreshLayout
 import per.goweii.ponyo.R
 import per.goweii.ponyo.panel.BasePanel
 
@@ -23,15 +22,6 @@ class LogPanel : BasePanel() {
 
     @SuppressLint("SetTextI18n")
     override fun onPanelViewCreated(view: View) {
-        val srl_log = view.findViewById<SmartRefreshLayout>(R.id.srl_log)
-        srl_log.setOnRefreshListener {
-            val success = LogManager.lastPage()
-            srl_log.finishRefresh(success)
-        }
-        srl_log.setOnLoadMoreListener {
-            LogManager.nextPage()
-            srl_log.finishLoadMore()
-        }
         rv_log = view.findViewById<RecyclerView>(R.id.rv_log)
         val cb_a = view.findViewById<CheckBox>(R.id.cb_a)
         val cb_e = view.findViewById<CheckBox>(R.id.cb_e)
@@ -40,7 +30,7 @@ class LogPanel : BasePanel() {
         val cb_i = view.findViewById<CheckBox>(R.id.cb_i)
         val cb_v = view.findViewById<CheckBox>(R.id.cb_v)
         val listener = CompoundButton.OnCheckedChangeListener { buttonView, isChecked ->
-            LogManager.notifyLevel(
+            Manager.notifyLevel(
                 cb_a.isChecked,
                 cb_e.isChecked,
                 cb_w.isChecked,
@@ -63,7 +53,7 @@ class LogPanel : BasePanel() {
             }
 
             override fun afterTextChanged(s: Editable) {
-                LogManager.notifyTag(s.toString())
+                Manager.notifyTag(s.toString())
             }
         })
         val et_search = view.findViewById<EditText>(R.id.et_search)
@@ -75,15 +65,12 @@ class LogPanel : BasePanel() {
             }
 
             override fun afterTextChanged(s: Editable) {
-                LogManager.notifySearch(s.toString())
+                Manager.notifySearch(s.toString())
             }
         })
         val fl_dialog = view.findViewById<FrameLayout>(R.id.fl_dialog)
         val tv_dialog_copy = view.findViewById<TextView>(R.id.tv_dialog_copy)
-        val tv_dialog_thread = view.findViewById<TextView>(R.id.tv_dialog_thread)
         val tv_dialog_tag = view.findViewById<TextView>(R.id.tv_dialog_tag)
-        val tv_dialog_class = view.findViewById<TextView>(R.id.tv_dialog_class)
-        val tv_dialog_file = view.findViewById<TextView>(R.id.tv_dialog_file)
         fl_dialog.setOnClickListener {
             fl_dialog.visibility = View.GONE
         }
@@ -91,31 +78,16 @@ class LogPanel : BasePanel() {
 
         val tv_more = view.findViewById<TextView>(R.id.tv_more)
 
-        LogManager.attachTo(rv_log, tv_more) { logEntity ->
+        Manager.attachTo(rv_log, tv_more) { logLine ->
             fl_dialog.visibility = View.VISIBLE
             tv_dialog_copy.setOnClickListener {
                 val cm = it.context.applicationContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                cm.setPrimaryClip(ClipData.newPlainText("text", logEntity.toString()))
+                cm.setPrimaryClip(ClipData.newPlainText("text", logLine.toString()))
                 fl_dialog.visibility = View.GONE
             }
-            tv_dialog_thread.text = "Thread:${logEntity.body.threadName}"
-            tv_dialog_thread.setOnClickListener {
-                et_search.setText(logEntity.body.threadName)
-                fl_dialog.visibility = View.GONE
-            }
-            tv_dialog_tag.text = "TAG:${logEntity.tag}"
+            tv_dialog_tag.text = "TAG:${logLine.tag}"
             tv_dialog_tag.setOnClickListener {
-                et_tag.setText(logEntity.tag)
-                fl_dialog.visibility = View.GONE
-            }
-            tv_dialog_class.text = "Class:${logEntity.body.className}"
-            tv_dialog_class.setOnClickListener {
-                et_search.setText(logEntity.body.className)
-                fl_dialog.visibility = View.GONE
-            }
-            tv_dialog_file.text = "File:${logEntity.body.fileName}"
-            tv_dialog_file.setOnClickListener {
-                et_search.setText(logEntity.body.fileName)
+                et_tag.setText(logLine.tag)
                 fl_dialog.visibility = View.GONE
             }
         }
@@ -125,10 +97,10 @@ class LogPanel : BasePanel() {
         super.onVisible(firstVisible)
         if (firstVisible) {
             rv_log.post {
-                LogManager.scrollBottom()
+                Manager.scrollBottom()
             }
         }
-        LogManager.clearUnreadCount()
+        Manager.clearUnreadCount()
     }
 
     override fun onGone() {

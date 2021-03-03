@@ -6,70 +6,46 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/ponyo_colorBackground">
 
-    <com.scwang.smart.refresh.layout.SmartRefreshLayout
-        android:id="@+id/ponyo_srl"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.scwang.smart.refresh.header.ClassicsHeader
+        <HorizontalScrollView
+            android:id="@+id/ponyo_hsv"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:srlClassicsSpinnerStyle="FixedBehind"
-            app:srlDrawableArrowSize="0dp"
-            app:srlDrawableMarginRight="0dp"
-            app:srlDrawableProgressSize="0dp"
-            app:srlDrawableSize="0dp"
-            app:srlFinishDuration="0"
-            app:srlTextFailed="正在检测"
-            app:srlTextFinish="正在检测"
-            app:srlTextPulling="下拉开始检测"
-            app:srlTextRefreshing="正在开始检测"
-            app:srlTextRelease="释放开始检测"
-            app:srlTextSizeTime="0dp"
-            app:srlTextSizeTitle="12sp" />
+            android:layout_height="match_parent"
+            tools:ignore="UselessParent">
 
-        <FrameLayout
+            <androidx.core.widget.NestedScrollView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/tv_leak"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/ponyo_colorOnBackground"
+                    android:textSize="12sp"
+                    android:typeface="monospace" />
+
+            </androidx.core.widget.NestedScrollView>
+
+        </HorizontalScrollView>
+
+        <TextView
+            android:id="@+id/ponyo_tv_empty"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@color/ponyo_colorBackground"
+            android:alpha="0.6"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:text="下拉开始检测"
+            android:textColor="@color/ponyo_colorOnBackground"
+            android:textSize="14sp" />
 
-            <HorizontalScrollView
-                android:id="@+id/ponyo_hsv"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:ignore="UselessParent">
-
-                <androidx.core.widget.NestedScrollView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent">
-
-                    <TextView
-                        android:id="@+id/tv_leak"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/ponyo_colorOnBackground"
-                        android:textSize="12sp"
-                        android:typeface="monospace" />
-
-                </androidx.core.widget.NestedScrollView>
-
-            </HorizontalScrollView>
-
-            <TextView
-                android:id="@+id/ponyo_tv_empty"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/ponyo_colorBackground"
-                android:alpha="0.6"
-                android:clickable="true"
-                android:focusable="true"
-                android:gravity="center"
-                android:text="下拉开始检测"
-                android:textColor="@color/ponyo_colorOnBackground"
-                android:textSize="14sp" />
-
-        </FrameLayout>
-
-    </com.scwang.smart.refresh.layout.SmartRefreshLayout>
+    </FrameLayout>
 
     <LinearLayout
         android:id="@+id/ponyo_ll_loading"

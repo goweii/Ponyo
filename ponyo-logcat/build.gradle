@@ -1,5 +1,4 @@
 apply from: "../lib-android.gradle"
 
 dependencies {
-    implementation rootProject.ext.dependencies.xlog
 }

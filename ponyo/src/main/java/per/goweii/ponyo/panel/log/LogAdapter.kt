@@ -1,14 +1,18 @@
 package per.goweii.ponyo.panel.log
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import per.goweii.ponyo.R
-import per.goweii.ponyo.log.Ponlog
+import per.goweii.ponyo.log.LogLine
 
 /**
  * @author CuiZhen
@@ -16,19 +20,19 @@ import per.goweii.ponyo.log.Ponlog
  */
 class LogAdapter : RecyclerView.Adapter<LogAdapter.LogHolder>() {
 
-    private var itemClicked: ((logEntity: LogEntity) -> Unit)? = null
-    private val datas by lazy { mutableListOf<LogEntity>() }
+    private var itemClicked: ((logEntity: LogLine) -> Unit)? = null
+    private val datas by lazy { mutableListOf<LogLine>() }
 
-    fun onItemClicked(itemClicked: (logEntity: LogEntity) -> Unit) {
+    fun onItemClicked(itemClicked: (logEntity: LogLine) -> Unit) {
         this.itemClicked = itemClicked
     }
 
-    fun add(start: Int = datas.size, data: LogEntity) {
+    fun add(start: Int = datas.size, data: LogLine) {
         datas.add(start, data)
         notifyItemInserted(start)
     }
 
-    fun add(start: Int = datas.size, data: List<LogEntity>) {
+    fun addAll(start: Int = datas.size, data: List<LogLine>) {
         if (data.isEmpty()) return
         datas.addAll(start, data)
         notifyItemRangeInserted(start, data.size)
@@ -41,8 +45,8 @@ class LogAdapter : RecyclerView.Adapter<LogAdapter.LogHolder>() {
         notifyItemRangeRemoved(start, count)
     }
 
-    fun set(data: List<LogEntity>) {
-        val oldList = mutableListOf<LogEntity>()
+    fun set(data: List<LogLine>) {
+        val oldList = mutableListOf<LogLine>()
         oldList.addAll(datas)
         datas.clear()
         datas.addAll(data)
@@ -69,43 +73,77 @@ class LogAdapter : RecyclerView.Adapter<LogAdapter.LogHolder>() {
     }
 
     inner class LogHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-        private val tv_log_time by lazy { itemView.findViewById<TextView>(R.id.tv_log_time) }
-        private val tv_log_tag by lazy { itemView.findViewById<TextView>(R.id.tv_log_tag) }
-        private val tv_log_call by lazy { itemView.findViewById<TextView>(R.id.tv_log_call) }
+        private val fl_log_root by lazy { itemView.findViewById<FrameLayout>(R.id.fl_log_root) }
+        private val ll_log_simple by lazy { itemView.findViewById<LinearLayout>(R.id.ll_log_simple) }
+        private val rl_log_total by lazy { itemView.findViewById<RelativeLayout>(R.id.rl_log_total) }
+        private val tv_log_simple_header by lazy { itemView.findViewById<TextView>(R.id.tv_log_simple_header) }
+        private val tv_log_simple_msg by lazy { itemView.findViewById<TextView>(R.id.tv_log_simple_msg) }
+        private val tv_log_header by lazy { itemView.findViewById<TextView>(R.id.tv_log_header) }
         private val tv_log_msg by lazy { itemView.findViewById<TextView>(R.id.tv_log_msg) }
+        private val v_log_line by lazy { itemView.findViewById<View>(R.id.v_log_line) }
 
         init {
-            val listener = View.OnClickListener {
+            rl_log_total.setOnLongClickListener {
                 datas.getOrNull(adapterPosition)?.let {
                     itemClicked?.invoke(it)
                 }
+                return@setOnLongClickListener true
             }
-            itemView.setOnClickListener(listener)
-            tv_log_time.setOnClickListener(listener)
-            tv_log_tag.setOnClickListener(listener)
-            tv_log_call.setOnClickListener(listener)
-            tv_log_msg.setOnClickListener(listener)
+            ll_log_simple.setOnClickListener {
+                datas.getOrNull(adapterPosition)?.let {
+                    it.isExpanded = true
+                    notifyItemChanged(adapterPosition)
+                }
+            }
+            rl_log_total.setOnClickListener {
+                datas.getOrNull(adapterPosition)?.let {
+                    it.isExpanded = false
+                    notifyItemChanged(adapterPosition)
+                }
+            }
         }
 
         @SuppressLint("SetTextI18n")
-        fun bindData(data: LogEntity) {
+        fun bindData(data: LogLine) {
             val color = when (data.level) {
-                Ponlog.Level.ASSERT -> itemView.context.resources.getColor(R.color.ponyo_colorLogAssert)
-                Ponlog.Level.ERROR -> itemView.context.resources.getColor(R.color.ponyo_colorLogError)
-                Ponlog.Level.WARN -> itemView.context.resources.getColor(R.color.ponyo_colorLogWarn)
-                Ponlog.Level.INFO -> itemView.context.resources.getColor(R.color.ponyo_colorLogInfo)
-                Ponlog.Level.DEBUG -> itemView.context.resources.getColor(R.color.ponyo_colorLogDebug)
-                Ponlog.Level.VERBOSE -> itemView.context.resources.getColor(R.color.ponyo_colorLogVisible)
+                Log.ASSERT -> {
+                    itemView.context.resources.getColor(R.color.ponyo_colorLogAssert)
+                }
+                Log.ERROR -> {
+                    itemView.context.resources.getColor(R.color.ponyo_colorLogError)
+                }
+                Log.WARN -> {
+                    itemView.context.resources.getColor(R.color.ponyo_colorLogWarn)
+                }
+                Log.INFO -> {
+                    itemView.context.resources.getColor(R.color.ponyo_colorLogInfo)
+                }
+                Log.DEBUG -> {
+                    itemView.context.resources.getColor(R.color.ponyo_colorLogDebug)
+                }
+                Log.VERBOSE -> {
+                    itemView.context.resources.getColor(R.color.ponyo_colorLogVisible)
+                }
+                else -> {
+                    itemView.context.resources.getColor(R.color.ponyo_colorLogVisible)
+                }
             }
-            tv_log_time.setTextColor(color)
-            tv_log_tag.setTextColor(color)
-            tv_log_call.setTextColor(color)
-            tv_log_msg.setTextColor(color)
-            tv_log_time.text = "${data.level.name} ${data.body.timeFormat}"
-            tv_log_tag.text = "${data.tag} ${data.body.threadName}"
-            tv_log_call.text = data.body.classInfo
-            tv_log_msg.text = data.msg
+            if (data.isExpanded) {
+                ll_log_simple.visibility = View.GONE
+                rl_log_total.visibility = View.VISIBLE
+                v_log_line.setBackgroundColor(color)
+                tv_log_header.setTextColor(color)
+                tv_log_msg.setTextColor(color)
+                tv_log_header.text = "${data.logLevelText}/${data.tag} ${data.timestamp}"
+                tv_log_msg.text = data.message
+            } else {
+                ll_log_simple.visibility = View.VISIBLE
+                rl_log_total.visibility = View.GONE
+                tv_log_simple_header.setTextColor(color)
+                tv_log_simple_msg.setTextColor(color)
+                tv_log_simple_header.text = "${data.logLevelText}/${data.tag}:"
+                tv_log_simple_msg.text = data.message
+            }
         }
     }
 

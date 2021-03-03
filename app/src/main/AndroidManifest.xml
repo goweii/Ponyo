@@ -16,9 +16,6 @@
             android:authorities="${applicationId}.androidx-startup"
             android:exported="false"
             tools:node="merge">
-            <meta-data
-                android:name="per.goweii.android.ponyo.PonlogInitializer"
-                android:value="@string/androidx_startup" />
         </provider>
 
         <activity android:name=".MainActivity">

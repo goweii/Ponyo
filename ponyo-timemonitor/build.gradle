@@ -2,5 +2,4 @@ apply plugin: 'com.android.library'
 apply from: "../lib-android.gradle"
 
 dependencies {
-    implementation project(":ponyo-log")
 }

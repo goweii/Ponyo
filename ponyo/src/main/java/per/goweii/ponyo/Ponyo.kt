@@ -3,10 +3,8 @@ package per.goweii.ponyo
 import android.app.Application
 import per.goweii.ponyo.appstack.AppStack
 import per.goweii.ponyo.crash.Crash
-import per.goweii.ponyo.log.Ponlog
 import per.goweii.ponyo.panel.actistack.ActiStackManager
-import per.goweii.ponyo.panel.log.GsonFormatter
-import per.goweii.ponyo.panel.log.LogManager
+import per.goweii.ponyo.panel.log.Manager
 import per.goweii.ponyo.panel.tm.TM
 import per.goweii.ponyo.panel.tm.TmManager
 import per.goweii.ponyo.timemonitor.TimeMonitor
@@ -17,8 +15,7 @@ object Ponyo : AppStack.AppLifecycleListener {
 
     fun initialize(application: Application) {
         if (this::floatManager.isInitialized) return
-        Ponlog.addLogPrinter(LogManager)
-        Ponlog.setJsonFormatter(GsonFormatter())
+        Manager.start()
         TM.APP_STARTUP.start("application initialize")
         TimeMonitor.registerTimeLineEndListener(TmManager)
         Crash.setCrashActivity(CrashActivity::class.java)
@@ -51,15 +48,15 @@ object Ponyo : AppStack.AppLifecycleListener {
     override fun onDestroy() {
     }
 
-    fun onLoggerAssert(count: Int) {
+    internal fun onLoggerAssert(count: Int) {
         floatManager.setLogAssertCount(count)
     }
 
-    fun onLoggerError(count: Int) {
+    internal fun onLoggerError(count: Int) {
         floatManager.setLogErrorCount(count)
     }
 
-    fun onLoggerWarn(count: Int) {
+    internal fun onLoggerWarn(count: Int) {
         floatManager.setLogWarnCount(count)
     }
 }

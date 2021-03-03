@@ -10,7 +10,6 @@ import android.os.Looper
 import android.os.Process
 import android.view.Choreographer
 import android.widget.Toast
-import per.goweii.ponyo.log.Ponlog
 import java.lang.ref.WeakReference
 
 /**
@@ -54,7 +53,7 @@ class CrashHandler(
     )
 
     override fun uncaughtException(t: Thread, e: Throwable) {
-        Ponlog.e { e }
+        e.printStackTrace()
         var shouldKillProcess = false
         if (t == Looper.getMainLooper().thread) {
             e.stackTrace.forEach { element ->
