@@ -166,23 +166,27 @@
                 <TextView
                     android:id="@+id/tv_file_open_text_by_self"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/ponyo_rect_bg"
+                    android:layout_height="@dimen/ponyo_button_height"
+                    android:background="@drawable/ponyo_btn_bg"
+                    android:layout_marginStart="@dimen/ponyo_margin_big"
+                    android:layout_marginEnd="@dimen/ponyo_margin_big"
+                    android:layout_marginTop="@dimen/ponyo_margin_def"
                     android:gravity="center"
-                    android:padding="5dp"
                     android:text="直接以文本打开（只读取100行）"
-                    android:textColor="@color/ponyo_colorOnSurface"
+                    android:textColor="@color/ponyo_colorOnPrimary"
                     android:textSize="@dimen/ponyo_text_size_btn" />
 
                 <TextView
                     android:id="@+id/tv_file_open_text_by_system"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/ponyo_rect_bg"
+                    android:layout_height="@dimen/ponyo_button_height"
+                    android:background="@drawable/ponyo_btn_bg"
+                    android:layout_marginStart="@dimen/ponyo_margin_big"
+                    android:layout_marginEnd="@dimen/ponyo_margin_big"
+                    android:layout_marginTop="@dimen/ponyo_margin_def"
                     android:gravity="center"
-                    android:padding="5dp"
                     android:text="在第三方打开文本"
-                    android:textColor="@color/ponyo_colorOnSurface"
+                    android:textColor="@color/ponyo_colorOnPrimary"
                     android:textSize="@dimen/ponyo_text_size_btn" />
 
             </LinearLayout>
