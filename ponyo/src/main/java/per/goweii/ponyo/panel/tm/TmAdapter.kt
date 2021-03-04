@@ -35,11 +35,9 @@ class TmAdapter : RecyclerView.Adapter<TmAdapter.TmHolder>() {
     }
 
     inner class TmHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val tv_tm_tag by lazy { itemView.findViewById<TextView>(R.id.tv_tm_tag) }
         private val tv_tm_info by lazy { itemView.findViewById<TextView>(R.id.tv_tm_info) }
 
         fun bindData(data: TmEntity) {
-            tv_tm_tag.text = data.lineTag
             tv_tm_info.text = data.lineInfo
         }
     }

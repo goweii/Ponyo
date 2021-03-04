@@ -17,31 +17,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/tv_tm_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="5dp">
-
-            <TextView
-                android:id="@+id/tv_tm_tag"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/ponyo_colorOnSurface"
-                android:textSize="@dimen/ponyo_text_size_tm"
-                android:typeface="monospace"
-                tools:text="Tag" />
-
-            <TextView
-                android:id="@+id/tv_tm_info"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/ponyo_colorOnSurface"
-                android:textSize="@dimen/ponyo_text_size_tm"
-                android:typeface="monospace"
-                tools:text="Info" />
-
-        </LinearLayout>
+            android:padding="@dimen/ponyo_panel_padding"
+            android:textColor="@color/ponyo_colorOnSurface"
+            android:textSize="@dimen/ponyo_text_size_tm"
+            android:typeface="monospace"
+            tools:text="Info" />
 
     </HorizontalScrollView>
 
