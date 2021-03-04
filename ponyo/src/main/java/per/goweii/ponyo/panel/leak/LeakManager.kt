@@ -13,7 +13,7 @@ object LeakManager : Leak.LeakListener, Leak.AnalyzeListener {
     private lateinit var ponyo_ll_loading: LinearLayout
     private lateinit var ponyo_pb_loading: ProgressBar
     private lateinit var ponyo_tv_loading: TextView
-    private lateinit var ponyo_tv_empty: TextView
+    private lateinit var ponyo_tv_start: TextView
     private lateinit var ponyo_hsv: ViewGroup
     private lateinit var tv_leak: TextView
 
@@ -21,30 +21,28 @@ object LeakManager : Leak.LeakListener, Leak.AnalyzeListener {
         ponyo_ll_loading = view.findViewById(R.id.ponyo_ll_loading)
         ponyo_pb_loading = view.findViewById(R.id.ponyo_pb_loading)
         ponyo_tv_loading = view.findViewById(R.id.ponyo_tv_loading)
-        ponyo_tv_empty = view.findViewById(R.id.ponyo_tv_empty)
+        ponyo_tv_start = view.findViewById(R.id.ponyo_tv_start)
         ponyo_hsv = view.findViewById(R.id.ponyo_hsv)
         tv_leak = view.findViewById(R.id.tv_leak)
 
         ponyo_hsv.visibility = View.GONE
-        ponyo_tv_empty.visibility = View.VISIBLE
+        ponyo_tv_start.visibility = View.VISIBLE
         ponyo_ll_loading.visibility = View.GONE
 
         Leak.setLeakListener(this)
         Leak.setAnalyzeListener(this)
-        //Leak.dumpAndAnalyze()
+        ponyo_tv_start.setOnClickListener {
+            Leak.dumpAndAnalyze()
+        }
     }
 
     override fun onLeak(count: Int) {
-        if (count == 0) {
-            ponyo_tv_empty.text = "未发现内存泄漏"
-        } else {
-            ponyo_tv_empty.text = "发现${count}处内存泄漏"
-        }
+        ponyo_tv_start.isEnabled = true
     }
 
     override fun onProgress(percent: Float, desc: String) {
         ponyo_hsv.visibility = View.GONE
-        ponyo_tv_empty.visibility = View.GONE
+        ponyo_tv_start.isEnabled = false
         ponyo_ll_loading.visibility = View.VISIBLE
         val indeterminate = percent < 0F
         val max = 10000
@@ -62,7 +60,7 @@ object LeakManager : Leak.LeakListener, Leak.AnalyzeListener {
     override fun onAnalysis(heapAnalysis: String) {
         ponyo_ll_loading.visibility = View.GONE
         ponyo_hsv.visibility = View.VISIBLE
-        ponyo_tv_empty.visibility = View.GONE
+        ponyo_tv_start.isEnabled = false
         tv_leak.text = heapAnalysis
     }
 }

@@ -3,7 +3,6 @@ apply from: "../lib-android.gradle"
 dependencies {
     implementation rootProject.ext.dependencies.recyclerview
     implementation rootProject.ext.dependencies.cardview
-    implementation rootProject.ext.dependencies.gson
     api project(':ponyo-logcat')
     api project(":ponyo-timemonitor")
     api project(':ponyo-appstack')

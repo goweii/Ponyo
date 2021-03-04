@@ -3,16 +3,37 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/ponyo_colorBackground">
+    tools:background="@color/ponyo_colorBackground">
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:paddingStart="@dimen/ponyo_panel_padding"
+        android:paddingEnd="@dimen/ponyo_panel_padding"
+        android:paddingTop="@dimen/ponyo_panel_padding"
+        android:paddingBottom="@dimen/ponyo_panel_padding"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/ponyo_tv_start"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/ponyo_button_height"
+            android:layout_gravity="center"
+            android:background="@drawable/ponyo_btn_bg"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:paddingStart="@dimen/ponyo_margin_def"
+            android:paddingEnd="@dimen/ponyo_margin_def"
+            android:text="点击开始检测"
+            android:textColor="@color/ponyo_colorOnPrimary"
+            android:textSize="@dimen/ponyo_text_size_btn" />
 
         <HorizontalScrollView
             android:id="@+id/ponyo_hsv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/ponyo_panel_padding"
             tools:ignore="UselessParent">
 
             <androidx.core.widget.NestedScrollView
@@ -31,31 +52,18 @@
 
         </HorizontalScrollView>
 
-        <TextView
-            android:id="@+id/ponyo_tv_empty"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/ponyo_colorBackground"
-            android:alpha="0.6"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="center"
-            android:text="下拉开始检测"
-            android:textColor="@color/ponyo_colorOnSurface"
-            android:textSize="@dimen/ponyo_text_size_btn" />
-
-    </FrameLayout>
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/ponyo_ll_loading"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
         android:background="@color/ponyo_colorBackground"
         android:clickable="true"
         android:focusable="true"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <ProgressBar
             android:id="@+id/ponyo_pb_loading"

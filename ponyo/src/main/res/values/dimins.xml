@@ -6,6 +6,7 @@
     <dimen name="ponyo_tab_height">30dp</dimen>
     <dimen name="ponyo_item_height">30dp</dimen>
     <dimen name="ponyo_button_height">44dp</dimen>
+    <dimen name="ponyo_button_corner_radius">22dp</dimen>
     <dimen name="ponyo_corner_radius">3dp</dimen>
     <dimen name="ponyo_log_bg_stroke_width">1dp</dimen>
     <dimen name="ponyo_log_checkbox_radius">9999dp</dimen>
