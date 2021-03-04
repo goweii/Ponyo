@@ -3,6 +3,8 @@ package per.goweii.ponyo
 import android.app.Application
 import per.goweii.ponyo.appstack.AppStack
 import per.goweii.ponyo.crash.Crash
+import per.goweii.ponyo.dialog.FrameDialog
+import per.goweii.ponyo.log.Logcat
 import per.goweii.ponyo.panel.actistack.ActiStackManager
 import per.goweii.ponyo.panel.log.LogManager
 import per.goweii.ponyo.panel.tm.TM
@@ -15,7 +17,8 @@ object Ponyo : AppStack.AppLifecycleListener {
 
     fun initialize(application: Application) {
         if (this::floatManager.isInitialized) return
-        LogManager.start()
+        Logcat.registerCatchListener(LogManager)
+        Logcat.start()
         TM.APP_STARTUP.start("application initialize")
         TimeMonitor.registerTimeLineEndListener(TmManager)
         Crash.setCrashActivity(CrashActivity::class.java)
@@ -23,6 +26,13 @@ object Ponyo : AppStack.AppLifecycleListener {
         AppStack.activityStack.registerActivityLifecycleListener(TmManager)
         AppStack.activityStack.registerStackUpdateListener(ActiStackManager)
         floatManager = FloatManager(application).icon(R.drawable.ponyo_ic_float)
+    }
+
+    fun makeDialog(): FrameDialog? {
+        if (!this::floatManager.isInitialized) return null
+        if (!floatManager.isShown()) return null
+        if (!floatManager.isExpand()) return null
+        return FrameDialog.with(floatManager.getDialogContainer())
     }
 
     override fun onCreate() {

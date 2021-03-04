@@ -1,6 +1,7 @@
 package per.goweii.android.ponyo.log
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -8,6 +9,8 @@ import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_log.*
 import kotlinx.coroutines.*
 import per.goweii.android.ponyo.R
+import per.goweii.android.ponyo.multiprocess.MultiProcessService1
+import per.goweii.android.ponyo.multiprocess.MultiProcessService2
 import kotlin.random.Random
 
 class LogActivity : AppCompatActivity(), CoroutineScope by MainScope() {
@@ -28,6 +31,23 @@ class LogActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                 startAutoLog()
             } else {
                 stopAutoLog()
+            }
+        }
+
+        cb_service1.setOnCheckedChangeListener { _, isChecked ->
+            val intent = Intent(this, MultiProcessService1::class.java)
+            if (isChecked) {
+                startService(intent)
+            } else {
+                stopService(intent)
+            }
+        }
+        cb_service2.setOnCheckedChangeListener { _, isChecked ->
+            val intent = Intent(this, MultiProcessService2::class.java)
+            if (isChecked) {
+                startService(intent)
+            } else {
+                stopService(intent)
             }
         }
 

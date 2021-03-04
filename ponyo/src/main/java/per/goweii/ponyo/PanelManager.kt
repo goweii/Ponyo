@@ -13,6 +13,7 @@ import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
+import per.goweii.ponyo.dialog.FrameDialog
 import per.goweii.ponyo.panel.PanelProvider
 import java.security.Key
 import kotlin.math.min
@@ -103,6 +104,9 @@ internal class PanelManager(private val context: Context) {
             PanelProvider.attach(panelContainer, panelTab)
         }
     }
+    val dialogView: FrameLayout by lazy {
+        floatView.findViewById<FrameLayout>(R.id.dialog)
+    }
     private var onAttachListener: (() -> Unit)? = null
     private var onDetachListener: (() -> Unit)? = null
 
@@ -110,50 +114,6 @@ internal class PanelManager(private val context: Context) {
 
     fun icon(resId: Int) = apply {
         floatIcon.setImageResource(resId)
-    }
-
-    private fun attach() {
-        if (isShown()) return
-        floatView.visibility = View.INVISIBLE
-        floatView.alpha = 0F
-        floatIcon.visibility = View.INVISIBLE
-        floatIcon.alpha = 0F
-        floatPanel.visibility = View.INVISIBLE
-        floatPanel.alpha = 0F
-        floatView.viewTreeObserver.addOnPreDrawListener(object :
-            ViewTreeObserver.OnPreDrawListener {
-            override fun onPreDraw(): Boolean {
-                floatView.viewTreeObserver.removeOnPreDrawListener(this)
-                panelRectF.set(
-                    0F, 0F,
-                    floatView.width.toFloat(),
-                    floatView.height.toFloat()
-                )
-                updateToRectF(floatRectF)
-                floatIcon.visibility = View.INVISIBLE
-                floatIcon.alpha = 0F
-                floatPanel.visibility = View.INVISIBLE
-                floatPanel.alpha = 0F
-                startZooming2Panel()
-                return true
-            }
-        })
-        try {
-            windowManager.addView(floatView, windowParams)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
-    private fun detach() {
-        if (!isShown()) return
-        floatView.visibility = View.INVISIBLE
-        floatView.alpha = 0F
-        try {
-            windowManager.removeView(floatView)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
     }
 
     fun onAttachListener(listener: (() -> Unit)? = null) {
@@ -240,6 +200,50 @@ internal class PanelManager(private val context: Context) {
                     }
                 }
             }
+        }
+    }
+
+    private fun attach() {
+        if (isShown()) return
+        floatView.visibility = View.INVISIBLE
+        floatView.alpha = 0F
+        floatIcon.visibility = View.INVISIBLE
+        floatIcon.alpha = 0F
+        floatPanel.visibility = View.INVISIBLE
+        floatPanel.alpha = 0F
+        floatView.viewTreeObserver.addOnPreDrawListener(object :
+            ViewTreeObserver.OnPreDrawListener {
+            override fun onPreDraw(): Boolean {
+                floatView.viewTreeObserver.removeOnPreDrawListener(this)
+                panelRectF.set(
+                    0F, 0F,
+                    floatView.width.toFloat(),
+                    floatView.height.toFloat()
+                )
+                updateToRectF(floatRectF)
+                floatIcon.visibility = View.INVISIBLE
+                floatIcon.alpha = 0F
+                floatPanel.visibility = View.INVISIBLE
+                floatPanel.alpha = 0F
+                startZooming2Panel()
+                return true
+            }
+        })
+        try {
+            windowManager.addView(floatView, windowParams)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun detach() {
+        if (!isShown()) return
+        floatView.visibility = View.INVISIBLE
+        floatView.alpha = 0F
+        try {
+            windowManager.removeView(floatView)
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 

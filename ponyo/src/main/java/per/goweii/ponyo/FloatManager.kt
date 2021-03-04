@@ -8,6 +8,7 @@ import android.util.TypedValue
 import android.view.*
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.Scroller
 import android.widget.TextView
@@ -132,6 +133,12 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
     }
 
     fun isShown() = this.floatView.isAttachedToWindow
+
+    fun isExpand() = panelManager.isShown()
+
+    fun getDialogContainer(): FrameLayout {
+        return panelManager.dialogView
+    }
 
     fun expand() {
         panelManager.show(currRectF())

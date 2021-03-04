@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:paddingStart="@dimen/ponyo_margin_def"
+    android:paddingEnd="@dimen/ponyo_margin_def"
+    android:layout_height="@dimen/ponyo_item_height">
+
+    <TextView
+        android:id="@+id/ponyo_item_pid_tv_name"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="@dimen/ponyo_item_height"
+        android:gravity="center_vertical"
+        android:textColor="@color/ponyo_log_pid_textcolor_selector"
+        android:textSize="12sp"
+        tools:text="per.goweii.ponyo" />
+
+</LinearLayout>

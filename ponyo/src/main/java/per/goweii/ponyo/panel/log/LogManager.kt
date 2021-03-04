@@ -5,10 +5,6 @@ import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.newSingleThreadContext
 import per.goweii.ponyo.Ponyo
 import per.goweii.ponyo.log.LogLine
 import per.goweii.ponyo.log.Logcat
@@ -45,11 +41,6 @@ object LogManager : Logcat.OnCatchListener {
             field = value
             Ponyo.onLoggerWarn(field)
         }
-
-    fun start() {
-        Logcat.registerListener(this)
-        Logcat.start()
-    }
 
     fun clearUnreadCount() {
         unreadAssertCount = 0

@@ -16,6 +16,7 @@
             android:authorities="${applicationId}.androidx-startup"
             android:exported="false"
             tools:node="merge">
+
         </provider>
 
         <activity android:name=".MainActivity">
@@ -31,5 +32,12 @@
         <activity android:name=".crash.CrashOnCreateActivity" />
         <activity android:name=".crash.CrashOnDrawActivity" />
         <activity android:name=".leak.LeakActivity" />
+
+        <service
+            android:name=".multiprocess.MultiProcessService1"
+            android:process=":service1" />
+        <service
+            android:name=".multiprocess.MultiProcessService2"
+            android:process=":service2" />
     </application>
 </manifest>

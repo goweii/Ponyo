@@ -4,11 +4,13 @@
     <color name="ponyo_colorPrimaryDark">#56A3AB</color>
     <color name="ponyo_colorAccent">#E6595A</color>
 
+    <color name="ponyo_colorSurface">#FF222222</color>
     <color name="ponyo_colorBackground">#FF111111</color>
     <color name="ponyo_colorBackgroundMask">#33FFFFFF</color>
-    <color name="ponyo_colorOnBackground">#EEFFFFFF</color>
-    <color name="ponyo_colorOnForeground">#EE111111</color>
+    <color name="ponyo_colorOnBackgroundMask">#EE111111</color>
+    <color name="ponyo_colorOnSurface">#EEFFFFFF</color>
     <color name="ponyo_colorOnPrimary">#EE111111</color>
+    <color name="ponyo_colorDialogBg">#80000000</color>
 
     <color name="ponyo_colorLogAssert">#9C27B0</color>
     <color name="ponyo_colorLogError">#F44336</color>

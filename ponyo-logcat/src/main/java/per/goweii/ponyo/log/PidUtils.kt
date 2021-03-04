@@ -1,4 +1,4 @@
-package per.goweii.ponyo.log.utils
+package per.goweii.ponyo.log
 
 import android.app.ActivityManager
 import android.content.Context

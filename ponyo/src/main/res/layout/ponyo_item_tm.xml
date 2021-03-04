@@ -22,7 +22,7 @@
                 android:id="@+id/tv_tm_tag"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/ponyo_colorOnBackground"
+                android:textColor="@color/ponyo_colorOnBackgroundMask"
                 android:textSize="12sp"
                 android:typeface="monospace"
                 tools:text="Tag" />
@@ -31,7 +31,7 @@
                 android:id="@+id/tv_tm_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/ponyo_colorOnBackground"
+                android:textColor="@color/ponyo_colorOnBackgroundMask"
                 android:textSize="12sp"
                 android:typeface="monospace"
                 tools:text="Info" />

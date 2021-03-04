@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    app:cardBackgroundColor="@color/ponyo_colorSurface"
+    app:cardCornerRadius="@dimen/ponyo_corner_radius">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/ponyo_panel_padding"
+        android:paddingBottom="@dimen/ponyo_panel_padding">
+
+        <TextView
+            android:id="@+id/ponyo_dialog_log_meun_tv_tag"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/ponyo_button_height"
+            android:gravity="center"
+            android:text="筛选TAG"
+            android:textColor="@color/ponyo_colorOnSurface"
+            android:textSize="@dimen/ponyo_text_size_btn" />
+
+        <TextView
+            android:id="@+id/ponyo_dialog_log_meun_tv_copy"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/ponyo_button_height"
+            android:gravity="center"
+            android:text="复制"
+            android:textColor="@color/ponyo_colorOnSurface"
+            android:textSize="@dimen/ponyo_text_size_btn" />
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

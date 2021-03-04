@@ -43,7 +43,7 @@
             android:paddingTop="5dp"
             android:paddingEnd="5dp"
             android:paddingBottom="5dp"
-            android:textColor="@color/ponyo_colorOnBackground"
+            android:textColor="@color/ponyo_colorOnBackgroundMask"
             android:textSize="12sp"
             tools:text="800KB" />
 
@@ -92,7 +92,7 @@
                 android:paddingTop="5dp"
                 android:paddingEnd="5dp"
                 android:paddingBottom="5dp"
-                android:textColor="@color/ponyo_colorOnBackground"
+                android:textColor="@color/ponyo_colorOnBackgroundMask"
                 android:textSize="12sp"
                 tools:text="文件名" />
 
@@ -105,7 +105,7 @@
                 android:paddingEnd="5dp"
                 android:paddingBottom="5dp"
                 android:text="关闭"
-                android:textColor="@color/ponyo_colorOnBackground"
+                android:textColor="@color/ponyo_colorOnBackgroundMask"
                 android:textSize="12sp" />
 
         </LinearLayout>
@@ -133,7 +133,7 @@
                     android:paddingTop="5dp"
                     android:paddingEnd="5dp"
                     android:paddingBottom="5dp"
-                    android:textColor="@color/ponyo_colorOnBackground"
+                    android:textColor="@color/ponyo_colorOnBackgroundMask"
                     android:textSize="12sp"
                     android:typeface="monospace" />
 
@@ -161,7 +161,7 @@
                     android:layout_height="wrap_content"
                     android:padding="5dp"
                     android:text="选择打开方式"
-                    android:textColor="@color/ponyo_colorOnBackground"
+                    android:textColor="@color/ponyo_colorOnBackgroundMask"
                     android:textSize="15sp" />
 
                 <TextView
@@ -172,7 +172,7 @@
                     android:gravity="center"
                     android:padding="5dp"
                     android:text="直接以文本打开（只读取100行）"
-                    android:textColor="@color/ponyo_colorOnBackground"
+                    android:textColor="@color/ponyo_colorOnBackgroundMask"
                     android:textSize="14sp" />
 
                 <TextView
@@ -183,7 +183,7 @@
                     android:gravity="center"
                     android:padding="5dp"
                     android:text="在第三方打开文本"
-                    android:textColor="@color/ponyo_colorOnBackground"
+                    android:textColor="@color/ponyo_colorOnBackgroundMask"
                     android:textSize="14sp" />
 
             </LinearLayout>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="true"
+    android:focusable="true">
+
+    <ImageView
+        android:id="@+id/ponyo_frame_dialog_iv_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/ponyo_colorDialogBg"
+        tools:ignore="ContentDescription" />
+
+    <FrameLayout
+        android:id="@+id/ponyo_frame_dialog_fl_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</FrameLayout>
