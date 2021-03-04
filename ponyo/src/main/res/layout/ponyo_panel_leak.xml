@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/ponyo_colorBackground">
 
     <FrameLayout
@@ -24,8 +23,8 @@
                     android:id="@+id/tv_leak"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/ponyo_colorOnBackgroundMask"
-                    android:textSize="12sp"
+                    android:textColor="@color/ponyo_colorOnSurface"
+                    android:textSize="@dimen/ponyo_text_size_leak"
                     android:typeface="monospace" />
 
             </androidx.core.widget.NestedScrollView>
@@ -42,8 +41,8 @@
             android:focusable="true"
             android:gravity="center"
             android:text="下拉开始检测"
-            android:textColor="@color/ponyo_colorOnBackgroundMask"
-            android:textSize="14sp" />
+            android:textColor="@color/ponyo_colorOnSurface"
+            android:textSize="@dimen/ponyo_text_size_btn" />
 
     </FrameLayout>
 
@@ -51,6 +50,7 @@
         android:id="@+id/ponyo_ll_loading"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="gone"
         android:background="@color/ponyo_colorBackground"
         android:clickable="true"
         android:focusable="true"
@@ -75,8 +75,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:alpha="0.6"
-            android:textColor="@color/ponyo_colorOnBackgroundMask"
-            android:textSize="14sp"
+            android:textColor="@color/ponyo_colorOnSurface"
+            android:textSize="@dimen/ponyo_text_size_leak"
             tools:text="Waiting" />
 
     </LinearLayout>

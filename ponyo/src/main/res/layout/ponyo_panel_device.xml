@@ -2,8 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/ponyo_colorBackground">
+    android:layout_height="match_parent">
 
     <HorizontalScrollView
         android:layout_width="match_parent"
@@ -18,8 +17,8 @@
                 android:id="@+id/tv_device"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/ponyo_colorOnBackgroundMask"
-                android:textSize="12sp"
+                android:textColor="@color/ponyo_colorOnSurface"
+                android:textSize="@dimen/ponyo_text_size_device"
                 android:typeface="monospace" />
 
         </androidx.core.widget.NestedScrollView>

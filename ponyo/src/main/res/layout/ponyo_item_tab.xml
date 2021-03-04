@@ -13,5 +13,5 @@
     android:paddingEnd="10dp"
     android:paddingBottom="5dp"
     android:textColor="@color/ponyo_colorOnPrimary"
-    android:textSize="12sp"
+    android:textSize="@dimen/ponyo_text_size_tab"
     tools:text="日志" />

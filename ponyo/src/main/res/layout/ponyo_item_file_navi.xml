@@ -13,8 +13,8 @@
         android:layout_height="wrap_content"
         android:typeface="monospace"
         android:gravity="center"
-        android:textColor="@color/ponyo_colorOnBackgroundMask"
-        android:textSize="12sp"
+        android:textColor="@color/ponyo_colorOnSurface"
+        android:textSize="@dimen/ponyo_text_size_tab"
         tools:text="日志/" />
 
 </LinearLayout>

@@ -14,8 +14,8 @@
         android:paddingTop="3dp"
         android:paddingEnd="5dp"
         android:paddingBottom="3dp"
-        android:textColor="@color/ponyo_colorOnBackgroundMask"
-        android:textSize="12sp"
+        android:textColor="@color/ponyo_colorOnSurface"
+        android:textSize="@dimen/ponyo_text_size_sp"
         tools:text="1321321321" />
 
     <per.goweii.ponyo.panel.AutoSplitTextView
@@ -29,8 +29,8 @@
         android:paddingTop="3dp"
         android:paddingEnd="5dp"
         android:paddingBottom="3dp"
-        android:textColor="@color/ponyo_colorOnBackgroundMask"
-        android:textSize="12sp"
+        android:textColor="@color/ponyo_colorOnSurface"
+        android:textSize="@dimen/ponyo_text_size_sp"
         tools:text="1321321321" />
 
 </LinearLayout>

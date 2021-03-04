@@ -10,30 +10,30 @@
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="wrap_content"
-        android:background="@color/ponyo_colorBackground"
+        android:background="@color/ponyo_colorSurface"
         android:layout_marginTop="1px"
         android:layout_marginBottom="1px"
         android:paddingStart="5dp"
         android:paddingTop="5dp"
         android:paddingEnd="5dp"
         android:paddingBottom="5dp"
-        android:textColor="@color/ponyo_colorOnBackgroundMask"
-        android:textSize="12sp"
+        android:textColor="@color/ponyo_colorOnSurface"
+        android:textSize="@dimen/ponyo_text_size_file"
         tools:text="1321321321" />
 
     <per.goweii.ponyo.panel.AutoSplitTextView
         android:id="@+id/tv_file_length"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/ponyo_colorBackground"
+        android:background="@color/ponyo_colorSurface"
         android:layout_marginTop="1px"
         android:layout_marginBottom="1px"
         android:paddingStart="5dp"
         android:paddingTop="5dp"
         android:paddingEnd="5dp"
         android:paddingBottom="5dp"
-        android:textColor="@color/ponyo_colorOnBackgroundMask"
-        android:textSize="12sp"
+        android:textColor="@color/ponyo_colorOnSurface"
+        android:textSize="@dimen/ponyo_text_size_file"
         tools:text="800KB" />
 
 </LinearLayout>
