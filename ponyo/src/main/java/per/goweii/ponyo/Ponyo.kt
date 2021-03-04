@@ -65,8 +65,4 @@ object Ponyo : AppStack.AppLifecycleListener {
     internal fun onLoggerError(count: Int) {
         floatManager.setLogErrorCount(count)
     }
-
-    internal fun onLoggerWarn(count: Int) {
-        floatManager.setLogWarnCount(count)
-    }
 }

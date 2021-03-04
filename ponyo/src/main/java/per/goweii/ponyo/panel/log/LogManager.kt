@@ -36,16 +36,10 @@ object LogManager : Logcat.OnCatchListener {
             field = value
             Ponyo.onLoggerError(field)
         }
-    private var unreadWarnCount = 0
-        set(value) {
-            field = value
-            Ponyo.onLoggerWarn(field)
-        }
 
     fun clearUnreadCount() {
         unreadAssertCount = 0
         unreadErrorCount = 0
-        unreadWarnCount = 0
     }
 
     fun scrollBottom() {
@@ -200,17 +194,14 @@ object LogManager : Logcat.OnCatchListener {
         if (recyclerView?.isShown != true) {
             var assertCount = 0
             var errorCount = 0
-            var warnCount = 0
             logLines.forEach {
                 when (it.level) {
                     Log.ASSERT -> assertCount++
                     Log.ERROR -> errorCount++
-                    Log.WARN -> warnCount++
                 }
             }
             unreadAssertCount += assertCount
             unreadErrorCount += errorCount
-            unreadWarnCount += warnCount
         }
     }
 
