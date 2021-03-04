@@ -18,9 +18,6 @@ buildscript {
 allprojects {
     repositories {
         flatDir { dirs 'libs' }
-        maven { url REPO_RELEASE }
-        maven { url "https://gitee.com/goweii/maven-repository/raw/master/releases/" }
-        maven { url "https://jitpack.io" }
         google()
         jcenter()
     }

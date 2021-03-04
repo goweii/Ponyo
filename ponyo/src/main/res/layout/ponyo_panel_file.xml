@@ -67,6 +67,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:background="@color/ponyo_colorSurface"
         android:orientation="vertical"
         android:visibility="gone"
         tools:visibility="visible">
@@ -128,7 +129,6 @@
                     android:id="@+id/tv_file_str"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/ponyo_colorBackground"
                     android:paddingStart="5dp"
                     android:paddingTop="5dp"
                     android:paddingEnd="5dp"
@@ -152,7 +152,6 @@
                 android:id="@+id/ll_file_open"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/ponyo_colorSurface"
                 android:gravity="center"
                 android:orientation="vertical">
 
