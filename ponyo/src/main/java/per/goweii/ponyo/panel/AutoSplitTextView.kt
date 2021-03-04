@@ -1,11 +1,13 @@
 package per.goweii.ponyo.panel
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Typeface
 import android.util.AttributeSet
-import androidx.appcompat.widget.AppCompatTextView
+import android.widget.TextView
 
-class AutoSplitTextView : AppCompatTextView {
+@SuppressLint("AppCompatCustomView")
+class AutoSplitTextView : TextView {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
