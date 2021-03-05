@@ -12,6 +12,9 @@ import android.view.*
 import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
 import android.widget.ImageView
+import androidx.core.animation.doOnEnd
+import androidx.core.animation.doOnStart
+import androidx.core.view.doOnPreDraw
 import androidx.recyclerview.widget.RecyclerView
 import per.goweii.ponyo.dialog.FrameDialog
 import per.goweii.ponyo.panel.PanelProvider
@@ -72,10 +75,6 @@ internal class PanelManager(private val context: Context) {
                     PanelProvider.onDetach()
                 }
             })
-        }
-    }
-    private val floatRoot: FloatRootView by lazy {
-        floatView.findViewById<FloatRootView>(R.id.root).apply {
         }
     }
     private val floatWrapper: View by lazy {
@@ -206,29 +205,19 @@ internal class PanelManager(private val context: Context) {
     private fun attach() {
         if (isShown()) return
         floatView.visibility = View.INVISIBLE
-        floatView.alpha = 0F
         floatIcon.visibility = View.INVISIBLE
-        floatIcon.alpha = 0F
         floatPanel.visibility = View.INVISIBLE
-        floatPanel.alpha = 0F
-        floatView.viewTreeObserver.addOnPreDrawListener(object :
-            ViewTreeObserver.OnPreDrawListener {
-            override fun onPreDraw(): Boolean {
-                floatView.viewTreeObserver.removeOnPreDrawListener(this)
-                panelRectF.set(
-                    0F, 0F,
-                    floatView.width.toFloat(),
-                    floatView.height.toFloat()
-                )
-                updateToRectF(floatRectF)
-                floatIcon.visibility = View.INVISIBLE
-                floatIcon.alpha = 0F
-                floatPanel.visibility = View.INVISIBLE
-                floatPanel.alpha = 0F
-                startZooming2Panel()
-                return true
-            }
-        })
+        floatView.doOnPreDraw {
+            panelRectF.set(
+                0F, 0F,
+                floatView.width.toFloat(),
+                floatView.height.toFloat()
+            )
+            updateToRectF(floatRectF)
+            floatIcon.visibility = View.INVISIBLE
+            floatPanel.visibility = View.INVISIBLE
+            startZooming2Panel()
+        }
         try {
             windowManager.addView(floatView, windowParams)
         } catch (e: Exception) {
@@ -239,7 +228,6 @@ internal class PanelManager(private val context: Context) {
     private fun detach() {
         if (!isShown()) return
         floatView.visibility = View.INVISIBLE
-        floatView.alpha = 0F
         try {
             windowManager.removeView(floatView)
         } catch (e: Exception) {
@@ -255,31 +243,21 @@ internal class PanelManager(private val context: Context) {
         ValueAnimator.ofFloat(0F, 1F).apply {
             interpolator = DecelerateInterpolator()
             duration = 400L
-            addListener(object : Animator.AnimatorListener {
-                override fun onAnimationRepeat(animation: Animator) {
-                }
-
-                override fun onAnimationEnd(animation: Animator) {
-                    when (state) {
-                        State.FLOAT -> {
-                            endZooming2Float()
-                        }
-                        State.PANEL -> {
-                            endZooming2Panel()
-                        }
+            doOnStart {
+                floatView.visibility = View.VISIBLE
+                floatIcon.visibility = View.VISIBLE
+                floatPanel.visibility = View.VISIBLE
+            }
+            doOnEnd {
+                when (state) {
+                    State.FLOAT -> {
+                        endZooming2Float()
+                    }
+                    State.PANEL -> {
+                        endZooming2Panel()
                     }
                 }
-
-                override fun onAnimationCancel(animation: Animator) {
-                }
-
-                override fun onAnimationStart(animation: Animator) {
-                    floatView.visibility = View.VISIBLE
-                    floatView.alpha = 1F
-                    floatIcon.visibility = View.VISIBLE
-                    floatPanel.visibility = View.VISIBLE
-                }
-            })
+            }
             addUpdateListener {
                 val f = it.animatedValue as Float
                 onZooming(f, startRectF, endRectF)
@@ -312,16 +290,14 @@ internal class PanelManager(private val context: Context) {
             p > maxp -> 1F
             else -> (p - minp) / (maxp - minp)
         }
-        floatIcon.alpha = (1F - np).dece()
-        floatPanel.alpha = np.dece()
-        floatWrapper.alpha = p.acce()
+        //floatIcon.alpha = (1F - np).dece()
+        //floatPanel.alpha = np.dece()
+        //floatWrapper.alpha = p.acce()
     }
 
     private fun startZooming2Panel() {
-        floatIcon.visibility = View.VISIBLE
-        floatIcon.alpha = 1F
-        floatPanel.visibility = View.INVISIBLE
-        floatPanel.alpha = 0F
+        floatIcon.visibility = View.INVISIBLE
+        floatPanel.visibility = View.VISIBLE
         state = State.PANEL
         startRectF.set(toRectF())
         endRectF.set(panelRectF)
@@ -330,19 +306,14 @@ internal class PanelManager(private val context: Context) {
 
     private fun endZooming2Panel() {
         floatView.visibility = View.VISIBLE
-        floatView.alpha = 1F
         floatIcon.visibility = View.INVISIBLE
-        floatIcon.alpha = 0F
         floatPanel.visibility = View.VISIBLE
-        floatPanel.alpha = 1F
         PanelProvider.onShow()
     }
 
     private fun startZooming2Float() {
         floatIcon.visibility = View.INVISIBLE
-        floatIcon.alpha = 0F
         floatPanel.visibility = View.VISIBLE
-        floatPanel.alpha = 1F
         state = State.FLOAT
         startRectF.set(toRectF())
         endRectF.set(floatRectF)
@@ -352,11 +323,8 @@ internal class PanelManager(private val context: Context) {
 
     private fun endZooming2Float() {
         floatView.visibility = View.INVISIBLE
-        floatView.alpha = 0F
         floatIcon.visibility = View.VISIBLE
-        floatIcon.alpha = 1F
         floatPanel.visibility = View.INVISIBLE
-        floatPanel.alpha = 0F
         detach()
     }
 
