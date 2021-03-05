@@ -12,7 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:src="@drawable/ponyo_ic_float" />
+        android:src="@drawable/ponyo_ic_float"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/ponyo_tv_log"
@@ -22,7 +23,7 @@
         android:textColor="@color/ponyo_colorOnPrimary"
         android:textSize="16sp"
         android:visibility="gone"
-        tools:background="@color/ponyo_colorLogError"
+        tools:background="@drawable/ponyo_log_e_checked"
         tools:text="999+" />
 
 </FrameLayout>

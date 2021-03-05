@@ -1,6 +1,5 @@
 package per.goweii.ponyo
 
-import android.animation.Animator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
@@ -11,14 +10,12 @@ import android.os.Build
 import android.view.*
 import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
-import android.widget.ImageView
 import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
-import androidx.core.view.doOnPreDraw
+import androidx.core.view.doOnAttach
+import androidx.core.view.doOnLayout
 import androidx.recyclerview.widget.RecyclerView
-import per.goweii.ponyo.dialog.FrameDialog
 import per.goweii.ponyo.panel.PanelProvider
-import java.security.Key
 import kotlin.math.min
 import kotlin.math.pow
 
@@ -82,10 +79,22 @@ internal class PanelManager(private val context: Context) {
             clipToOutline = true
             outlineProvider = object : ViewOutlineProvider() {
                 override fun getOutline(view: View, outline: Outline) {
-                    val f = 1F - (view.width.toFloat() - floatRectF.width()) /
+                    val f = 1F - (view.scaledWidth.toFloat() - floatRectF.width()) /
                             (panelRectF.width() - floatRectF.width())
                     val radius = (min(view.width, view.height).toFloat() / 2F) * f
-                    outline.setRoundRect(0, 0, view.width, view.height, radius)
+                    when {
+                        width < height -> {
+                            val h = height - (height - width) * f
+                            outline.setRoundRect(0, 0, width, h.toInt(), radius)
+                        }
+                        width > height -> {
+                            val w = width - (width - height) * f
+                            outline.setRoundRect(0, 0, w.toInt(), height, radius)
+                        }
+                        else -> {
+                            outline.setRoundRect(0, 0, width, height, radius)
+                        }
+                    }
                 }
             }
             fitsSystemWindows = true
@@ -101,9 +110,6 @@ internal class PanelManager(private val context: Context) {
     private var onDetachListener: (() -> Unit)? = null
 
     private var state: State = State.FLOAT
-
-    fun icon(resId: Int) = apply {
-    }
 
     fun onAttachListener(listener: (() -> Unit)? = null) {
         onAttachListener = listener
@@ -195,13 +201,17 @@ internal class PanelManager(private val context: Context) {
     private fun attach() {
         if (isShown()) return
         floatPanel.visibility = View.INVISIBLE
-        floatView.doOnPreDraw {
+        floatView.doOnAttach {
+            floatPanel.visibility = View.INVISIBLE
+        }
+        floatView.doOnLayout {
             panelRectF.set(
                 0F, 0F,
-                floatPanel.width.toFloat(),
-                floatPanel.height.toFloat()
+                floatView.width.toFloat(),
+                floatView.height.toFloat()
             )
             updateToRectF(floatRectF)
+            floatPanel.visibility = View.INVISIBLE
             startZooming2Panel()
         }
         try {
@@ -213,7 +223,6 @@ internal class PanelManager(private val context: Context) {
 
     private fun detach() {
         if (!isShown()) return
-        floatPanel.visibility = View.INVISIBLE
         try {
             windowManager.removeView(floatView)
         } catch (e: Exception) {
@@ -230,7 +239,7 @@ internal class PanelManager(private val context: Context) {
             interpolator = DecelerateInterpolator()
             duration = 400L
             doOnStart {
-                floatView.visibility = View.VISIBLE
+                floatPanel.visibility = View.VISIBLE
             }
             doOnEnd {
                 when (state) {
@@ -274,9 +283,7 @@ internal class PanelManager(private val context: Context) {
             p > maxp -> 1F
             else -> (p - minp) / (maxp - minp)
         }
-        //floatIcon.alpha = (1F - np).dece()
-        //floatPanel.alpha = np.dece()
-        //floatWrapper.alpha = p.acce()
+        floatPanel.alpha = np.dece()
     }
 
     private fun startZooming2Panel() {
@@ -309,22 +316,26 @@ internal class PanelManager(private val context: Context) {
     private fun toRectF(): RectF = RectF(
         floatPanel.left.toFloat(),
         floatPanel.top.toFloat(),
-        floatPanel.right.toFloat(),
-        floatPanel.bottom.toFloat()
+        floatPanel.left.toFloat() + floatPanel.scaledWidth,
+        floatPanel.top.toFloat() + floatPanel.scaledHeight
     )
+
+    private val View.scaledWidth: Int get() = (scaleX * width).toInt()
+    private val View.scaledHeight: Int get() = (scaleY * height).toInt()
 
     private fun updateToRectF(rectF: RectF) {
         floatPanel.layout(
             rectF.left.toInt(),
             rectF.top.toInt(),
-            rectF.right.toInt(),
-            rectF.bottom.toInt()
+            rectF.left.toInt() + panelRectF.width().toInt(),
+            rectF.top.toInt() + panelRectF.height().toInt()
         )
         val sx = rectF.width() / panelRectF.width()
         val sy = rectF.height() / panelRectF.height()
         floatPanel.pivotX = 0F
         floatPanel.pivotY = 0F
         floatPanel.scaleX = sx
-        floatPanel.scaleY = sy
+        floatPanel.scaleY = sx
+        floatPanel.invalidateOutline()
     }
 }

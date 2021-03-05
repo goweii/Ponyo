@@ -83,17 +83,8 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
             clipToOutline = true
             outlineProvider = object : ViewOutlineProvider() {
                 override fun getOutline(view: View, outline: Outline) {
-                    val radius = min(
-                        view.width,
-                        view.height
-                    ).toFloat() / 2F
-                    outline.setRoundRect(
-                        0,
-                        0,
-                        view.width,
-                        view.height,
-                        radius
-                    )
+                    val radius = min(view.width, view.height).toFloat() / 2F
+                    outline.setRoundRect(0, 0, view.width, view.height, radius)
                 }
             }
             setOnTouchListener { _, event ->
@@ -126,11 +117,6 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
     private var lastSwitchModeTime = 0L
     private var switchModeAnimRunning = false
     private val autoSwitchModeRunnable = Runnable { autoSwitchMode() }
-
-    fun icon(resId: Int) = apply {
-        this.iconView.setImageResource(resId)
-        panelManager.icon(resId)
-    }
 
     fun isShown() = this.floatView.isAttachedToWindow
 
@@ -487,24 +473,14 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
                 logView.text = formatCount(unreadAssertCount)
                 if (!onlyChangeCount) {
                     logView.visibility = View.VISIBLE
-                    logView.setBackgroundColor(
-                        ContextCompat.getColor(
-                            context,
-                            R.color.ponyo_colorLogAssert
-                        )
-                    )
+                    logView.setBackgroundResource(R.drawable.ponyo_log_a_checked)
                 }
             }
             Mode.ERROR -> {
                 logView.text = formatCount(unreadErrorCount)
                 if (!onlyChangeCount) {
                     logView.visibility = View.VISIBLE
-                    logView.setBackgroundColor(
-                        ContextCompat.getColor(
-                            context,
-                            R.color.ponyo_colorLogError
-                        )
-                    )
+                    logView.setBackgroundResource(R.drawable.ponyo_log_e_checked)
                 }
             }
         }

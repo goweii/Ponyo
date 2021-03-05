@@ -12,11 +12,12 @@ import per.goweii.ponyo.panel.tm.TmManager
 import per.goweii.ponyo.timemonitor.TimeMonitor
 
 object Ponyo : AppStack.AppLifecycleListener {
-
     private lateinit var floatManager: FloatManager
+    private lateinit var application: Application
 
     fun initialize(application: Application) {
         if (this::floatManager.isInitialized) return
+        this.application = application
         Logcat.registerCatchListener(LogManager)
         Logcat.start()
         TM.APP_STARTUP.start("Application onInitialize")
@@ -25,7 +26,7 @@ object Ponyo : AppStack.AppLifecycleListener {
         AppStack.registerAppLifecycleListener(Ponyo)
         AppStack.activityStack.registerActivityLifecycleListener(TmManager)
         AppStack.activityStack.registerStackUpdateListener(ActiStackManager)
-        floatManager = FloatManager(application).icon(R.drawable.ponyo_ic_float)
+        floatManager = FloatManager(application)
     }
 
     fun makeDialog(): FrameDialog? {
@@ -45,7 +46,11 @@ object Ponyo : AppStack.AppLifecycleListener {
 
     override fun onResume() {
         TM.APP_STARTUP.record("Application onResume")
-        floatManager.show()
+        if (OverlayUtils.canOverlay(application)) {
+            floatManager.show()
+        } else {
+            OverlayUtils.requestOverlayPermission(application)
+        }
     }
 
     override fun onPause() {
