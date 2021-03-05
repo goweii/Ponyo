@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
-    android:minHeight="@dimen/ponyo_button_height"
     android:paddingTop="@dimen/ponyo_margin_small"
     android:paddingBottom="@dimen/ponyo_margin_small"
     android:background="@drawable/ponyo_item_bg">

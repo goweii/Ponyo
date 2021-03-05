@@ -2,8 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:minHeight="@dimen/ponyo_button_height">
+    android:layout_height="wrap_content">
 
     <per.goweii.ponyo.panel.AutoSplitTextView
         android:id="@+id/tv_sp_key"
