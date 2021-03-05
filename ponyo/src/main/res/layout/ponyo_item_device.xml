@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="@dimen/ponyo_button_height"
+    android:orientation="horizontal"
+    android:background="@drawable/ponyo_item_bg"
+    android:paddingStart="@dimen/ponyo_margin_def"
+    android:paddingTop="@dimen/ponyo_margin_small"
+    android:paddingEnd="@dimen/ponyo_margin_def"
+    android:paddingBottom="@dimen/ponyo_margin_small"
+    tools:showIn="@layout/ponyo_panel_device">
+
+    <TextView
+        android:id="@+id/ponyo_item_device_tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical|start"
+        android:textColor="@color/ponyo_colorOnSurface"
+        android:textSize="@dimen/ponyo_text_size_btn"
+        tools:text="唯一标识" />
+
+    <TextView
+        android:id="@+id/ponyo_item_device_tv_value"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="@dimen/ponyo_margin_def"
+        android:gravity="center_vertical|end"
+        android:textColor="@color/ponyo_colorOnSurface"
+        android:textSize="@dimen/ponyo_text_size_btn"
+        tools:text="378sf6d87s6dfs5f868686safd" />
+
+</LinearLayout>

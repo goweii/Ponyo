@@ -7,25 +7,30 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import per.goweii.ponyo.R
+import java.io.File
 
 class FileNaviAdapter(
-    private val onClickItem: (fileEntity: FileManager.FileEntity) -> Unit
+    private val onClickItem: (File) -> Unit
 ) : RecyclerView.Adapter<FileNaviAdapter.FileHolder>() {
 
-    private val datas by lazy { mutableListOf<FileManager.FileEntity>() }
+    private val datas by lazy { mutableListOf<File>() }
 
-    fun get(): MutableList<FileManager.FileEntity> {
+    fun get(): MutableList<File> {
         return datas
     }
 
-    fun set(data: List<FileManager.FileEntity>) {
+    fun getLast(): File? {
+        return datas.lastOrNull()
+    }
+
+    fun set(data: List<File>) {
         datas.clear()
         datas.addAll(data)
         notifyDataSetChanged()
     }
 
-    fun add(fileEntity: FileManager.FileEntity) {
-        datas.add(fileEntity)
+    fun add(file: File) {
+        datas.add(file)
         notifyDataSetChanged()
     }
 
@@ -51,8 +56,8 @@ class FileNaviAdapter(
         }
 
         @SuppressLint("SetTextI18n")
-        fun bindData(data: FileManager.FileEntity) {
-            tv_dir_name.text = "${data.name}/"
+        fun bindData(data: File) {
+            tv_dir_name.text = "${data.name(tv_dir_name.context)}/"
         }
     }
 

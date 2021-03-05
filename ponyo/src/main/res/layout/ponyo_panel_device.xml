@@ -2,27 +2,13 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    tools:background="@color/ponyo_colorBackground"
     android:layout_height="match_parent">
 
-    <HorizontalScrollView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_device"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:ignore="UselessParent">
-
-        <androidx.core.widget.NestedScrollView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/tv_device"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/ponyo_colorOnSurface"
-                android:textSize="@dimen/ponyo_text_size_device"
-                android:typeface="monospace" />
-
-        </androidx.core.widget.NestedScrollView>
-
-    </HorizontalScrollView>
+        tools:listitem="@layout/ponyo_item_device"/>
 
 </FrameLayout>

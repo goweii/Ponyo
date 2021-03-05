@@ -6,7 +6,7 @@
 
     <color name="ponyo_colorSurface">#FF222222</color>
     <color name="ponyo_colorBackground">#FF111111</color>
-    <color name="ponyo_colorBackgroundMask">#33FFFFFF</color>
+    <color name="ponyo_colorBackgroundMask">#55FFFFFF</color>
     <color name="ponyo_colorOnBackgroundMask">#EE111111</color>
     <color name="ponyo_colorOnSurface">#EEFFFFFF</color>
     <color name="ponyo_colorOnPrimary">#EE111111</color>

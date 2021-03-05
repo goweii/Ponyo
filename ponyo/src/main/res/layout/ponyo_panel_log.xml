@@ -24,7 +24,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:alpha="0.9"
-                app:cardBackgroundColor="#55ffffff"
+                app:cardBackgroundColor="@color/ponyo_colorBackgroundMask"
                 app:cardCornerRadius="@dimen/ponyo_corner_radius"
                 app:cardElevation="0dp">
 
@@ -183,7 +183,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:alpha="0.9"
-                app:cardBackgroundColor="#55ffffff"
+                app:cardBackgroundColor="@color/ponyo_colorBackgroundMask"
                 app:cardCornerRadius="@dimen/ponyo_corner_radius"
                 app:cardElevation="0dp">
 
@@ -238,7 +238,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:alpha="0.9"
-                app:cardBackgroundColor="#55ffffff"
+                app:cardBackgroundColor="@color/ponyo_colorBackgroundMask"
                 app:cardCornerRadius="@dimen/ponyo_corner_radius"
                 app:cardElevation="0dp">
 
@@ -291,7 +291,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:alpha="0.9"
-                app:cardBackgroundColor="#55ffffff"
+                app:cardBackgroundColor="@color/ponyo_colorBackgroundMask"
                 app:cardCornerRadius="@dimen/ponyo_corner_radius"
                 app:cardElevation="0dp">
 
@@ -325,7 +325,6 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_margin="@dimen/ponyo_panel_padding"
-        android:alpha="0.8"
         android:background="@drawable/ponyo_log_more_bg"
         android:gravity="center"
         android:paddingStart="10dp"

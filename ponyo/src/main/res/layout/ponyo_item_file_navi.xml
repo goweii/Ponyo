@@ -2,10 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="match_parent"
-    android:gravity="center_vertical"
-    tools:background="@color/ponyo_colorBackground"
-    tools:layout_height="wrap_content">
+    android:layout_height="@dimen/ponyo_button_height"
+    android:gravity="center_vertical">
 
     <TextView
         android:id="@+id/tv_dir_name"

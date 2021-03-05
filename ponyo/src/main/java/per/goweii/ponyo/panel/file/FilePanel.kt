@@ -1,11 +1,16 @@
 package per.goweii.ponyo.panel.file
 
 import android.view.View
-import android.widget.*
+import android.widget.LinearLayout
+import android.widget.ProgressBar
+import android.widget.ScrollView
+import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import per.goweii.ponyo.Ponyo
 import per.goweii.ponyo.R
 import per.goweii.ponyo.panel.BasePanel
+import java.io.File
 
 class FilePanel : BasePanel() {
     private val fileTabAdapter by lazy {
@@ -15,7 +20,10 @@ class FilePanel : BasePanel() {
         FileNaviAdapter { onNaviClick(it) }
     }
     private val fileNameAdapter by lazy {
-        FileNameAdapter { onNameClick(it) }
+        FileNameAdapter(
+            { onFileClick(it) },
+            { onFileLongClick(it) }
+        )
     }
     private lateinit var rv_file_tab: RecyclerView
     private lateinit var rv_file_navi: RecyclerView
@@ -68,47 +76,42 @@ class FilePanel : BasePanel() {
     override fun onVisible(firstVisible: Boolean) {
         super.onVisible(firstVisible)
         if (firstVisible) {
-            fileTabAdapter.set(mutableListOf<FileManager.FileEntity>().apply {
-                add(FileManager.getRootDataDir(context).apply {
-                    name = "内部存储"
-                })
-                add(FileManager.getRootExternalDir(context).apply {
-                    name = "外部存储"
-                })
+            fileTabAdapter.set(mutableListOf<File>().apply {
+                add(context.rootAppDir())
+                context.rootAppExternalDir()?.let { add(it) }
             })
         }
     }
 
-    private fun onTabClick(fileEntity: FileManager.FileEntity) {
-        val dataNavi = mutableListOf<FileManager.FileEntity>()
-        dataNavi.add(fileEntity)
+    private fun onTabClick(file: File) {
+        val dataNavi = mutableListOf<File>()
+        dataNavi.add(file)
         fileNaviAdapter.set(dataNavi)
         onNaviClick(dataNavi[0])
     }
 
-    private fun onNaviClick(fileEntity: FileManager.FileEntity) {
-        tv_navi_length.text = fileEntity.formatLength(context)
+    private fun onNaviClick(file: File) {
+        tv_navi_length.text = file.fullLengthFormatted(context)
         val datas = fileNaviAdapter.get()
-        val newDatas = mutableListOf<FileManager.FileEntity>()
+        val newDatas = mutableListOf<File>()
         for (data in datas) {
             newDatas.add(data)
-            if (data.path == fileEntity.path) {
+            if (data.absolutePath == file.absolutePath) {
                 break
             }
         }
         fileNaviAdapter.set(newDatas)
-        val list = FileManager.childFilesOrNull(fileEntity)
-        if (list == null) {
-            fileNameAdapter.set(emptyList())
-            return
-        }
+        val list = file.childFiles() ?: emptyList()
         fileNameAdapter.set(list)
     }
 
-    private fun onNameClick(fileEntity: FileManager.FileEntity) {
-        val list = FileManager.childFilesOrNull(fileEntity)
-        if (list == null) {
-            tv_file_str_name.text = fileEntity.name
+    private fun onFileClick(file: File) {
+        val list = file.childFiles()
+        if (list != null) {
+            fileNaviAdapter.add(file)
+            fileNameAdapter.set(list)
+        } else {
+            tv_file_str_name.text = file.name(tv_file_str_name.context)
             tv_file_str.text = ""
             ll_file_str.visibility = View.VISIBLE
             pb_file_str_loading.visibility = View.GONE
@@ -118,7 +121,7 @@ class FilePanel : BasePanel() {
                 pb_file_str_loading.visibility = View.VISIBLE
                 sv_file_str.visibility = View.GONE
                 ll_file_open.visibility = View.GONE
-                FileManager.readStrFile(fileEntity) {
+                FileManager.readStrFile(file) {
                     pb_file_str_loading.visibility = View.GONE
                     sv_file_str.visibility = View.VISIBLE
                     ll_file_open.visibility = View.GONE
@@ -126,11 +129,21 @@ class FilePanel : BasePanel() {
                 }
             }
             tv_file_open_text_by_system.setOnClickListener {
-                FileManager.openFile(context, fileEntity)
+                FileManager.openFile(context, file)
             }
-            return
         }
-        fileNaviAdapter.add(fileEntity)
-        fileNameAdapter.set(list)
+    }
+
+    private fun onFileLongClick(file: File) {
+        Ponyo.makeDialog()
+            ?.content(R.layout.ponyo_dialog_file_menu)
+            ?.bindData {
+                getView<TextView>(R.id.ponyo_dialog_file_meun_tv_delete).setOnClickListener {
+                    FileManager.deleteFile(file)
+                    fileNaviAdapter.getLast()?.let { onNaviClick(it) }
+                    dismiss()
+                }
+            }
+            ?.show()
     }
 }

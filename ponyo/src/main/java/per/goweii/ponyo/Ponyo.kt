@@ -19,7 +19,7 @@ object Ponyo : AppStack.AppLifecycleListener {
         if (this::floatManager.isInitialized) return
         Logcat.registerCatchListener(LogManager)
         Logcat.start()
-        TM.APP_STARTUP.start("application initialize")
+        TM.APP_STARTUP.start("Application onInitialize")
         TimeMonitor.registerTimeLineEndListener(TmManager)
         Crash.setCrashActivity(CrashActivity::class.java)
         AppStack.registerAppLifecycleListener(Ponyo)
@@ -36,15 +36,15 @@ object Ponyo : AppStack.AppLifecycleListener {
     }
 
     override fun onCreate() {
-        TM.APP_STARTUP.record("application created")
+        TM.APP_STARTUP.record("Application onCreate")
     }
 
     override fun onStart() {
-        TM.APP_STARTUP.record("application started")
+        TM.APP_STARTUP.record("Application onStart")
     }
 
     override fun onResume() {
-        TM.APP_STARTUP.record("application resumed")
+        TM.APP_STARTUP.record("Application onResume")
         floatManager.show()
     }
 

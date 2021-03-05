@@ -22,30 +22,44 @@ object Device {
     }
 
     override fun toString(): String {
-        return """
-            |唯一标识:$uniqueId
-            |手机制造商:$manufacturer
-            |手机品牌:$brand
-            |设备型号:$model
-            |设备名:$device
-            |安卓ID:$androidId
-            |屏幕尺寸:${size.run { "[$x,$y]" }}
-            |系统版本:Android$sysVersionName($sysVersionCode)
-            |运营商:$operatorName
-            |应用包名:$packageName
-            |应用版本名:$appVersionName
-            |应用版本号:$appVersionCode
-        """.trimMargin()
+        val sb = StringBuilder()
+        var i = 0
+        toMap().forEach {
+            if (i != 0) sb.append("\n")
+            sb.append(it.key).append(":").append(it.value)
+            i++
+        }
+        return sb.toString()
     }
 
-    val uniqueId : String
+    fun toMap(): HashMap<String, String> {
+        return LinkedHashMap<String, String>().apply {
+            put("唯一标识", uniqueId)
+            put("手机制造商", manufacturer)
+            put("手机品牌", brand)
+            put("设备型号", model)
+            put("设备名", device)
+            put("安卓ID", androidId)
+            put("屏幕尺寸", Device.size.run { "[$x,$y]" })
+            put("系统版本", "Android$sysVersionName($sysVersionCode)")
+            put("运营商", operatorName)
+            put("应用包名", packageName)
+            put("应用版本名", appVersionName)
+            put("应用版本号", "$appVersionCode")
+        }
+    }
+
+    val uniqueId: String
         get() {
             return md5("$manufacturer-$brand-$model-$device-$androidId-$size")
         }
 
     val androidId: String
         get() {
-            return Settings.System.getString(application.contentResolver, Settings.Secure.ANDROID_ID)
+            return Settings.System.getString(
+                application.contentResolver,
+                Settings.Secure.ANDROID_ID
+            )
         }
 
     val device: String
