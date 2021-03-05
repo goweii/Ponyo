@@ -51,6 +51,12 @@ class LogActivity : AppCompatActivity(), CoroutineScope by MainScope() {
             }
         }
 
+        tv_print_10.setOnClickListener {
+            for (i in 1..10) {
+                Log.d("Num", i.toString())
+            }
+        }
+
         tv_print_assert.setOnClickListener {
             launch {
                 withContext(Dispatchers.IO) {

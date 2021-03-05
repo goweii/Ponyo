@@ -1,20 +1,17 @@
 package per.goweii.ponyo.log
 
 object Logcat {
-    private val catchHandler = CatchHandler {
-        onCatchListener?.onCatch(it)
-    }
+    private val catchHandler = CatchHandler { onCatchListener?.onCatch(it) }
+    private var logcatExecutor: LogcatExecutor? = null
+    private var catchRunnable: CatchRunnable? = null
 
     private var pid: Int = android.os.Process.myPid()
     private var buffers: Array<LogCommand.Buffer> = arrayOf(LogCommand.Buffer.MAIN)
 
-    private var logcatExecutor: LogcatExecutor? = null
-    private var catchRunnable: CatchRunnable? = null
-
     private var onCatchListener: OnCatchListener? = null
 
     fun start() {
-        catchRunnable?.stop()
+        catchRunnable?.shutdown()
         val runnable = CatchRunnable(catchHandler, pid, buffers)
             .also { catchRunnable = it }
         val executor = if (logcatExecutor?.isShutdown == false) {
@@ -28,18 +25,19 @@ object Logcat {
     fun resume() {
         val executor = logcatExecutor ?: return
         val runnable = catchRunnable ?: return
-        runnable.stop()
-        runnable.copy().also {
+        if (runnable.isRunning()) return
+        runnable.shutdown()
+        catchRunnable = runnable.copy().also {
             executor.execute(it)
         }
     }
 
     fun pause() {
-        catchRunnable?.stop()
+        catchRunnable?.shutdown()
     }
 
     fun stop() {
-        catchRunnable?.stop()
+        catchRunnable?.shutdown()
         catchRunnable = null
         logcatExecutor?.shutdownNow()
         logcatExecutor = null
