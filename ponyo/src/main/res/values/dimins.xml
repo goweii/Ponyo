@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="ponyo_panel_padding">6dp</dimen>
+    <dimen name="ponyo_margin_small">8dp</dimen>
     <dimen name="ponyo_margin_def">16dp</dimen>
     <dimen name="ponyo_margin_big">32dp</dimen>
     <dimen name="ponyo_panel_padding_half">3dp</dimen>
@@ -13,6 +14,7 @@
     <dimen name="ponyo_log_checkbox_radius">9999dp</dimen>
     <dimen name="ponyo_log_checkbox_stroke_width">1dp</dimen>
     <dimen name="ponyo_text_size_btn">14sp</dimen>
+    <dimen name="ponyo_text_size_log">12sp</dimen>
     <dimen name="ponyo_text_size_tab">12sp</dimen>
     <dimen name="ponyo_text_size_tm">12sp</dimen>
     <dimen name="ponyo_text_size_appstack">12sp</dimen>

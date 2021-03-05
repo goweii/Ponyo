@@ -29,8 +29,10 @@ class LogPidAdapter(
     override fun onBindViewHolder(holder: Holder, position: Int) {
         val pidName = data[position].first
         val pid = data[position].second
-        holder.tv_name.text = "$pidName($pid)"
+        holder.tv_name.text = "$pidName"
+        holder.tv_pid.text = "$pid"
         holder.tv_name.isSelected = pid == selectedPid
+        holder.tv_pid.isSelected = pid == selectedPid
         holder.itemView.setOnClickListener {
             selectedPid = pid
             notifyDataSetChanged()
@@ -40,5 +42,6 @@ class LogPidAdapter(
 
     class Holder(view: View) : RecyclerView.ViewHolder(view) {
         val tv_name: TextView = view.findViewById(R.id.ponyo_item_pid_tv_name)
+        val tv_pid: TextView = view.findViewById(R.id.ponyo_item_pid_tv_pid)
     }
 }

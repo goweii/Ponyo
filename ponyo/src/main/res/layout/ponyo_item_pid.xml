@@ -1,20 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="@dimen/ponyo_button_height"
     android:orientation="horizontal"
     android:paddingStart="@dimen/ponyo_margin_def"
+    android:paddingTop="@dimen/ponyo_margin_small"
     android:paddingEnd="@dimen/ponyo_margin_def"
-    android:layout_height="@dimen/ponyo_item_height">
+    android:paddingBottom="@dimen/ponyo_margin_small"
+    tools:showIn="@layout/ponyo_dialog_log_pid">
 
     <TextView
         android:id="@+id/ponyo_item_pid_tv_name"
         android:layout_width="0dp"
+        android:layout_height="match_parent"
         android:layout_weight="1"
-        android:layout_height="@dimen/ponyo_item_height"
         android:gravity="center_vertical"
         android:textColor="@color/ponyo_log_pid_textcolor_selector"
-        android:textSize="12sp"
-        tools:text="per.goweii.ponyo" />
+        android:textSize="@dimen/ponyo_text_size_btn"
+        tools:text="per.goweii.ponyo.ponyo.ponyo:logcat" />
+
+    <TextView
+        android:id="@+id/ponyo_item_pid_tv_pid"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginStart="@dimen/ponyo_margin_def"
+        android:gravity="center_vertical"
+        android:textColor="@color/ponyo_log_pid_textcolor_selector"
+        android:textSize="@dimen/ponyo_text_size_btn"
+        tools:text="13545" />
 
 </LinearLayout>
