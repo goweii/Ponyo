@@ -3,5 +3,4 @@ apply plugin: 'kotlin-android'
 apply from: "../lib-android.gradle"
 
 dependencies {
-    implementation project(":ponyo-log")
 }

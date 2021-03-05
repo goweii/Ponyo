@@ -1,49 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fl_log_root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/ponyo_colorBackground"
-    android:orientation="vertical"
-    android:padding="5dp">
+    android:orientation="vertical">
 
-    <per.goweii.ponyo.panel.AutoSplitTextView
-        android:id="@+id/tv_log_time"
+    <LinearLayout
+        android:id="@+id/ll_log_simple"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:includeFontPadding="false"
-        android:alpha="0.5"
-        tools:textColor="@color/ponyo_colorLogDebug"
-        android:textSize="10sp"
-        tools:text="DEBUG 2020-05-01T08:47:39.000+0800" />
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/ponyo_panel_padding"
+        android:paddingEnd="@dimen/ponyo_panel_padding">
 
-    <per.goweii.ponyo.panel.AutoSplitTextView
-        android:id="@+id/tv_log_tag"
+        <per.goweii.ponyo.panel.AutoSplitTextView
+            android:id="@+id/tv_log_simple_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:alpha="0.5"
+            android:includeFontPadding="false"
+            android:textSize="@dimen/ponyo_text_size_log"
+            tools:text="[TAG]"
+            tools:textColor="@color/ponyo_colorLogDebug" />
+
+        <per.goweii.ponyo.panel.AutoSplitTextView
+            android:id="@+id/tv_log_simple_msg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:includeFontPadding="false"
+            android:lines="1"
+            android:maxLines="1"
+            android:textSize="@dimen/ponyo_text_size_log"
+            tools:text="this is a log this is a log this is a log this is a log this is a log"
+            tools:textColor="@color/ponyo_colorLogDebug" />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_log_total"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:includeFontPadding="false"
-        android:alpha="0.5"
-        tools:textColor="@color/ponyo_colorLogDebug"
-        android:textSize="10sp"
-        tools:text="LogTag [main]" />
+        android:orientation="vertical"
+        android:visibility="visible">
 
-    <per.goweii.ponyo.panel.AutoSplitTextView
-        android:id="@+id/tv_log_call"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:includeFontPadding="false"
-        android:alpha="0.5"
-        tools:textColor="@color/ponyo_colorLogDebug"
-        android:textSize="10sp"
-        tools:text="Activiy.onCreate(MainActivity.kt:30)" />
+        <per.goweii.ponyo.panel.AutoSplitTextView
+            android:id="@+id/tv_log_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/ponyo_panel_padding"
+            android:layout_toStartOf="@+id/v_log_line"
+            android:alpha="0.5"
+            android:includeFontPadding="false"
+            android:textSize="@dimen/ponyo_text_size_log"
+            tools:text="DEBUG/TAG 2020-05-01T08:47:39.000+0800"
+            tools:textColor="@color/ponyo_colorLogDebug" />
 
-    <per.goweii.ponyo.panel.AutoSplitTextView
-        android:id="@+id/tv_log_msg"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:includeFontPadding="false"
-        tools:textColor="@color/ponyo_colorLogDebug"
-        android:textSize="11sp"
-        tools:text="this is a log" />
+        <per.goweii.ponyo.panel.AutoSplitTextView
+            android:id="@+id/tv_log_msg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_log_header"
+            android:layout_marginStart="@dimen/ponyo_panel_padding"
+            android:layout_toStartOf="@+id/v_log_line"
+            android:includeFontPadding="false"
+            android:textSize="@dimen/ponyo_text_size_log"
+            tools:text="this is a log"
+            tools:textColor="@color/ponyo_colorLogDebug" />
 
-</LinearLayout>
+        <View
+            android:id="@+id/v_log_line"
+            android:layout_width="@dimen/ponyo_log_bg_stroke_width"
+            android:layout_height="match_parent"
+            android:layout_marginTop="1dp"
+            android:layout_marginBottom="1dp"
+            android:layout_alignTop="@+id/tv_log_header"
+            android:layout_alignBottom="@+id/tv_log_msg"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="@dimen/ponyo_panel_padding"
+            android:background="@color/ponyo_colorLogDebug" />
+
+    </RelativeLayout>
+
+</FrameLayout>

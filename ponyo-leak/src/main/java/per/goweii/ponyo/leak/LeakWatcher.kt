@@ -4,7 +4,7 @@ import android.app.Application
 import android.os.Handler
 import android.os.Looper
 import android.os.MessageQueue
-import per.goweii.ponyo.log.Ponlog
+import android.util.Log
 import java.lang.ref.ReferenceQueue
 import java.util.*
 
@@ -94,14 +94,10 @@ internal object LeakWatcher {
         val leakedObjects = leakedObjects
         leakedObjects.forEach { it.setReported() }
         Leak.leakListener?.onLeak(leakedObjects.size)
-        Ponlog.w {
-            val sb = StringBuilder()
-            sb.append("${leakedObjects.size} leaks:")
-            leakedObjects.forEach {
-                sb.append("\n- ").append(it.identity)
-            }
-            sb.toString()
-        }
+        val sb = StringBuilder()
+        sb.append("${leakedObjects.size} leaks:")
+        leakedObjects.forEach { sb.append("\n- ").append(it.identity) }
+        Log.w("Ponyo-Leak", sb.toString())
     }
 
 }

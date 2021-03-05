@@ -10,12 +10,12 @@
         android:layout_height="match_parent"
         android:background="@drawable/ponyo_rect_bg"
         android:ellipsize="end"
-        android:paddingStart="5dp"
-        android:paddingTop="3dp"
-        android:paddingEnd="5dp"
-        android:paddingBottom="3dp"
-        android:textColor="@color/ponyo_colorOnBackground"
-        android:textSize="12sp"
+        android:paddingStart="@dimen/ponyo_margin_small"
+        android:paddingTop="@dimen/ponyo_margin_small"
+        android:paddingEnd="@dimen/ponyo_margin_small"
+        android:paddingBottom="@dimen/ponyo_margin_small"
+        android:textColor="@color/ponyo_colorOnSurface"
+        android:textSize="@dimen/ponyo_text_size_sp"
         tools:text="1321321321" />
 
     <per.goweii.ponyo.panel.AutoSplitTextView
@@ -23,14 +23,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/ponyo_rect_bg"
-        android:maxLines="10"
         android:ellipsize="end"
-        android:paddingStart="5dp"
-        android:paddingTop="3dp"
-        android:paddingEnd="5dp"
-        android:paddingBottom="3dp"
-        android:textColor="@color/ponyo_colorOnBackground"
-        android:textSize="12sp"
-        tools:text="1321321321" />
+        android:maxLines="10"
+        android:paddingStart="@dimen/ponyo_margin_small"
+        android:paddingTop="@dimen/ponyo_margin_small"
+        android:paddingEnd="@dimen/ponyo_margin_small"
+        android:paddingBottom="@dimen/ponyo_margin_small"
+        android:textColor="@color/ponyo_colorOnSurface"
+        android:textSize="@dimen/ponyo_text_size_sp"
+        tools:text="asdfsadfasdfsafdsadfsafsafdasfsafdsafdsfdsafsafdasfdsadf" />
 
 </LinearLayout>

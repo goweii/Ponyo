@@ -18,8 +18,8 @@
                 android:id="@+id/tv_actistack"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/ponyo_colorOnBackground"
-                android:textSize="12sp"
+                android:textColor="@color/ponyo_colorOnSurface"
+                android:textSize="@dimen/ponyo_text_size_appstack"
                 android:typeface="monospace" />
 
         </androidx.core.widget.NestedScrollView>

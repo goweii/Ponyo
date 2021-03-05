@@ -1,8 +1,5 @@
 apply from: "../lib-android.gradle"
-apply plugin: 'kotlin-android'
 
 dependencies {
     implementation rootProject.ext.dependencies.lifecycle_process
-    implementation project(":ponyo-log")
-    implementation project(':ponyo-startup')
 }

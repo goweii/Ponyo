@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:layout_width="120dp"
     android:layout_height="wrap_content">
 
     <per.goweii.ponyo.panel.AutoSplitTextView
         android:id="@+id/tv_db_value"
-        android:layout_width="120dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/ponyo_rect_bg"
         android:maxLines="5"
         android:ellipsize="end"
-        android:paddingStart="5dp"
-        android:paddingTop="3dp"
-        android:paddingEnd="5dp"
-        android:paddingBottom="3dp"
-        android:textColor="@color/ponyo_colorOnBackground"
-        android:textSize="12sp"
+        android:paddingStart="@dimen/ponyo_margin_small"
+        android:paddingTop="@dimen/ponyo_margin_small"
+        android:paddingEnd="@dimen/ponyo_margin_small"
+        android:paddingBottom="@dimen/ponyo_margin_small"
+        android:textColor="@color/ponyo_colorOnSurface"
+        android:textSize="@dimen/ponyo_text_size_db"
         tools:text="1321321321" />
 
 </LinearLayout>

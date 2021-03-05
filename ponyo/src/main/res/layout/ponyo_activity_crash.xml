@@ -12,7 +12,7 @@
         android:layout_marginStart="15dp"
         android:gravity="center"
         android:text="出错了"
-        android:textColor="@color/ponyo_colorOnBackground"
+        android:textColor="@color/ponyo_colorOnSurface"
         android:textSize="36sp"
         android:typeface="monospace" />
 
@@ -42,7 +42,7 @@
             android:id="@+id/ponyo_crash_tv_error"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/ponyo_colorOnBackground"
+            android:textColor="@color/ponyo_colorOnSurface"
             android:textSize="12sp"
             android:typeface="monospace" />
 

@@ -4,6 +4,7 @@ import android.view.View
 import android.widget.FrameLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import per.goweii.ponyo.PanelManager
 import per.goweii.ponyo.panel.actistack.ActiStackPanel
 import per.goweii.ponyo.panel.db.DbPanel
 import per.goweii.ponyo.panel.device.DevicePanel

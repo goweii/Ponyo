@@ -1,15 +1,17 @@
 package per.goweii.ponyo
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
-import androidx.appcompat.widget.AppCompatImageView
+import android.widget.ImageView
 import kotlin.math.max
 
 /**
  * @author CuiZhen
  * @date 2020/3/29
  */
-class IconView : AppCompatImageView {
+@SuppressLint("AppCompatCustomView")
+class IconView : ImageView {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(

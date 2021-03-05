@@ -36,22 +36,13 @@
             android:id="@+id/tv_navi_length"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="1px"
-            android:layout_marginBottom="1px"
-            android:background="@color/ponyo_colorBackground"
             android:paddingStart="5dp"
-            android:paddingTop="5dp"
             android:paddingEnd="5dp"
-            android:paddingBottom="5dp"
-            android:textColor="@color/ponyo_colorOnBackground"
+            android:textColor="@color/ponyo_colorOnSurface"
             android:textSize="12sp"
             tools:text="800KB" />
 
     </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="5dp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_file_name"
@@ -67,18 +58,15 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:background="@color/ponyo_colorSurface"
         android:orientation="vertical"
         android:visibility="gone"
         tools:visibility="visible">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:background="@color/ponyo_colorDivide" />
-
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/ponyo_button_height"
+            android:background="@drawable/ponyo_item_bg"
             android:gravity="center_vertical">
 
             <per.goweii.ponyo.panel.AutoSplitTextView
@@ -92,8 +80,8 @@
                 android:paddingTop="5dp"
                 android:paddingEnd="5dp"
                 android:paddingBottom="5dp"
-                android:textColor="@color/ponyo_colorOnBackground"
-                android:textSize="12sp"
+                android:textColor="@color/ponyo_colorOnSurface"
+                android:textSize="@dimen/ponyo_text_size_file"
                 tools:text="文件名" />
 
             <per.goweii.ponyo.panel.AutoSplitTextView
@@ -105,15 +93,10 @@
                 android:paddingEnd="5dp"
                 android:paddingBottom="5dp"
                 android:text="关闭"
-                android:textColor="@color/ponyo_colorOnBackground"
-                android:textSize="12sp" />
+                android:textColor="@color/ponyo_colorOnSurface"
+                android:textSize="@dimen/ponyo_text_size_file" />
 
         </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:background="@color/ponyo_colorDivide" />
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -128,13 +111,12 @@
                     android:id="@+id/tv_file_str"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/ponyo_colorBackground"
                     android:paddingStart="5dp"
                     android:paddingTop="5dp"
                     android:paddingEnd="5dp"
                     android:paddingBottom="5dp"
-                    android:textColor="@color/ponyo_colorOnBackground"
-                    android:textSize="12sp"
+                    android:textColor="@color/ponyo_colorOnSurface"
+                    android:textSize="@dimen/ponyo_text_size_file"
                     android:typeface="monospace" />
 
             </ScrollView>
@@ -152,39 +134,34 @@
                 android:id="@+id/ll_file_open"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/ponyo_colorBackground"
                 android:gravity="center"
                 android:orientation="vertical">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="5dp"
-                    android:text="选择打开方式"
-                    android:textColor="@color/ponyo_colorOnBackground"
-                    android:textSize="15sp" />
-
-                <TextView
                     android:id="@+id/tv_file_open_text_by_self"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/ponyo_rect_bg"
+                    android:layout_height="@dimen/ponyo_button_height"
+                    android:background="@drawable/ponyo_btn_bg"
+                    android:layout_marginStart="@dimen/ponyo_margin_big"
+                    android:layout_marginEnd="@dimen/ponyo_margin_big"
+                    android:layout_marginTop="@dimen/ponyo_margin_def"
                     android:gravity="center"
-                    android:padding="5dp"
                     android:text="直接以文本打开（只读取100行）"
-                    android:textColor="@color/ponyo_colorOnBackground"
-                    android:textSize="14sp" />
+                    android:textColor="@color/ponyo_colorOnPrimary"
+                    android:textSize="@dimen/ponyo_text_size_btn" />
 
                 <TextView
                     android:id="@+id/tv_file_open_text_by_system"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/ponyo_rect_bg"
+                    android:layout_height="@dimen/ponyo_button_height"
+                    android:background="@drawable/ponyo_btn_bg"
+                    android:layout_marginStart="@dimen/ponyo_margin_big"
+                    android:layout_marginEnd="@dimen/ponyo_margin_big"
+                    android:layout_marginTop="@dimen/ponyo_margin_def"
                     android:gravity="center"
-                    android:padding="5dp"
                     android:text="在第三方打开文本"
-                    android:textColor="@color/ponyo_colorOnBackground"
-                    android:textSize="14sp" />
+                    android:textColor="@color/ponyo_colorOnPrimary"
+                    android:textSize="@dimen/ponyo_text_size_btn" />
 
             </LinearLayout>
 

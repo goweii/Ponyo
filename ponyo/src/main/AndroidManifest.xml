@@ -1,7 +1,19 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="per.goweii.ponyo">
+
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
     <application>
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <meta-data
+                android:name="per.goweii.ponyo.PonyoInitializer"
+                android:value="@string/androidx_startup" />
+        </provider>
         <provider
             android:name=".panel.file.FileOpenProvider"
             android:authorities="${applicationId}.panel.file.fileopenprovider"
@@ -11,6 +23,7 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/ponyo_file_paths" />
         </provider>
+
         <activity
             android:name=".CrashActivity"
             android:process=":ponyocrash"

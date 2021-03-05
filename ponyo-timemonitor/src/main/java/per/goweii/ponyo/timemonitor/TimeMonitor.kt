@@ -1,6 +1,6 @@
 package per.goweii.ponyo.timemonitor
 
-import per.goweii.ponyo.log.Ponlog
+import android.util.Log
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.max
 
@@ -55,7 +55,7 @@ object TimeMonitor {
         timeMap.remove(tagLine)?.let { list ->
             val info = formatTimeLine(tagLine, list)
             if (timeLineEndListeners.isEmpty()) {
-                Ponlog.d { info }
+                Log.d("Ponyo-TimeMonitor", info)
             } else {
                 timeLineEndListeners.forEach {
                     it.onEnd(tagLine, info)
@@ -80,8 +80,7 @@ object TimeMonitor {
             l_step_cost = max(l_step_cost, it.stepCost.toString().length)
         }
         val sb = StringBuilder()
-            .append("One time monitor has ended and all records printed as follows")
-            .append("\n+").append("-".r(n = l_tag + l_timestamp + l_total_cost + l_step_cost + 3))
+            .append("+").append("-".r(n = l_tag + l_timestamp + l_total_cost + l_step_cost + 3))
             .append("+")
             .append("\n|")
             .append(" ".r(tagLine, l_tag + l_timestamp + l_total_cost + l_step_cost + 3, ""))

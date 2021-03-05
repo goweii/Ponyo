@@ -7,19 +7,20 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import per.goweii.ponyo.R
+import java.io.File
 
 class FileTabAdapter(
-    private val onClickItem: (fileEntity: FileManager.FileEntity) -> Unit
+    private val onClickItem: (File) -> Unit
 ) : RecyclerView.Adapter<FileTabAdapter.FileHolder>() {
 
     private val datas by lazy { mutableListOf<Selectable>() }
 
     data class Selectable(
         var selected: Boolean,
-        val fileEntity: FileManager.FileEntity
+        val file: File
     )
 
-    fun set(data: List<FileManager.FileEntity>) {
+    fun set(data: List<File>) {
         datas.clear()
         val newDatas = mutableListOf<Selectable>()
         data.forEach {
@@ -51,13 +52,13 @@ class FileTabAdapter(
                 val selectable = datas[adapterPosition]
                 selectable.selected = true
                 notifyDataSetChanged()
-                onClickItem(selectable.fileEntity)
+                onClickItem(selectable.file)
             }
         }
 
         @SuppressLint("SetTextI18n")
         fun bindData(data: Selectable) {
-            tv_name.text = data.fileEntity.name
+            tv_name.text = data.file.name(tv_name.context)
             tv_name.isSelected = data.selected
         }
     }

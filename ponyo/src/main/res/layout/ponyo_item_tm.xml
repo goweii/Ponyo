@@ -1,43 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/ponyo_colorBackground"
+    android:layout_marginStart="@dimen/ponyo_panel_padding"
+    android:layout_marginTop="@dimen/ponyo_panel_padding_half"
+    android:layout_marginEnd="@dimen/ponyo_panel_padding"
+    android:layout_marginBottom="@dimen/ponyo_panel_padding_half"
     android:orientation="vertical"
-    android:paddingTop="5dp"
-    android:paddingBottom="5dp">
+    android:paddingTop="@dimen/ponyo_panel_padding_half"
+    android:paddingBottom="@dimen/ponyo_panel_padding_half"
+    app:cardBackgroundColor="@color/ponyo_colorSurface">
 
     <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/tv_tm_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="5dp">
-
-            <TextView
-                android:id="@+id/tv_tm_tag"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/ponyo_colorOnBackground"
-                android:textSize="12sp"
-                android:typeface="monospace"
-                tools:text="Tag" />
-
-            <TextView
-                android:id="@+id/tv_tm_info"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/ponyo_colorOnBackground"
-                android:textSize="12sp"
-                android:typeface="monospace"
-                tools:text="Info" />
-
-        </LinearLayout>
+            android:padding="@dimen/ponyo_panel_padding"
+            android:textColor="@color/ponyo_colorOnSurface"
+            android:textSize="@dimen/ponyo_text_size_tm"
+            android:typeface="monospace"
+            tools:text="Info" />
 
     </HorizontalScrollView>
 
-</FrameLayout>
+</androidx.cardview.widget.CardView>

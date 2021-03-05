@@ -1,9 +1,0 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="per.goweii.ponyo.startup">
-    <application>
-        <provider
-            android:authorities="${applicationId}.ponyo.startup.startupprovider"
-            android:name="per.goweii.ponyo.startup.StartupProvider"
-            android:exported="false" />
-    </application>
-</manifest>

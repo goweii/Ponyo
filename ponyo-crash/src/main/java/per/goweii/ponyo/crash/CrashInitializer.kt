@@ -1,15 +1,16 @@
 package per.goweii.ponyo.crash
 
 import android.app.Application
-import per.goweii.ponyo.startup.Initializer
-import per.goweii.ponyo.startup.annotation.Startup
+import android.content.Context
+import androidx.startup.Initializer
+import java.util.*
 
-@Startup(priority = Startup.PRIORITY_BASIC)
-internal class CrashInitializer: Initializer {
+class CrashInitializer : Initializer<Unit> {
+    override fun create(context: Context) {
+        Crash.initialize(context as Application)
+    }
 
-    override fun initialize(application: Application, isMainProcess: Boolean) {
-        if (isMainProcess) {
-            Crash.initialize(application)
-        }
+    override fun dependencies(): MutableList<Class<out Initializer<*>>> {
+        return Collections.emptyList()
     }
 }

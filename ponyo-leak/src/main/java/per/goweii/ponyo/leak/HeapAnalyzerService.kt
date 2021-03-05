@@ -4,12 +4,11 @@ import android.app.IntentService
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.os.Debug
+import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import per.goweii.ponyo.leak.HeapAnalysisFormatter.toFormatString
-import per.goweii.ponyo.log.Ponlog
 import shark.*
 import java.io.File
 
@@ -49,7 +48,7 @@ class HeapAnalyzerService : IntentService("HeapAnalyzerService"), CoroutineScope
             onAnalysis(it)
         }
         if (Leak.analyzeListener == null) {
-            Ponlog.w { heapAnalysis.toFormatString() }
+            Log.w("Ponyo-Leak", heapAnalysis.toFormatString())
         } else {
             launch {
                 Leak.analyzeListener?.onAnalysis(heapAnalysis.toFormatString())

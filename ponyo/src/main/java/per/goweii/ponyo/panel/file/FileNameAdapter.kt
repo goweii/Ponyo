@@ -7,14 +7,16 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import per.goweii.ponyo.R
+import java.io.File
 
 class FileNameAdapter(
-    private val onClickItem: (fileEntity: FileManager.FileEntity) -> Unit
+    private val onClickItem: (File) -> Unit,
+    private val onLongClickItem: (File) -> Unit
 ) : RecyclerView.Adapter<FileNameAdapter.FileHolder>() {
 
-    private val datas by lazy { mutableListOf<FileManager.FileEntity>() }
+    private val datas by lazy { mutableListOf<File>() }
 
-    fun set(data: List<FileManager.FileEntity>) {
+    fun set(data: List<File>) {
         datas.clear()
         datas.addAll(data)
         notifyDataSetChanged()
@@ -41,12 +43,16 @@ class FileNameAdapter(
             itemView.setOnClickListener {
                 onClickItem(datas[adapterPosition])
             }
+            itemView.setOnLongClickListener {
+                onLongClickItem(datas[adapterPosition])
+                return@setOnLongClickListener true
+            }
         }
 
         @SuppressLint("SetTextI18n")
-        fun bindData(data: FileManager.FileEntity) {
-            tv_file_name.text = "${data.name}${if (data.isDir) "/" else ""}"
-            tv_file_length.text = data.formatLength(tv_file_length.context)
+        fun bindData(data: File) {
+            tv_file_name.text = "${data.name(tv_file_name.context)}${if (data.isDirectory) "/" else ""}"
+            tv_file_length.text = data.fullLengthFormatted(tv_file_length.context)
         }
     }
 

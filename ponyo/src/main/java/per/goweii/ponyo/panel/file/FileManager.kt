@@ -4,62 +4,13 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
-import android.text.format.Formatter
 import androidx.core.content.FileProvider
 import kotlinx.coroutines.*
-import per.goweii.ponyo.log.Ponlog
 import java.io.BufferedReader
 import java.io.File
 import java.io.FileReader
 
 object FileManager : CoroutineScope by MainScope() {
-
-    data class FileEntity(
-        var name: String,
-        val path: String,
-        val isDir: Boolean,
-        val length: Long
-    ) {
-        fun formatLength(context: Context): String {
-            return Formatter.formatFileSize(context, length)
-        }
-    }
-
-    private fun File.size(): Long {
-        if (!isDirectory) {
-            return length()
-        }
-        var size: Long = 0
-        listFiles()?.forEach {
-            size += it.size()
-        }
-        return size
-    }
-
-    fun getRootDataDir(context: Context): FileEntity {
-        val filesDir = context.cacheDir
-        val dataDir = File(filesDir.parent!!)
-        return FileEntity(dataDir.name, dataDir.absolutePath, dataDir.isDirectory, dataDir.size())
-    }
-
-    fun getRootExternalDir(context: Context): FileEntity {
-        val filesDir = context.externalCacheDir
-        val dataDir = File(filesDir?.parent ?: "")
-        return FileEntity(dataDir.name, dataDir.absolutePath, dataDir.isDirectory, dataDir.size())
-    }
-
-    fun childFilesOrNull(fileEntity: FileEntity): List<FileEntity>? {
-        val file = File(fileEntity.path)
-        if (!file.isDirectory) {
-            return null
-        }
-        val list = arrayListOf<FileEntity>()
-        file.listFiles()?.forEach {
-            list.add(FileEntity(it.name, it.absolutePath, it.isDirectory, it.size()))
-        }
-        return list
-    }
-
     private var readStrFileDeferred: Deferred<String>? = null
     private var reader: BufferedReader? = null
     private var readerClosed = false
@@ -74,13 +25,13 @@ object FileManager : CoroutineScope by MainScope() {
         readStrFileDeferred = null
     }
 
-    fun readStrFile(fileEntity: FileEntity, callback: (str: String) -> Unit) {
+    fun readStrFile(file: File, callback: (str: String) -> Unit) {
         launch {
             closeStrFile()
             readerClosed = false
             readStrFileDeferred = async(Dispatchers.IO) {
                 try {
-                    val br = BufferedReader(FileReader(fileEntity.path)).also { reader = it }
+                    val br = BufferedReader(FileReader(file.absolutePath)).also { reader = it }
                     val sb = StringBuilder()
                     var s: String?
                     var lines = 0
@@ -106,12 +57,11 @@ object FileManager : CoroutineScope by MainScope() {
         }
     }
 
-    fun openFile(context: Context, fileEntity: FileEntity) {
+    fun openFile(context: Context, file: File) {
         try {
             val intent = Intent()
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             intent.action = Intent.ACTION_VIEW
-            val file = File(fileEntity.path)
             val uri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 FileProvider.getUriForFile(context, FileOpenProvider.authorities(context), file)
             } else {
@@ -122,7 +72,32 @@ object FileManager : CoroutineScope by MainScope() {
             context.startActivity(intent)
             Intent.createChooser(intent, "请选择对应的软件打开该文件")
         } catch (e: Exception) {
-            Ponlog.e { e }
+            e.printStackTrace()
+        }
+    }
+
+    fun deleteFile(file: File): Boolean {
+        fun deleteFile(file: File): Boolean {
+            if (!file.exists()) return true
+            if (!file.isFile) return false
+            return file.delete()
+        }
+        fun deleteDir(file: File): Boolean {
+            if (!file.exists()) return true
+            if (!file.isDirectory) return false
+            file.listFiles().forEach {
+                if (it.isFile) {
+                    if (!deleteFile(it)) return false
+                } else if (it.isDirectory) {
+                    if (!deleteDir(it)) return false
+                }
+            }
+            return file.delete()
+        }
+        return if (file.isDirectory) {
+            deleteDir(file)
+        } else {
+            deleteFile(file)
         }
     }
 

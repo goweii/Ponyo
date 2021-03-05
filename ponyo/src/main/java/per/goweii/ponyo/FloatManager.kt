@@ -8,6 +8,7 @@ import android.util.TypedValue
 import android.view.*
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.Scroller
 import android.widget.TextView
@@ -21,7 +22,7 @@ import kotlin.math.min
  * @author CuiZhen
  * @date 2020/3/28
  */
-@SuppressLint("ClickableViewAccessibility")
+@SuppressLint("ClickableViewAccessibility", "InflateParams")
 internal class FloatManager(private val context: Context) : GestureDetector.OnGestureListener,
     ViewTreeObserver.OnGlobalLayoutListener {
 
@@ -30,7 +31,7 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
     }
 
     private enum class Mode {
-        ICON, ASSERT, ERROR, WARN
+        ICON, ASSERT, ERROR
     }
 
     private val panelManager: PanelManager by lazy {
@@ -82,15 +83,15 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
             clipToOutline = true
             outlineProvider = object : ViewOutlineProvider() {
                 override fun getOutline(view: View, outline: Outline) {
-                    val radius = (min(
-                        this@FloatManager.floatView.measuredWidth,
-                        this@FloatManager.floatView.measuredHeight
-                    ).toFloat() / 2F)
+                    val radius = min(
+                        view.width,
+                        view.height
+                    ).toFloat() / 2F
                     outline.setRoundRect(
                         0,
                         0,
-                        this@FloatManager.floatView.measuredWidth,
-                        this@FloatManager.floatView.measuredHeight,
+                        view.width,
+                        view.height,
                         radius
                     )
                 }
@@ -133,6 +134,12 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
 
     fun isShown() = this.floatView.isAttachedToWindow
 
+    fun isExpand() = panelManager.isShown()
+
+    fun getDialogContainer(): FrameLayout {
+        return panelManager.dialogView
+    }
+
     fun expand() {
         panelManager.show(currRectF())
     }
@@ -143,6 +150,8 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
 
     fun toggle() {
         panelManager.toggle(currRectF())
+        detach()
+        floatView.post { attach() }
     }
 
     fun show() {
@@ -175,6 +184,7 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
         try {
             windowManager.addView(this.floatView, windowParams)
         } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
@@ -184,6 +194,7 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
         try {
             windowManager.removeView(this.floatView)
         } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
@@ -192,6 +203,7 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
         try {
             windowManager.updateViewLayout(this.floatView, windowParams)
         } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
@@ -385,7 +397,6 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
 
     private var unreadAssertCount = 0
     private var unreadErrorCount = 0
-    private var unreadWarnCount = 0
 
     fun setLogAssertCount(count: Int) {
         unreadAssertCount = count
@@ -405,20 +416,8 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
         }
     }
 
-    fun setLogWarnCount(count: Int) {
-        unreadWarnCount = count
-        if (unreadWarnCount > 0) {
-            switchToMode(Mode.WARN, ignoreLastSwitchTime = true)
-        } else {
-            switchToIconIfNeeded()
-        }
-    }
-
     private fun switchToIconIfNeeded() {
-        if (unreadAssertCount == 0 &&
-            unreadErrorCount == 0 &&
-            unreadWarnCount == 0
-        ) {
+        if (unreadAssertCount == 0 && unreadErrorCount == 0) {
             floatView.removeCallbacks(autoSwitchModeRunnable)
             switchToMode(Mode.ICON, ignoreAnimRunning = true, ignoreLastSwitchTime = true)
         }
@@ -508,18 +507,6 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
                     )
                 }
             }
-            Mode.WARN -> {
-                logView.text = formatCount(unreadWarnCount)
-                if (!onlyChangeCount) {
-                    logView.visibility = View.VISIBLE
-                    logView.setBackgroundColor(
-                        ContextCompat.getColor(
-                            context,
-                            R.color.ponyo_colorLogWarn
-                        )
-                    )
-                }
-            }
         }
     }
 
@@ -546,13 +533,6 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
                             Mode.ERROR.next()
                         }
                     }
-                    Mode.WARN -> {
-                        if (unreadWarnCount > 0) {
-                            Mode.WARN
-                        } else {
-                            Mode.WARN.next()
-                        }
-                    }
                 }
             }
             return currMode.next()
@@ -564,7 +544,6 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
                 Mode.ICON -> 5000L
                 Mode.ASSERT -> 3000L
                 Mode.ERROR -> 3000L
-                Mode.WARN -> 3000L
             }
         }
 

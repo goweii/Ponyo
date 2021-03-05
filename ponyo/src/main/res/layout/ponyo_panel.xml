@@ -1,27 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <per.goweii.ponyo.FloatRootView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <FrameLayout
-        android:id="@+id/wrapper"
+        android:id="@+id/panel"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
         android:background="@color/ponyo_colorBackground"
-        tools:ignore="UselessParent">
-
-        <per.goweii.ponyo.IconView
-            android:id="@+id/icon"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:scaleType="centerCrop"
-            tools:ignore="ContentDescription" />
+        android:layout_height="match_parent">
 
         <LinearLayout
-            android:id="@+id/panel"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
@@ -50,6 +39,11 @@
                 tools:orientation="horizontal" />
 
         </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/dialog"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
     </FrameLayout>
 
