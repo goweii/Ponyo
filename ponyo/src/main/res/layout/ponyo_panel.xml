@@ -1,68 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <per.goweii.ponyo.FloatRootView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <FrameLayout
-        android:id="@+id/wrapper"
+        android:id="@+id/panel"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
         android:background="@color/ponyo_colorBackground"
-        tools:ignore="UselessParent">
+        android:layout_height="match_parent">
 
-        <FrameLayout
-            android:id="@+id/panel"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <FrameLayout
-                    android:id="@+id/panel_container"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1px"
-                    android:background="@color/ponyo_colorDivide" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/panel_tab"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clipToPadding="false"
-                    android:padding="5dp"
-                    tools:itemCount="5"
-                    tools:layoutManager="LinearLayoutManager"
-                    tools:listitem="@layout/ponyo_item_tab"
-                    tools:orientation="horizontal" />
-
-            </LinearLayout>
-
-            <FrameLayout
-                android:id="@+id/dialog"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-        </FrameLayout>
-
-        <per.goweii.ponyo.IconView
-            android:id="@+id/icon"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:scaleType="centerCrop"
-            android:visibility="invisible"
-            tools:ignore="ContentDescription"
-            tools:src="@drawable/ponyo_ic_float" />
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:id="@+id/panel_container"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@color/ponyo_colorDivide" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/panel_tab"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:padding="5dp"
+                tools:itemCount="5"
+                tools:layoutManager="LinearLayoutManager"
+                tools:listitem="@layout/ponyo_item_tab"
+                tools:orientation="horizontal" />
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/dialog"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
     </FrameLayout>
 

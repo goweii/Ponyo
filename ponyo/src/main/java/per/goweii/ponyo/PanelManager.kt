@@ -77,8 +77,8 @@ internal class PanelManager(private val context: Context) {
             })
         }
     }
-    private val floatWrapper: View by lazy {
-        floatView.findViewById<View>(R.id.wrapper).apply {
+    private val floatPanel: View by lazy {
+        floatView.findViewById<View>(R.id.panel).apply {
             clipToOutline = true
             outlineProvider = object : ViewOutlineProvider() {
                 override fun getOutline(view: View, outline: Outline) {
@@ -88,15 +88,6 @@ internal class PanelManager(private val context: Context) {
                     outline.setRoundRect(0, 0, view.width, view.height, radius)
                 }
             }
-        }
-    }
-    private val floatIcon: ImageView by lazy {
-        floatView.findViewById<ImageView>(R.id.icon).apply {
-            scaleType = ImageView.ScaleType.CENTER_CROP
-        }
-    }
-    private val floatPanel: View by lazy {
-        floatView.findViewById<View>(R.id.panel).apply {
             fitsSystemWindows = true
             val panelContainer = findViewById<FrameLayout>(R.id.panel_container)
             val panelTab = findViewById<RecyclerView>(R.id.panel_tab)
@@ -112,7 +103,6 @@ internal class PanelManager(private val context: Context) {
     private var state: State = State.FLOAT
 
     fun icon(resId: Int) = apply {
-        floatIcon.setImageResource(resId)
     }
 
     fun onAttachListener(listener: (() -> Unit)? = null) {
@@ -204,18 +194,14 @@ internal class PanelManager(private val context: Context) {
 
     private fun attach() {
         if (isShown()) return
-        floatView.visibility = View.INVISIBLE
-        floatIcon.visibility = View.INVISIBLE
         floatPanel.visibility = View.INVISIBLE
         floatView.doOnPreDraw {
             panelRectF.set(
                 0F, 0F,
-                floatView.width.toFloat(),
-                floatView.height.toFloat()
+                floatPanel.width.toFloat(),
+                floatPanel.height.toFloat()
             )
             updateToRectF(floatRectF)
-            floatIcon.visibility = View.INVISIBLE
-            floatPanel.visibility = View.INVISIBLE
             startZooming2Panel()
         }
         try {
@@ -227,7 +213,7 @@ internal class PanelManager(private val context: Context) {
 
     private fun detach() {
         if (!isShown()) return
-        floatView.visibility = View.INVISIBLE
+        floatPanel.visibility = View.INVISIBLE
         try {
             windowManager.removeView(floatView)
         } catch (e: Exception) {
@@ -245,8 +231,6 @@ internal class PanelManager(private val context: Context) {
             duration = 400L
             doOnStart {
                 floatView.visibility = View.VISIBLE
-                floatIcon.visibility = View.VISIBLE
-                floatPanel.visibility = View.VISIBLE
             }
             doOnEnd {
                 when (state) {
@@ -296,7 +280,6 @@ internal class PanelManager(private val context: Context) {
     }
 
     private fun startZooming2Panel() {
-        floatIcon.visibility = View.INVISIBLE
         floatPanel.visibility = View.VISIBLE
         state = State.PANEL
         startRectF.set(toRectF())
@@ -305,14 +288,11 @@ internal class PanelManager(private val context: Context) {
     }
 
     private fun endZooming2Panel() {
-        floatView.visibility = View.VISIBLE
-        floatIcon.visibility = View.INVISIBLE
         floatPanel.visibility = View.VISIBLE
         PanelProvider.onShow()
     }
 
     private fun startZooming2Float() {
-        floatIcon.visibility = View.INVISIBLE
         floatPanel.visibility = View.VISIBLE
         state = State.FLOAT
         startRectF.set(toRectF())
@@ -322,21 +302,19 @@ internal class PanelManager(private val context: Context) {
     }
 
     private fun endZooming2Float() {
-        floatView.visibility = View.INVISIBLE
-        floatIcon.visibility = View.VISIBLE
         floatPanel.visibility = View.INVISIBLE
         detach()
     }
 
     private fun toRectF(): RectF = RectF(
-        floatWrapper.left.toFloat(),
-        floatWrapper.top.toFloat(),
-        floatWrapper.right.toFloat(),
-        floatWrapper.bottom.toFloat()
+        floatPanel.left.toFloat(),
+        floatPanel.top.toFloat(),
+        floatPanel.right.toFloat(),
+        floatPanel.bottom.toFloat()
     )
 
     private fun updateToRectF(rectF: RectF) {
-        floatWrapper.layout(
+        floatPanel.layout(
             rectF.left.toInt(),
             rectF.top.toInt(),
             rectF.right.toInt(),
@@ -344,12 +322,9 @@ internal class PanelManager(private val context: Context) {
         )
         val sx = rectF.width() / panelRectF.width()
         val sy = rectF.height() / panelRectF.height()
-        val s = min(sx, sy)
         floatPanel.pivotX = 0F
         floatPanel.pivotY = 0F
         floatPanel.scaleX = sx
         floatPanel.scaleY = sy
-        floatIcon.scaleX = s
-        floatIcon.scaleY = s
     }
 }
