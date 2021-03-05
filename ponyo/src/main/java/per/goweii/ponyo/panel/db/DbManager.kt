@@ -84,7 +84,7 @@ object DbManager {
         } catch (e: Exception) {
         }
         try {
-            val value = cursor.getShort(columnIndex)
+            val value = cursor.getLong(columnIndex)
             return value.toString()
         } catch (e: Exception) {
         }
@@ -94,17 +94,17 @@ object DbManager {
         } catch (e: Exception) {
         }
         try {
-            val value = cursor.getLong(columnIndex)
-            return value.toString()
-        } catch (e: Exception) {
-        }
-        try {
-            val value = cursor.getFloat(columnIndex)
+            val value = cursor.getShort(columnIndex)
             return value.toString()
         } catch (e: Exception) {
         }
         try {
             val value = cursor.getDouble(columnIndex)
+            return value.toString()
+        } catch (e: Exception) {
+        }
+        try {
+            val value = cursor.getFloat(columnIndex)
             return value.toString()
         } catch (e: Exception) {
         }
