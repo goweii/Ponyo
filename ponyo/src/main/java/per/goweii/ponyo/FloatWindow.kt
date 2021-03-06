@@ -118,11 +118,11 @@ internal class FloatWindow(private val context: Context) : GestureDetector.OnGes
     }
 
     fun collapse() {
-        panelWindow.dismiss(currRectF())
+        panelWindow.dismiss()
     }
 
     fun toggle() {
-        panelWindow.toggle(currRectF())
+        panelWindow.toggle()
         detach()
         rootView.post { attach() }
     }
@@ -186,7 +186,6 @@ internal class FloatWindow(private val context: Context) : GestureDetector.OnGes
         if (inx || iny) {
             windowParams.x = x.range(fenceRect.left.toInt(), fenceRect.right.toInt())
             windowParams.y = y.range(fenceRect.top.toInt(), fenceRect.bottom.toInt())
-            panelWindow.update(currRectF())
         } else {
             scroller.abortAnimation()
         }
@@ -331,6 +330,7 @@ internal class FloatWindow(private val context: Context) : GestureDetector.OnGes
     }
 
     override fun onGlobalLayout() {
+        panelWindow.update(currRectF())
         computeScroll()
     }
 

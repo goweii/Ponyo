@@ -11,12 +11,11 @@ import android.view.*
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.FrameLayout
 import androidx.core.animation.doOnEnd
-import androidx.core.animation.doOnStart
-import androidx.core.view.doOnAttach
 import androidx.core.view.doOnLayout
 import androidx.viewpager.widget.ViewPager
 import net.lucode.hackware.magicindicator.MagicIndicator
 import per.goweii.ponyo.panel.PanelManager
+import per.goweii.ponyo.widget.FloatRootView
 import kotlin.math.min
 import kotlin.math.pow
 
@@ -52,7 +51,8 @@ internal class PanelWindow(context: Context) {
         x = 0
         y = 0
     }
-    private val floatView: View = LayoutInflater.from(context).inflate(R.layout.ponyo_panel, null)
+    private val floatView: FloatRootView =
+        LayoutInflater.from(context).inflate(R.layout.ponyo_panel, null) as FloatRootView
     private val floatPanel: View = floatView.findViewById(R.id.panel)
     private val pager: ViewPager = floatView.findViewById(R.id.vp_panel)
     private val indicator: MagicIndicator = floatView.findViewById(R.id.indicator)
@@ -65,6 +65,8 @@ internal class PanelWindow(context: Context) {
 
     init {
         floatView.apply {
+            isFocusable = true
+            isFocusableInTouchMode = true
             systemUiVisibility = systemUiVisibility or
                     View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
             addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
@@ -76,6 +78,17 @@ internal class PanelWindow(context: Context) {
                 override fun onViewDetachedFromWindow(v: View?) {
                     onDetachListener?.invoke()
                     PanelManager.onDetach()
+                }
+            })
+            setCallback(object : FloatRootView.Callback {
+                override fun dispatchKeyEvent(event: KeyEvent): Boolean {
+                    if (event.keyCode == KeyEvent.KEYCODE_BACK) {
+                        if (event.action == KeyEvent.ACTION_UP) {
+                            dismiss()
+                            return true
+                        }
+                    }
+                    return false
                 }
             })
         }
@@ -138,8 +151,7 @@ internal class PanelWindow(context: Context) {
         return floatView.isAttachedToWindow
     }
 
-    fun dismiss(rectF: RectF?) {
-        rectF?.let { floatRectF.set(it) }
+    fun dismiss() {
         if (floatView.isAttachedToWindow) {
             if (zoomAnimator.isRunning) {
                 when (state) {
@@ -156,8 +168,7 @@ internal class PanelWindow(context: Context) {
         }
     }
 
-    fun toggle(rectF: RectF?) {
-        rectF?.let { floatRectF.set(it) }
+    fun toggle() {
         if (!floatView.isAttachedToWindow) {
             attach()
         } else {
@@ -195,10 +206,6 @@ internal class PanelWindow(context: Context) {
 
     private fun attach() {
         if (isShown()) return
-        floatPanel.visibility = View.INVISIBLE
-        floatView.doOnAttach {
-            floatPanel.visibility = View.INVISIBLE
-        }
         floatView.doOnLayout {
             panelRectF.set(
                 0F, 0F,
@@ -206,7 +213,6 @@ internal class PanelWindow(context: Context) {
                 floatView.height.toFloat()
             )
             updateToRectF(floatRectF)
-            floatPanel.visibility = View.INVISIBLE
             startZooming2Panel()
         }
         try {
@@ -233,9 +239,6 @@ internal class PanelWindow(context: Context) {
         ValueAnimator.ofFloat(0F, 1F).apply {
             interpolator = AccelerateDecelerateInterpolator()
             duration = 400L
-            doOnStart {
-                floatPanel.visibility = View.VISIBLE
-            }
             doOnEnd {
                 when (state) {
                     State.FLOAT -> {
@@ -282,7 +285,6 @@ internal class PanelWindow(context: Context) {
     }
 
     private fun startZooming2Panel() {
-        floatPanel.visibility = View.VISIBLE
         state = State.PANEL
         startRectF.set(toRectF())
         endRectF.set(panelRectF)
@@ -290,12 +292,10 @@ internal class PanelWindow(context: Context) {
     }
 
     private fun endZooming2Panel() {
-        floatPanel.visibility = View.VISIBLE
         PanelManager.onShow()
     }
 
     private fun startZooming2Float() {
-        floatPanel.visibility = View.VISIBLE
         state = State.FLOAT
         startRectF.set(toRectF())
         endRectF.set(floatRectF)
@@ -304,7 +304,6 @@ internal class PanelWindow(context: Context) {
     }
 
     private fun endZooming2Float() {
-        floatPanel.visibility = View.INVISIBLE
         detach()
     }
 
