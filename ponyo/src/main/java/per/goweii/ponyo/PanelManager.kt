@@ -8,6 +8,7 @@ import android.graphics.PixelFormat
 import android.graphics.RectF
 import android.os.Build
 import android.view.*
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
 import androidx.core.animation.doOnEnd
@@ -201,7 +202,9 @@ internal class PanelManager(private val context: Context) {
     private fun attach() {
         if (isShown()) return
         floatPanel.visibility = View.INVISIBLE
+        floatPanel.alpha = 0F
         floatView.doOnAttach {
+            floatPanel.alpha = 0F
             floatPanel.visibility = View.INVISIBLE
         }
         floatView.doOnLayout {
@@ -212,6 +215,7 @@ internal class PanelManager(private val context: Context) {
             )
             updateToRectF(floatRectF)
             floatPanel.visibility = View.INVISIBLE
+            floatPanel.alpha = 0F
             startZooming2Panel()
         }
         try {
@@ -236,10 +240,11 @@ internal class PanelManager(private val context: Context) {
 
     private val zoomAnimator: ValueAnimator by lazy {
         ValueAnimator.ofFloat(0F, 1F).apply {
-            interpolator = DecelerateInterpolator()
+            interpolator = AccelerateDecelerateInterpolator()
             duration = 400L
             doOnStart {
                 floatPanel.visibility = View.VISIBLE
+                floatPanel.alpha = 1F
             }
             doOnEnd {
                 when (state) {
@@ -276,8 +281,8 @@ internal class PanelManager(private val context: Context) {
         val currValue = RectF(l, t, l + w, t + h)
         updateToRectF(currValue)
         val p = (currValue.width() - floatRectF.width()) / (panelRectF.width() - floatRectF.width())
-        val minp = 0.2F
-        val maxp = 0.5F
+        val minp = 0.0F
+        val maxp = 0.3F
         val np = when {
             p < minp -> 0F
             p > maxp -> 1F
@@ -288,6 +293,7 @@ internal class PanelManager(private val context: Context) {
 
     private fun startZooming2Panel() {
         floatPanel.visibility = View.VISIBLE
+        floatPanel.alpha = 1F
         state = State.PANEL
         startRectF.set(toRectF())
         endRectF.set(panelRectF)
@@ -296,11 +302,13 @@ internal class PanelManager(private val context: Context) {
 
     private fun endZooming2Panel() {
         floatPanel.visibility = View.VISIBLE
+        floatPanel.alpha = 1F
         PanelProvider.onShow()
     }
 
     private fun startZooming2Float() {
         floatPanel.visibility = View.VISIBLE
+        floatPanel.alpha = 1F
         state = State.FLOAT
         startRectF.set(toRectF())
         endRectF.set(floatRectF)
@@ -310,6 +318,7 @@ internal class PanelManager(private val context: Context) {
 
     private fun endZooming2Float() {
         floatPanel.visibility = View.INVISIBLE
+        floatPanel.alpha = 0F
         detach()
     }
 

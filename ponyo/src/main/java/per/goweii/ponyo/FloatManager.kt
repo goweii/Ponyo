@@ -13,6 +13,7 @@ import android.widget.ImageView
 import android.widget.Scroller
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.view.doOnDetach
 import kotlin.math.abs
 import kotlin.math.atan2
 import kotlin.math.max
@@ -364,7 +365,7 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
     private fun runVisible() {
         floatView.removeCallbacks(visibleRunnable)
         floatView.removeCallbacks(invisibleRunnable)
-        floatView.postDelayed(visibleRunnable, ViewConfiguration.getTapTimeout().toLong())
+        floatView.postDelayed(visibleRunnable, 0)
     }
 
     private fun runInvisible() {
