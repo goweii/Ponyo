@@ -18,15 +18,19 @@ class PanelPagerAdapter(
         val panel = panels[position]
         val view = panel.createView(container)
         container.addView(view)
-        panel.dispatchViewCreated()
         return view
+    }
+
+    override fun setPrimaryItem(container: ViewGroup, position: Int, any: Any) {
+        super.setPrimaryItem(container, position, any)
+        panels.forEachIndexed { index, panel -> panel.dispatchVisibleChanged(index == position) }
     }
 
     override fun destroyItem(container: ViewGroup, position: Int, any: Any) {
         val panel = panels[position]
-        val view = panel.view
+        val view = any as View
         container.removeView(view)
-        panel.dispatchDestroyView()
+        panel.destroyView()
     }
 
     override fun getPageTitle(position: Int): CharSequence {

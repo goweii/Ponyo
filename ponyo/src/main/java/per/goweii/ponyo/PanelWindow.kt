@@ -318,14 +318,11 @@ internal class PanelWindow(context: Context) {
     private val View.scaledHeight: Int get() = (scaleY * height).toInt()
 
     private fun updateToRectF(rectF: RectF) {
-        floatPanel.layout(
-            rectF.left.toInt(),
-            rectF.top.toInt(),
-            rectF.left.toInt() + panelRectF.width().toInt(),
-            rectF.top.toInt() + panelRectF.height().toInt()
-        )
+        floatPanel.left = rectF.left.toInt()
+        floatPanel.top = rectF.top.toInt()
+        floatPanel.right = rectF.left.toInt() + panelRectF.width().toInt()
+        floatPanel.bottom = rectF.top.toInt() + panelRectF.height().toInt()
         val sx = rectF.width() / panelRectF.width()
-        val sy = rectF.height() / panelRectF.height()
         floatPanel.pivotX = 0F
         floatPanel.pivotY = 0F
         floatPanel.scaleX = sx

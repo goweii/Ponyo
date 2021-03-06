@@ -9,7 +9,6 @@ import android.widget.*
 import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import per.goweii.ponyo.Ponyo
 import per.goweii.ponyo.R
 import per.goweii.ponyo.log.LogLine
 import per.goweii.ponyo.log.Logcat

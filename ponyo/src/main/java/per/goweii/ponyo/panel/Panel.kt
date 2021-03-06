@@ -14,6 +14,10 @@ abstract class Panel {
         private set
     var isAttached = false
         private set
+    var isFirstAttach = true
+        private set
+    var isVisible = false
+        private set
     var isFirstVisible = true
         private set
 
@@ -23,51 +27,96 @@ abstract class Panel {
 
     fun createView(container: ViewGroup): View {
         view = LayoutInflater.from(container.context).inflate(getLayoutRes(), container, false)
-        isCreated = true
+        dispatchCreated()
         return view
     }
 
-    fun dispatchDestroyView() {
-        dispatchInvisible()
-        isCreated = false
-        onDestroy(view)
+    fun destroyView() {
+        dispatchDestroy()
     }
 
     open fun onCreated(view: View) {}
+
+    open fun onAttached(view: View) {}
 
     open fun onVisible(view: View) {}
 
     open fun onInvisible(view: View) {}
 
+    open fun onDetached(view: View) {}
+
     open fun onDestroy(view: View) {}
 
-    fun dispatchAttach() {
-        isAttached = true
-        dispatchVisible()
-    }
-
-    fun dispatchViewCreated() {
+    private fun dispatchCreated() {
+        if (isCreated) return
+        isCreated = true
         onCreated(view)
-        dispatchVisible()
+        if (!isAttached) return
+        onAttached(view)
+        isFirstAttach = false
+        if (!isVisible) return
+        onVisible(view)
+        isFirstVisible = false
     }
 
-    fun dispatchDetach() {
-        dispatchInvisible()
-        isAttached = false
+    fun dispatchAttach() {
+        if (isAttached) return
+        isAttached = true
+        if (!isCreated) return
+        onAttached(view)
+        isFirstAttach = false
+        if (!isVisible) return
+        onVisible(view)
+        isFirstVisible = false
     }
 
     private fun dispatchVisible() {
-        if (isCreated && isAttached) {
-            onVisible(view)
-            if (isFirstVisible) {
-                isFirstVisible = false
+        if (isVisible) return
+        if (!isCreated) return
+        if (!isAttached) return
+        isVisible = true
+        onVisible(view)
+        isFirstVisible = false
+    }
+
+    private fun dispatchDestroy() {
+        if (!isCreated) return
+        if (isAttached) {
+            if (isVisible) {
+                isVisible = false
+                onInvisible(view)
             }
+            isAttached = false
+            onDetached(view)
         }
+        isCreated = false
+        onDestroy(view)
+    }
+
+    fun dispatchDetach() {
+        if (!isCreated) return
+        if (!isAttached) return
+        if (isVisible) {
+            isVisible = false
+            onInvisible(view)
+        }
+        isAttached = false
+        onDetached(view)
     }
 
     private fun dispatchInvisible() {
-        if (isCreated && isAttached) {
-            onInvisible(view)
+        if (!isCreated) return
+        if (!isAttached) return
+        if (!isVisible) return
+        isVisible = false
+        onInvisible(view)
+    }
+
+    fun dispatchVisibleChanged(visible: Boolean) {
+        if (visible) {
+            dispatchVisible()
+        } else {
+            dispatchInvisible()
         }
     }
 
