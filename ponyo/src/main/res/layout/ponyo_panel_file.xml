@@ -32,7 +32,7 @@
             tools:layoutManager="LinearLayoutManager"
             tools:listitem="@layout/ponyo_item_file_navi" />
 
-        <per.goweii.ponyo.panel.AutoSplitTextView
+        <per.goweii.ponyo.widget.AutoSplitTextView
             android:id="@+id/tv_navi_length"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -69,7 +69,7 @@
             android:background="@drawable/ponyo_item_bg"
             android:gravity="center_vertical">
 
-            <per.goweii.ponyo.panel.AutoSplitTextView
+            <per.goweii.ponyo.widget.AutoSplitTextView
                 android:id="@+id/tv_file_str_name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -84,7 +84,7 @@
                 android:textSize="@dimen/ponyo_text_size_file"
                 tools:text="文件名" />
 
-            <per.goweii.ponyo.panel.AutoSplitTextView
+            <per.goweii.ponyo.widget.AutoSplitTextView
                 android:id="@+id/tv_file_str_close"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

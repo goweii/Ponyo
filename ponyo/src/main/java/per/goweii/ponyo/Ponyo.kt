@@ -5,6 +5,8 @@ import per.goweii.ponyo.appstack.AppStack
 import per.goweii.ponyo.crash.Crash
 import per.goweii.ponyo.dialog.FrameDialog
 import per.goweii.ponyo.log.Logcat
+import per.goweii.ponyo.panel.Panel
+import per.goweii.ponyo.panel.PanelManager
 import per.goweii.ponyo.panel.actistack.ActiStackManager
 import per.goweii.ponyo.panel.log.LogManager
 import per.goweii.ponyo.panel.tm.TM
@@ -12,11 +14,11 @@ import per.goweii.ponyo.panel.tm.TmManager
 import per.goweii.ponyo.timemonitor.TimeMonitor
 
 object Ponyo : AppStack.AppLifecycleListener {
-    private lateinit var floatManager: FloatManager
-    private lateinit var application: Application
+    lateinit var application: Application private set
+    private var floatWindow: FloatWindow? = null
 
     fun initialize(application: Application) {
-        if (this::floatManager.isInitialized) return
+        if (this::application.isInitialized) return
         this.application = application
         Logcat.registerCatchListener(LogManager)
         Logcat.start()
@@ -26,18 +28,15 @@ object Ponyo : AppStack.AppLifecycleListener {
         AppStack.registerAppLifecycleListener(Ponyo)
         AppStack.activityStack.registerActivityLifecycleListener(TmManager)
         AppStack.activityStack.registerStackUpdateListener(ActiStackManager)
-        floatManager = FloatManager(application)
     }
 
-    fun makeDialog(): FrameDialog? {
-        if (!this::floatManager.isInitialized) return null
-        if (!floatManager.isShown()) return null
-        if (!floatManager.isExpand()) return null
-        return FrameDialog.with(floatManager.getDialogContainer())
+    fun addPanel(panel: Panel) {
+        PanelManager.addPanel(panel)
     }
 
     override fun onCreate() {
         TM.APP_STARTUP.record("Application onCreate")
+        floatWindow = FloatWindow(Ponyo.application)
     }
 
     override fun onStart() {
@@ -47,14 +46,14 @@ object Ponyo : AppStack.AppLifecycleListener {
     override fun onResume() {
         TM.APP_STARTUP.record("Application onResume")
         if (OverlayUtils.canOverlay(application)) {
-            floatManager.show()
+            floatWindow?.show()
         } else {
             OverlayUtils.requestOverlayPermission(application)
         }
     }
 
     override fun onPause() {
-        floatManager.dismiss()
+        floatWindow?.dismiss()
     }
 
     override fun onStop() {
@@ -64,10 +63,10 @@ object Ponyo : AppStack.AppLifecycleListener {
     }
 
     internal fun onLoggerAssert(count: Int) {
-        floatManager.setLogAssertCount(count)
+        floatWindow?.setLogAssertCount(count)
     }
 
     internal fun onLoggerError(count: Int) {
-        floatManager.setLogErrorCount(count)
+        floatWindow?.setLogErrorCount(count)
     }
 }

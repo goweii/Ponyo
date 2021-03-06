@@ -315,6 +315,7 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/ll_tab"
         android:clipToPadding="false"
+        android:paddingBottom="@dimen/ponyo_panel_padding"
         tools:itemCount="20"
         tools:listitem="@layout/ponyo_item_log" />
 

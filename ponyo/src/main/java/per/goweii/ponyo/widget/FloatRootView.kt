@@ -1,4 +1,4 @@
-package per.goweii.ponyo
+package per.goweii.ponyo.widget
 
 import android.content.Context
 import android.util.AttributeSet

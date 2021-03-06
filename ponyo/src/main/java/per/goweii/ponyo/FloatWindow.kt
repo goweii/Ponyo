@@ -12,19 +12,13 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.Scroller
 import android.widget.TextView
-import androidx.core.content.ContextCompat
-import androidx.core.view.doOnDetach
 import kotlin.math.abs
 import kotlin.math.atan2
 import kotlin.math.max
 import kotlin.math.min
 
-/**
- * @author CuiZhen
- * @date 2020/3/28
- */
 @SuppressLint("ClickableViewAccessibility", "InflateParams")
-internal class FloatManager(private val context: Context) : GestureDetector.OnGestureListener,
+internal class FloatWindow(private val context: Context) : GestureDetector.OnGestureListener,
     ViewTreeObserver.OnGlobalLayoutListener {
 
     private enum class State {
@@ -35,9 +29,7 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
         ICON, ASSERT, ERROR
     }
 
-    private val panelManager: PanelManager by lazy {
-        PanelManager(context)
-    }
+    private val panelWindow: PanelWindow = PanelWindow(context)
     private val fenceRect: RectF by lazy {
         val rect = Rect()
         windowManager.defaultDisplay.getRectSize(rect)
@@ -79,8 +71,26 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
     }
     private val dragPath: Path = Path()
 
-    private val floatView: View by lazy {
-        LayoutInflater.from(context).inflate(R.layout.ponyo_float, null).apply {
+    private val rootView: View = LayoutInflater.from(context).inflate(R.layout.ponyo_float, null)
+    private val iconView: ImageView = rootView.findViewById(R.id.ponyo_iv_icon)
+    private val logView: TextView = rootView.findViewById(R.id.ponyo_tv_log)
+
+    private var state: State = State.FLOAT
+    private var dragStartX = 0f
+    private var dragStartY = 0f
+    private var dragStartEventX = 0f
+    private var dragStartEventY = 0f
+
+    private val visibleRunnable = Runnable { toVisible() }
+    private val invisibleRunnable = Runnable { toInvisible() }
+
+    private var currMode = Mode.ICON
+    private var lastSwitchModeTime = 0L
+    private var switchModeAnimRunning = false
+    private val autoSwitchModeRunnable = Runnable { autoSwitchMode() }
+
+    init {
+        rootView.apply {
             clipToOutline = true
             outlineProvider = object : ViewOutlineProvider() {
                 override fun getOutline(view: View, outline: Outline) {
@@ -98,47 +108,23 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
             }
         }
     }
-    private val iconView: ImageView by lazy {
-        floatView.findViewById<ImageView>(R.id.ponyo_iv_icon)
-    }
-    private val logView: TextView by lazy {
-        floatView.findViewById<TextView>(R.id.ponyo_tv_log)
-    }
 
-    private var state: State = State.FLOAT
-    private var dragStartX = 0f
-    private var dragStartY = 0f
-    private var dragStartEventX = 0f
-    private var dragStartEventY = 0f
+    fun isShown() = this.rootView.isAttachedToWindow
 
-    private val visibleRunnable = Runnable { toVisible() }
-    private val invisibleRunnable = Runnable { toInvisible() }
-
-    private var currMode = Mode.ICON
-    private var lastSwitchModeTime = 0L
-    private var switchModeAnimRunning = false
-    private val autoSwitchModeRunnable = Runnable { autoSwitchMode() }
-
-    fun isShown() = this.floatView.isAttachedToWindow
-
-    fun isExpand() = panelManager.isShown()
-
-    fun getDialogContainer(): FrameLayout {
-        return panelManager.dialogView
-    }
+    fun isExpand() = panelWindow.isShown()
 
     fun expand() {
-        panelManager.show(currRectF())
+        panelWindow.show(currRectF())
     }
 
     fun collapse() {
-        panelManager.dismiss(currRectF())
+        panelWindow.dismiss(currRectF())
     }
 
     fun toggle() {
-        panelManager.toggle(currRectF())
+        panelWindow.toggle(currRectF())
         detach()
-        floatView.post { attach() }
+        rootView.post { attach() }
     }
 
     fun show() {
@@ -146,9 +132,9 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
     }
 
     fun dismiss() {
-        if (panelManager.isShown()) {
-            panelManager.onDetachListener {
-                panelManager.onDetachListener(null)
+        if (panelWindow.isShown()) {
+            panelWindow.onDetachListener {
+                panelWindow.onDetachListener(null)
                 detach()
             }
             collapse()
@@ -159,17 +145,17 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
 
     private fun attach() {
         if (isShown()) return
-        floatView.viewTreeObserver.addOnGlobalLayoutListener(this)
-        floatView.viewTreeObserver.addOnPreDrawListener(object :
+        rootView.viewTreeObserver.addOnGlobalLayoutListener(this)
+        rootView.viewTreeObserver.addOnPreDrawListener(object :
             ViewTreeObserver.OnPreDrawListener {
             override fun onPreDraw(): Boolean {
-                floatView.viewTreeObserver.removeOnPreDrawListener(this)
+                rootView.viewTreeObserver.removeOnPreDrawListener(this)
                 runInvisible()
                 return true
             }
         })
         try {
-            windowManager.addView(this.floatView, windowParams)
+            windowManager.addView(this.rootView, windowParams)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -177,9 +163,9 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
 
     private fun detach() {
         if (!isShown()) return
-        floatView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+        rootView.viewTreeObserver.removeOnGlobalLayoutListener(this)
         try {
-            windowManager.removeView(this.floatView)
+            windowManager.removeView(this.rootView)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -188,7 +174,7 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
     private fun update() {
         if (!isShown()) return
         try {
-            windowManager.updateViewLayout(this.floatView, windowParams)
+            windowManager.updateViewLayout(this.rootView, windowParams)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -200,7 +186,7 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
         if (inx || iny) {
             windowParams.x = x.range(fenceRect.left.toInt(), fenceRect.right.toInt())
             windowParams.y = y.range(fenceRect.top.toInt(), fenceRect.bottom.toInt())
-            panelManager.update(currRectF())
+            panelWindow.update(currRectF())
         } else {
             scroller.abortAnimation()
         }
@@ -311,13 +297,13 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
     private fun onDragEnd(velocityX: Float, velocityY: Float) {
         val startX: Float = windowParams.x.toFloat()
         val startY: Float = windowParams.y.toFloat()
-        val startCenterX = startX + this.floatView.width / 2f
-        val startCenterY = startY + this.floatView.height / 2f
+        val startCenterX = startX + this.rootView.width / 2f
+        val startCenterY = startY + this.rootView.height / 2f
         val endX: Float
         endX = if (startCenterX < fenceRect.width() / 2f) {
             0f
         } else {
-            fenceRect.width() - this.floatView.width.toFloat()
+            fenceRect.width() - this.rootView.width.toFloat()
         }
         val endY: Float
         endY = if (velocityX == 0f && velocityY == 8f) {
@@ -363,23 +349,23 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
     }
 
     private fun runVisible() {
-        floatView.removeCallbacks(visibleRunnable)
-        floatView.removeCallbacks(invisibleRunnable)
-        floatView.postDelayed(visibleRunnable, 0)
+        rootView.removeCallbacks(visibleRunnable)
+        rootView.removeCallbacks(invisibleRunnable)
+        rootView.postDelayed(visibleRunnable, 0)
     }
 
     private fun runInvisible() {
-        floatView.removeCallbacks(visibleRunnable)
-        floatView.removeCallbacks(invisibleRunnable)
-        floatView.postDelayed(invisibleRunnable, 3000)
+        rootView.removeCallbacks(visibleRunnable)
+        rootView.removeCallbacks(invisibleRunnable)
+        rootView.postDelayed(invisibleRunnable, 3000)
     }
 
     private fun toVisible() {
-        floatView.animate().alpha(1F).start()
+        rootView.animate().alpha(1F).start()
     }
 
     private fun toInvisible() {
-        floatView.animate().alpha(0.6F).start()
+        rootView.animate().alpha(0.6F).start()
     }
 
     private var unreadAssertCount = 0
@@ -405,7 +391,7 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
 
     private fun switchToIconIfNeeded() {
         if (unreadAssertCount == 0 && unreadErrorCount == 0) {
-            floatView.removeCallbacks(autoSwitchModeRunnable)
+            rootView.removeCallbacks(autoSwitchModeRunnable)
             switchToMode(Mode.ICON, ignoreAnimRunning = true, ignoreLastSwitchTime = true)
         }
     }
@@ -432,16 +418,16 @@ internal class FloatManager(private val context: Context) : GestureDetector.OnGe
         }
         lastSwitchModeTime = currTime
         currMode = mode
-        floatView.removeCallbacks(autoSwitchModeRunnable)
-        floatView.postDelayed(autoSwitchModeRunnable, delay)
+        rootView.removeCallbacks(autoSwitchModeRunnable)
+        rootView.postDelayed(autoSwitchModeRunnable, delay)
         switchModeAnimRunning = true
-        floatView.animate()
+        rootView.animate()
             .setInterpolator(AccelerateInterpolator())
             .setDuration(100)
             .scaleX(0F)
             .withEndAction {
                 switchToModeImmediately(false)
-                floatView.animate()
+                rootView.animate()
                     .setInterpolator(DecelerateInterpolator())
                     .setDuration(100)
                     .scaleX(1F)

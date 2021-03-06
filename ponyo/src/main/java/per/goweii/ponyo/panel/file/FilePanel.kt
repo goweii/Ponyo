@@ -9,10 +9,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import per.goweii.ponyo.Ponyo
 import per.goweii.ponyo.R
-import per.goweii.ponyo.panel.BasePanel
+import per.goweii.ponyo.panel.Panel
 import java.io.File
 
-class FilePanel : BasePanel() {
+class FilePanel : Panel() {
     private val fileTabAdapter by lazy {
         FileTabAdapter { onTabClick(it) }
     }
@@ -39,11 +39,11 @@ class FilePanel : BasePanel() {
     private lateinit var tv_file_open_text_by_self: TextView
     private lateinit var tv_file_open_text_by_system: TextView
 
-    override fun getPanelLayoutRes(): Int = R.layout.ponyo_panel_file
+    override fun getLayoutRes(): Int = R.layout.ponyo_panel_file
 
     override fun getPanelName(): String = "文件"
 
-    override fun onPanelViewCreated(view: View) {
+    override fun onCreated(view: View) {
         rv_file_tab = view.findViewById(R.id.rv_file_tab)
         rv_file_navi = view.findViewById(R.id.rv_file_navi)
         tv_navi_length = view.findViewById(R.id.tv_navi_length)
@@ -58,7 +58,7 @@ class FilePanel : BasePanel() {
         tv_file_open_text_by_self = view.findViewById(R.id.tv_file_open_text_by_self)
         tv_file_open_text_by_system = view.findViewById(R.id.tv_file_open_text_by_system)
         rv_file_tab.layoutManager =
-            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
         rv_file_tab.adapter = fileTabAdapter
         tv_file_str_close.setOnClickListener {
             ll_file_str.visibility = View.GONE
@@ -66,19 +66,19 @@ class FilePanel : BasePanel() {
             FileManager.closeStrFile()
         }
         rv_file_navi.layoutManager =
-            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
         rv_file_navi.adapter = fileNaviAdapter
         rv_file_name.layoutManager =
-            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            LinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
         rv_file_name.adapter = fileNameAdapter
     }
 
-    override fun onVisible(firstVisible: Boolean) {
-        super.onVisible(firstVisible)
-        if (firstVisible) {
+    override fun onVisible(view: View) {
+        super.onVisible(view)
+        if (isFirstVisible) {
             fileTabAdapter.set(mutableListOf<File>().apply {
-                add(context.rootAppDir())
-                context.rootAppExternalDir()?.let { add(it) }
+                add(view.context.rootAppDir())
+                view.context.rootAppExternalDir()?.let { add(it) }
             })
         }
     }
@@ -135,7 +135,7 @@ class FilePanel : BasePanel() {
     }
 
     private fun onFileLongClick(file: File) {
-        Ponyo.makeDialog()
+        makeDialog()
             ?.content(R.layout.ponyo_dialog_file_menu)
             ?.bindData {
                 getView<TextView>(R.id.ponyo_dialog_file_meun_tv_delete).setOnClickListener {

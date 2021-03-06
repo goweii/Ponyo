@@ -8,7 +8,7 @@
     android:paddingBottom="@dimen/ponyo_margin_small"
     android:background="@drawable/ponyo_item_bg">
 
-    <per.goweii.ponyo.panel.AutoSplitTextView
+    <per.goweii.ponyo.widget.AutoSplitTextView
         android:id="@+id/tv_file_name"
         android:layout_width="0dp"
         android:layout_weight="1"
@@ -21,7 +21,7 @@
         android:textSize="@dimen/ponyo_text_size_file"
         tools:text="132132132113213213211321321321132132132113213213211321321321" />
 
-    <per.goweii.ponyo.panel.AutoSplitTextView
+    <per.goweii.ponyo.widget.AutoSplitTextView
         android:id="@+id/tv_file_length"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

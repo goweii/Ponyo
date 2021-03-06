@@ -4,33 +4,34 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import per.goweii.ponyo.R
-import per.goweii.ponyo.panel.BasePanel
+import per.goweii.ponyo.panel.Panel
 
-class SpPanel : BasePanel() {
+class SpPanel : Panel() {
 
     private val spAdapter by lazy { SpAdapter() }
     private val spNameAdapter by lazy {
         SpNameAdapter { selectSp(it) }
     }
-    private lateinit var rv_sp_name: RecyclerView
-    private lateinit var rv_sp: RecyclerView
+    private var rv_sp_name: RecyclerView? = null
+    private var rv_sp: RecyclerView? = null
 
-    override fun getPanelLayoutRes(): Int = R.layout.ponyo_panel_sp
+    override fun getLayoutRes(): Int = R.layout.ponyo_panel_sp
 
     override fun getPanelName(): String = "首选项"
 
-    override fun onPanelViewCreated(view: View) {
+    override fun onCreated(view: View) {
         rv_sp_name = view.findViewById(R.id.rv_sp_name)
         rv_sp = view.findViewById(R.id.rv_sp)
-        rv_sp_name.layoutManager =
-            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        rv_sp_name.adapter = spNameAdapter
-        rv_sp.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        rv_sp.adapter = spAdapter
+        rv_sp_name?.layoutManager =
+            LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
+        rv_sp_name?.adapter = spNameAdapter
+        rv_sp?.layoutManager =
+            LinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
+        rv_sp?.adapter = spAdapter
     }
 
-    override fun onVisible(firstVisible: Boolean) {
-        super.onVisible(firstVisible)
+    override fun onVisible(view: View) {
+        super.onVisible(view)
         var selected: String? = null
         spNameAdapter.get().forEach {
             if (it.selected) {
@@ -53,9 +54,6 @@ class SpPanel : BasePanel() {
         if (selectIndex == -1) {
             selectSp(null)
         }
-    }
-
-    override fun onGone() {
     }
 
     private fun selectSp(spName: String?) {

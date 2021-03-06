@@ -3,10 +3,11 @@ apply from: "../lib-android.gradle"
 dependencies {
     implementation rootProject.ext.dependencies.recyclerview
     implementation rootProject.ext.dependencies.cardview
-    api project(':ponyo-logcat')
-    api project(":ponyo-timemonitor")
-    api project(':ponyo-appstack')
-    api project(':ponyo-crash')
-    api project(':ponyo-device')
-    api project(':ponyo-leak')
+    implementation 'com.github.hackware1993:MagicIndicator:1.7.0'
+    implementation project(':ponyo-logcat')
+    implementation project(":ponyo-timemonitor")
+    implementation project(':ponyo-appstack')
+    implementation project(':ponyo-crash')
+    implementation project(':ponyo-device')
+    implementation project(':ponyo-leak')
 }

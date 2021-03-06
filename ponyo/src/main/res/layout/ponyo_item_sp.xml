@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <per.goweii.ponyo.panel.AutoSplitTextView
+    <per.goweii.ponyo.widget.AutoSplitTextView
         android:id="@+id/tv_sp_key"
         android:layout_width="120dp"
         android:layout_height="match_parent"
@@ -18,7 +18,7 @@
         android:textSize="@dimen/ponyo_text_size_sp"
         tools:text="1321321321" />
 
-    <per.goweii.ponyo.panel.AutoSplitTextView
+    <per.goweii.ponyo.widget.AutoSplitTextView
         android:id="@+id/tv_sp_value"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

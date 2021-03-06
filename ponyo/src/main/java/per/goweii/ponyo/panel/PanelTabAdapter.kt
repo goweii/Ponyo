@@ -15,10 +15,10 @@ class PanelTabAdapter(
 
     data class Selectable(
         var selected: Boolean,
-        val panel: IPanel
+        val panel: Panel
     )
 
-    fun set(data: List<IPanel>) {
+    fun set(data: List<Panel>) {
         datas.clear()
         val newDatas = mutableListOf<Selectable>()
         data.forEach {

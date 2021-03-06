@@ -15,7 +15,7 @@
         android:paddingStart="@dimen/ponyo_panel_padding"
         android:paddingEnd="@dimen/ponyo_panel_padding">
 
-        <per.goweii.ponyo.panel.AutoSplitTextView
+        <per.goweii.ponyo.widget.AutoSplitTextView
             android:id="@+id/tv_log_simple_header"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -25,7 +25,7 @@
             tools:text="[TAG]"
             tools:textColor="@color/ponyo_colorLogDebug" />
 
-        <per.goweii.ponyo.panel.AutoSplitTextView
+        <per.goweii.ponyo.widget.AutoSplitTextView
             android:id="@+id/tv_log_simple_msg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -46,7 +46,7 @@
         android:orientation="vertical"
         android:visibility="visible">
 
-        <per.goweii.ponyo.panel.AutoSplitTextView
+        <per.goweii.ponyo.widget.AutoSplitTextView
             android:id="@+id/tv_log_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -58,7 +58,7 @@
             tools:text="DEBUG/TAG 2020-05-01T08:47:39.000+0800"
             tools:textColor="@color/ponyo_colorLogDebug" />
 
-        <per.goweii.ponyo.panel.AutoSplitTextView
+        <per.goweii.ponyo.widget.AutoSplitTextView
             android:id="@+id/tv_log_msg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -16,7 +16,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-            <per.goweii.ponyo.panel.AutoSplitTextView
+            <per.goweii.ponyo.widget.AutoSplitTextView
                 android:id="@+id/tv_activity_stack_log"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />

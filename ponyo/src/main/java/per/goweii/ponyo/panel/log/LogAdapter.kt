@@ -106,27 +106,13 @@ class LogAdapter : RecyclerView.Adapter<LogAdapter.LogHolder>() {
         @SuppressLint("SetTextI18n")
         fun bindData(data: LogLine) {
             val color = when (data.level) {
-                Log.ASSERT -> {
-                    itemView.context.resources.getColor(R.color.ponyo_colorLogAssert)
-                }
-                Log.ERROR -> {
-                    itemView.context.resources.getColor(R.color.ponyo_colorLogError)
-                }
-                Log.WARN -> {
-                    itemView.context.resources.getColor(R.color.ponyo_colorLogWarn)
-                }
-                Log.INFO -> {
-                    itemView.context.resources.getColor(R.color.ponyo_colorLogInfo)
-                }
-                Log.DEBUG -> {
-                    itemView.context.resources.getColor(R.color.ponyo_colorLogDebug)
-                }
-                Log.VERBOSE -> {
-                    itemView.context.resources.getColor(R.color.ponyo_colorLogVisible)
-                }
-                else -> {
-                    itemView.context.resources.getColor(R.color.ponyo_colorLogVisible)
-                }
+                Log.ASSERT -> itemView.context.resources.getColor(R.color.ponyo_colorLogAssert)
+                Log.ERROR -> itemView.context.resources.getColor(R.color.ponyo_colorLogError)
+                Log.WARN -> itemView.context.resources.getColor(R.color.ponyo_colorLogWarn)
+                Log.INFO -> itemView.context.resources.getColor(R.color.ponyo_colorLogInfo)
+                Log.DEBUG -> itemView.context.resources.getColor(R.color.ponyo_colorLogDebug)
+                Log.VERBOSE -> itemView.context.resources.getColor(R.color.ponyo_colorLogVisible)
+                else -> itemView.context.resources.getColor(R.color.ponyo_colorLogVisible)
             }
             if (data.isExpanded) {
                 ll_log_simple.visibility = View.GONE

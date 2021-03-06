@@ -4,10 +4,9 @@ import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
 import android.widget.*
+import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import per.goweii.ponyo.Ponyo
@@ -15,9 +14,9 @@ import per.goweii.ponyo.R
 import per.goweii.ponyo.log.LogLine
 import per.goweii.ponyo.log.Logcat
 import per.goweii.ponyo.log.PidUtils
-import per.goweii.ponyo.panel.BasePanel
+import per.goweii.ponyo.panel.Panel
 
-class LogPanel : BasePanel() {
+class LogPanel : Panel() {
     private var rv_log: RecyclerView? = null
     private var et_tag: EditText? = null
     private var et_search: EditText? = null
@@ -34,12 +33,12 @@ class LogPanel : BasePanel() {
     private var iv_search_clear: ImageView? = null
     private var ll_pid: LinearLayout? = null
 
-    override fun getPanelLayoutRes(): Int = R.layout.ponyo_panel_log
+    override fun getLayoutRes(): Int = R.layout.ponyo_panel_log
 
     override fun getPanelName(): String = "日志"
 
     @SuppressLint("SetTextI18n")
-    override fun onPanelViewCreated(view: View) {
+    override fun onCreated(view: View) {
         rv_log = view.findViewById(R.id.rv_log)
         cb_a = view.findViewById(R.id.cb_a)
         cb_e = view.findViewById(R.id.cb_e)
@@ -66,19 +65,16 @@ class LogPanel : BasePanel() {
         }
     }
 
-    override fun onVisible(firstVisible: Boolean) {
-        super.onVisible(firstVisible)
-        if (firstVisible) {
+    override fun onVisible(view: View) {
+        super.onVisible(view)
+        LogManager.clearUnreadCount()
+        if (isFirstVisible) {
             rv_log?.post { LogManager.scrollBottom() }
         }
-        LogManager.clearUnreadCount()
-    }
-
-    override fun onGone() {
     }
 
     private fun initListener() {
-        val listener = CompoundButton.OnCheckedChangeListener { buttonView, isChecked ->
+        val listener = CompoundButton.OnCheckedChangeListener { _, _ ->
             LogManager.notifyLevel(
                 cb_a?.isChecked ?: false,
                 cb_e?.isChecked ?: false,
@@ -93,28 +89,12 @@ class LogPanel : BasePanel() {
         cb_d?.setOnCheckedChangeListener(listener)
         cb_i?.setOnCheckedChangeListener(listener)
         cb_v?.setOnCheckedChangeListener(listener)
-        et_tag?.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            }
-
-            override fun afterTextChanged(s: Editable) {
-                LogManager.notifyTag(s.toString())
-            }
-        })
-        et_search?.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            }
-
-            override fun afterTextChanged(s: Editable) {
-                LogManager.notifySearch(s.toString())
-            }
-        })
+        et_tag?.doAfterTextChanged {
+            LogManager.notifyTag(it?.toString() ?: "")
+        }
+        et_search?.doAfterTextChanged {
+            LogManager.notifySearch(it?.toString() ?: "")
+        }
         iv_clear?.setOnClickListener {
             LogManager.clear()
         }
@@ -130,7 +110,7 @@ class LogPanel : BasePanel() {
     }
 
     private fun showSwitchPidDialog() {
-        Ponyo.makeDialog()
+        makeDialog()
             ?.content(R.layout.ponyo_dialog_log_pid)
             ?.bindData {
                 val rv = getView<RecyclerView>(R.id.ponyo_dialog_log_pid_rv)
@@ -151,7 +131,7 @@ class LogPanel : BasePanel() {
     }
 
     private fun showMenuDialog(logLine: LogLine) {
-        Ponyo.makeDialog()
+        makeDialog()
             ?.content(R.layout.ponyo_dialog_log_menu)
             ?.bindData {
                 val tv_tag = getView<TextView>(R.id.ponyo_dialog_log_meun_tv_tag)

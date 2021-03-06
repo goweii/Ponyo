@@ -1,4 +1,4 @@
-package per.goweii.ponyo
+package per.goweii.ponyo.widget
 
 import android.annotation.SuppressLint
 import android.content.Context

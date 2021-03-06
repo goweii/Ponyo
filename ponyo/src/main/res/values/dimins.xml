@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="ponyo_panel_padding">6dp</dimen>
+    <dimen name="ponyo_margin_thin">4dp</dimen>
     <dimen name="ponyo_margin_small">8dp</dimen>
+    <dimen name="ponyo_margin_middle">12dp</dimen>
     <dimen name="ponyo_margin_def">16dp</dimen>
     <dimen name="ponyo_margin_big">32dp</dimen>
+    <dimen name="ponyo_panel_padding">6dp</dimen>
     <dimen name="ponyo_panel_padding_half">3dp</dimen>
     <dimen name="ponyo_tab_height">30dp</dimen>
     <dimen name="ponyo_item_height">30dp</dimen>
     <dimen name="ponyo_button_height">36dp</dimen>
+    <dimen name="ponyo_bottom_tab_height">44dp</dimen>
     <dimen name="ponyo_button_corner_radius">22dp</dimen>
     <dimen name="ponyo_corner_radius">3dp</dimen>
     <dimen name="ponyo_log_bg_stroke_width">1dp</dimen>

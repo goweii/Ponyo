@@ -9,14 +9,14 @@ import android.graphics.RectF
 import android.os.Build
 import android.view.*
 import android.view.animation.AccelerateDecelerateInterpolator
-import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
 import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
 import androidx.core.view.doOnAttach
 import androidx.core.view.doOnLayout
-import androidx.recyclerview.widget.RecyclerView
-import per.goweii.ponyo.panel.PanelProvider
+import androidx.viewpager.widget.ViewPager
+import net.lucode.hackware.magicindicator.MagicIndicator
+import per.goweii.ponyo.panel.PanelManager
 import kotlin.math.min
 import kotlin.math.pow
 
@@ -25,58 +25,62 @@ import kotlin.math.pow
  * @date 2020/3/28
  */
 @SuppressLint("InflateParams")
-internal class PanelManager(private val context: Context) {
+internal class PanelWindow(context: Context) {
     enum class State {
         FLOAT, PANEL
     }
 
-    private val panelRectF: RectF by lazy {
-        RectF(0F, 0F, 0F, 0F)
-    }
-    private val floatRectF: RectF by lazy {
-        RectF(0F, 0F, 0F, 0F)
-    }
+    private val panelRectF: RectF = RectF()
+    private val floatRectF: RectF = RectF()
     private val windowManager: WindowManager =
         context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
 
     @SuppressLint("RtlHardcoded")
-    private val windowParams: WindowManager.LayoutParams =
-        WindowManager.LayoutParams().apply {
-            windowAnimations = 0
-            rotationAnimation = 0
-            type = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
-            } else {
-                WindowManager.LayoutParams.TYPE_SYSTEM_ALERT
-            }
-            format = PixelFormat.TRANSPARENT
-            gravity = Gravity.TOP or Gravity.LEFT
-            flags = WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
-            width = WindowManager.LayoutParams.MATCH_PARENT
-            height = WindowManager.LayoutParams.MATCH_PARENT
-            x = 0
-            y = 0
+    private val windowParams: WindowManager.LayoutParams = WindowManager.LayoutParams().apply {
+        windowAnimations = 0
+        rotationAnimation = 0
+        type = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+        } else {
+            WindowManager.LayoutParams.TYPE_SYSTEM_ALERT
         }
-    private val floatView: View by lazy {
-        LayoutInflater.from(context).inflate(R.layout.ponyo_panel, null).apply {
+        format = PixelFormat.TRANSPARENT
+        gravity = Gravity.TOP or Gravity.LEFT
+        flags = WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+        width = WindowManager.LayoutParams.MATCH_PARENT
+        height = WindowManager.LayoutParams.MATCH_PARENT
+        x = 0
+        y = 0
+    }
+    private val floatView: View = LayoutInflater.from(context).inflate(R.layout.ponyo_panel, null)
+    private val floatPanel: View = floatView.findViewById(R.id.panel)
+    private val pager: ViewPager = floatView.findViewById(R.id.vp_panel)
+    private val indicator: MagicIndicator = floatView.findViewById(R.id.indicator)
+    private val dialog: FrameLayout = floatView.findViewById(R.id.dialog)
+
+    private var onAttachListener: (() -> Unit)? = null
+    private var onDetachListener: (() -> Unit)? = null
+
+    private var state: State = State.FLOAT
+
+    init {
+        floatView.apply {
             systemUiVisibility = systemUiVisibility or
-                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
             addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
                 override fun onViewAttachedToWindow(v: View?) {
                     onAttachListener?.invoke()
-                    PanelProvider.onAttach()
+                    PanelManager.onAttach()
                 }
 
                 override fun onViewDetachedFromWindow(v: View?) {
                     onDetachListener?.invoke()
-                    PanelProvider.onDetach()
+                    PanelManager.onDetach()
                 }
             })
         }
-    }
-    private val floatPanel: View by lazy {
-        floatView.findViewById<View>(R.id.panel).apply {
+        floatPanel.apply {
+            fitsSystemWindows = true
             clipToOutline = true
             outlineProvider = object : ViewOutlineProvider() {
                 override fun getOutline(view: View, outline: Outline) {
@@ -98,19 +102,9 @@ internal class PanelManager(private val context: Context) {
                     }
                 }
             }
-            fitsSystemWindows = true
-            val panelContainer = findViewById<FrameLayout>(R.id.panel_container)
-            val panelTab = findViewById<RecyclerView>(R.id.panel_tab)
-            PanelProvider.attach(panelContainer, panelTab)
         }
+        PanelManager.attachTo(pager, indicator, dialog)
     }
-    val dialogView: FrameLayout by lazy {
-        floatView.findViewById<FrameLayout>(R.id.dialog)
-    }
-    private var onAttachListener: (() -> Unit)? = null
-    private var onDetachListener: (() -> Unit)? = null
-
-    private var state: State = State.FLOAT
 
     fun onAttachListener(listener: (() -> Unit)? = null) {
         onAttachListener = listener
@@ -202,9 +196,7 @@ internal class PanelManager(private val context: Context) {
     private fun attach() {
         if (isShown()) return
         floatPanel.visibility = View.INVISIBLE
-        floatPanel.alpha = 0F
         floatView.doOnAttach {
-            floatPanel.alpha = 0F
             floatPanel.visibility = View.INVISIBLE
         }
         floatView.doOnLayout {
@@ -215,7 +207,6 @@ internal class PanelManager(private val context: Context) {
             )
             updateToRectF(floatRectF)
             floatPanel.visibility = View.INVISIBLE
-            floatPanel.alpha = 0F
             startZooming2Panel()
         }
         try {
@@ -244,7 +235,6 @@ internal class PanelManager(private val context: Context) {
             duration = 400L
             doOnStart {
                 floatPanel.visibility = View.VISIBLE
-                floatPanel.alpha = 1F
             }
             doOnEnd {
                 when (state) {
@@ -293,7 +283,6 @@ internal class PanelManager(private val context: Context) {
 
     private fun startZooming2Panel() {
         floatPanel.visibility = View.VISIBLE
-        floatPanel.alpha = 1F
         state = State.PANEL
         startRectF.set(toRectF())
         endRectF.set(panelRectF)
@@ -302,23 +291,20 @@ internal class PanelManager(private val context: Context) {
 
     private fun endZooming2Panel() {
         floatPanel.visibility = View.VISIBLE
-        floatPanel.alpha = 1F
-        PanelProvider.onShow()
+        PanelManager.onShow()
     }
 
     private fun startZooming2Float() {
         floatPanel.visibility = View.VISIBLE
-        floatPanel.alpha = 1F
         state = State.FLOAT
         startRectF.set(toRectF())
         endRectF.set(floatRectF)
         zoomAnimator.start()
-        PanelProvider.onHide()
+        PanelManager.onHide()
     }
 
     private fun endZooming2Float() {
         floatPanel.visibility = View.INVISIBLE
-        floatPanel.alpha = 0F
         detach()
     }
 
