@@ -29,7 +29,7 @@
             android:textColor="@color/ponyo_colorOnPrimary"
             android:textSize="@dimen/ponyo_text_size_btn" />
 
-        <HorizontalScrollView
+        <per.goweii.ponyo.widget.HScrollView
             android:id="@+id/ponyo_hsv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -50,7 +50,7 @@
 
             </androidx.core.widget.NestedScrollView>
 
-        </HorizontalScrollView>
+        </per.goweii.ponyo.widget.HScrollView>
 
     </LinearLayout>
 

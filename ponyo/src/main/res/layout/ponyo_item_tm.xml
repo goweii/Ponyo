@@ -13,7 +13,7 @@
     android:paddingBottom="@dimen/ponyo_panel_padding_half"
     app:cardBackgroundColor="@color/ponyo_colorSurface">
 
-    <HorizontalScrollView
+    <per.goweii.ponyo.widget.HScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -27,6 +27,6 @@
             android:typeface="monospace"
             tools:text="Info" />
 
-    </HorizontalScrollView>
+    </per.goweii.ponyo.widget.HScrollView>
 
 </androidx.cardview.widget.CardView>
