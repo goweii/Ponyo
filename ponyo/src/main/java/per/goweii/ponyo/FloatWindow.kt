@@ -8,7 +8,6 @@ import android.util.TypedValue
 import android.view.*
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
-import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.Scroller
 import android.widget.TextView
@@ -328,7 +327,7 @@ internal class FloatWindow(private val context: Context) : GestureDetector.OnGes
     }
 
     override fun onGlobalLayout() {
-        panelWindow.update(currRectF())
+        panelWindow.updateFloatRect(currRectF())
         computeScroll()
     }
 

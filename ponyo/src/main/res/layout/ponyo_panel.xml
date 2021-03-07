@@ -4,58 +4,45 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <FrameLayout
-        android:id="@+id/wrapper"
+    <ImageView
+        android:id="@+id/ponyo_panel_icon"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/ponyo_colorBackground">
+        android:layout_gravity="center"
+        android:background="@color/ponyo_colorPrimary"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ponyo_ic_float"
+        tools:ignore="ContentDescription" />
 
-        <per.goweii.ponyo.widget.IconView
-            android:id="@+id/icon"
+    <LinearLayout
+        android:id="@+id/ponyo_panel_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/ponyo_colorBackground"
+        android:orientation="vertical">
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/ponyo_panel_vp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:scaleType="fitCenter"
-            android:background="@color/ponyo_colorPrimary"
-            android:src="@drawable/ponyo_ic_float" />
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:overScrollMode="never" />
 
-        <FrameLayout
-            android:id="@+id/panel"
+        <View
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="1px"
+            android:background="@color/ponyo_colorDivide" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="vertical">
+        <net.lucode.hackware.magicindicator.MagicIndicator
+            android:id="@+id/ponyo_panel_indicator"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/ponyo_bottom_tab_height" />
 
-                <androidx.viewpager.widget.ViewPager
-                    android:id="@+id/vp_panel"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:overScrollMode="never" />
+    </LinearLayout>
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1px"
-                    android:background="@color/ponyo_colorDivide" />
-
-                <net.lucode.hackware.magicindicator.MagicIndicator
-                    android:id="@+id/indicator"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/ponyo_bottom_tab_height" />
-
-            </LinearLayout>
-
-            <FrameLayout
-                android:id="@+id/dialog"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-        </FrameLayout>
-
-    </FrameLayout>
+    <FrameLayout
+        android:id="@+id/ponyo_panel_dialog"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </per.goweii.ponyo.widget.FloatRootView>
