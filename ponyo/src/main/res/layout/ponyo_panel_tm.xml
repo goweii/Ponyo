@@ -8,6 +8,8 @@
         android:id="@+id/rv_tm"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingBottom="@dimen/ponyo_panel_padding_half"
         tools:itemCount="3"
         tools:listitem="@layout/ponyo_item_tm" />
 

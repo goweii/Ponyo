@@ -36,7 +36,7 @@ object Ponyo : AppStack.AppLifecycleListener {
 
     override fun onCreate() {
         TM.APP_STARTUP.record("Application onCreate")
-        floatWindow = FloatWindow(Ponyo.application)
+        floatWindow = FloatWindow(application)
     }
 
     override fun onStart() {

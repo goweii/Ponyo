@@ -15,6 +15,7 @@
 
     <per.goweii.ponyo.widget.HScrollView
         android:layout_width="match_parent"
+        android:fillViewport="true"
         android:layout_height="wrap_content">
 
         <TextView

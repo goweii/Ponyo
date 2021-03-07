@@ -1,5 +1,6 @@
 package per.goweii.ponyo.panel.tm
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +11,6 @@ import per.goweii.ponyo.R
 import java.util.ArrayList
 
 class TmAdapter : RecyclerView.Adapter<TmAdapter.TmHolder>() {
-
     private val datas by lazy { mutableListOf<TmEntity>() }
 
     fun set(data: ArrayList<TmEntity>) {
@@ -25,8 +25,9 @@ class TmAdapter : RecyclerView.Adapter<TmAdapter.TmHolder>() {
     override fun getItemCount(): Int = datas.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TmHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.ponyo_item_tm, parent, false)
-        return TmHolder(view)
+        return TmHolder(
+            LayoutInflater.from(parent.context).inflate(R.layout.ponyo_item_tm, parent, false)
+        )
     }
 
     override fun onBindViewHolder(holder: TmHolder, position: Int) {
@@ -37,8 +38,23 @@ class TmAdapter : RecyclerView.Adapter<TmAdapter.TmHolder>() {
     inner class TmHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val tv_tm_info by lazy { itemView.findViewById<TextView>(R.id.tv_tm_info) }
 
+        init {
+            tv_tm_info.setOnClickListener {
+                datas.getOrNull(adapterPosition)?.let {
+                    it.expand = !it.expand
+                    notifyItemChanged(adapterPosition)
+                }
+            }
+        }
+
+        @SuppressLint("SetTextI18n")
         fun bindData(data: TmEntity) {
-            tv_tm_info.text = data.lineInfo
+            if (data.expand) {
+                tv_tm_info.text = data.timeLine.toString()
+            } else {
+                tv_tm_info.text =
+                    "${data.timeLine.tag} [${data.timeLine.points.lastOrNull()?.totalCost ?: 0}ms]"
+            }
         }
     }
 
