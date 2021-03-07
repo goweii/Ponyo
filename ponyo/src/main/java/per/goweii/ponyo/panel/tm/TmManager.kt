@@ -6,7 +6,6 @@ import androidx.core.view.doOnPreDraw
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import per.goweii.ponyo.appstack.ActivityLifecycleListener
-import per.goweii.ponyo.panel.log.LogManager
 import per.goweii.ponyo.timemonitor.OnTimeLineEndListener
 import per.goweii.ponyo.timemonitor.TimeLine
 import per.goweii.ponyo.utils.objectSimpleName
