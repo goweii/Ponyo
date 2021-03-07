@@ -285,7 +285,7 @@ internal class PanelWindow(context: Context) {
         val f = (currRectF.width() - floatRectF.width()) / (panelRectF.width() - floatRectF.width())
         val r = (1F - f).dece() * min(currRectF.width(), currRectF.height())
         rootView.updateToRect(rectF, r)
-        val minp = 0.2F
+        val minp = 0.1F
         val maxp = 0.3F
         val np = when {
             f < minp -> 0F
@@ -293,6 +293,5 @@ internal class PanelWindow(context: Context) {
             else -> (f - minp) / (maxp - minp)
         }
         panelView.alpha = np.dece()
-        iconView.alpha = (1F - np).dece()
     }
 }
