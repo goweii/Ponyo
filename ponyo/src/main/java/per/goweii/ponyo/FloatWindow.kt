@@ -1,27 +1,28 @@
 package per.goweii.ponyo
 
+import android.animation.Animator
+import android.animation.AnimatorSet
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
 import android.os.Build
+import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.*
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
-import android.widget.Scroller
 import android.widget.TextView
-import kotlin.math.abs
-import kotlin.math.atan2
-import kotlin.math.max
-import kotlin.math.min
+import androidx.core.view.doOnPreDraw
+import kotlin.math.*
 
 @SuppressLint("ClickableViewAccessibility", "InflateParams")
 internal class FloatWindow(private val context: Context) : GestureDetector.OnGestureListener,
     ViewTreeObserver.OnGlobalLayoutListener {
 
     private enum class State {
-        FLOAT, DRAGGING, FLING
+        IDLE, DRAGGING, FLING
     }
 
     private enum class Mode {
@@ -29,10 +30,11 @@ internal class FloatWindow(private val context: Context) : GestureDetector.OnGes
     }
 
     private val panelWindow: PanelWindow = PanelWindow(context)
-    private val fenceRect: RectF by lazy {
-        val rect = Rect()
-        windowManager.defaultDisplay.getRectSize(rect)
-        RectF(rect)
+    private val currRect: RectF = RectF()
+    private val boundRect: RectF by lazy {
+        val dm = DisplayMetrics()
+        windowManager.defaultDisplay.getRealMetrics(dm)
+        RectF(0F, 0F, dm.widthPixels.toFloat(), dm.heightPixels.toFloat())
     }
     private val defSize = TypedValue.applyDimension(
         TypedValue.COMPLEX_UNIT_DIP,
@@ -41,6 +43,7 @@ internal class FloatWindow(private val context: Context) : GestureDetector.OnGes
     ).toInt()
     private val windowManager: WindowManager =
         context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+
     @SuppressLint("RtlHardcoded")
     private val windowParams: WindowManager.LayoutParams =
         WindowManager.LayoutParams().apply {
@@ -52,33 +55,25 @@ internal class FloatWindow(private val context: Context) : GestureDetector.OnGes
             format = PixelFormat.TRANSPARENT
             gravity = Gravity.TOP or Gravity.LEFT
             flags = WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or
-                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
+                    WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
             width = defSize
             height = defSize
-            x = fenceRect.width().toInt() - width
-            y = ((fenceRect.height() - height) * 0.6F).toInt()
+            x = boundRect.width().toInt() - width
+            y = ((boundRect.height() - height) * 0.6F).toInt()
         }
 
     private val gestureDetector: GestureDetector by lazy {
         GestureDetector(context, this)
     }
-    private val scroller: Scroller by lazy {
-        Scroller(context, DecelerateInterpolator())
-    }
-    private val velocityTracker: VelocityTracker by lazy {
-        VelocityTracker.obtain()
-    }
-    private val dragPath: Path = Path()
 
     private val rootView: View = LayoutInflater.from(context).inflate(R.layout.ponyo_float, null)
     private val iconView: ImageView = rootView.findViewById(R.id.ponyo_iv_icon)
     private val logView: TextView = rootView.findViewById(R.id.ponyo_tv_log)
 
-    private var state: State = State.FLOAT
+    private var state: State = State.IDLE
     private var dragStartX = 0f
     private var dragStartY = 0f
-    private var dragStartEventX = 0f
-    private var dragStartEventY = 0f
 
     private val visibleRunnable = Runnable { toVisible() }
     private val invisibleRunnable = Runnable { toInvisible() }
@@ -98,7 +93,6 @@ internal class FloatWindow(private val context: Context) : GestureDetector.OnGes
                 }
             }
             setOnTouchListener { _, event ->
-                event.setLocation(event.rawX, event.rawY)
                 val consumed = gestureDetector.onTouchEvent(event)
                 when (event.action) {
                     MotionEvent.ACTION_UP -> onUp(event)
@@ -113,7 +107,7 @@ internal class FloatWindow(private val context: Context) : GestureDetector.OnGes
     fun isExpand() = panelWindow.isShown()
 
     fun expand() {
-        panelWindow.show(currRectF())
+        panelWindow.show()
     }
 
     fun collapse() {
@@ -143,14 +137,7 @@ internal class FloatWindow(private val context: Context) : GestureDetector.OnGes
     private fun attach() {
         if (isShown()) return
         rootView.viewTreeObserver.addOnGlobalLayoutListener(this)
-        rootView.viewTreeObserver.addOnPreDrawListener(object :
-            ViewTreeObserver.OnPreDrawListener {
-            override fun onPreDraw(): Boolean {
-                rootView.viewTreeObserver.removeOnPreDrawListener(this)
-                runInvisible()
-                return true
-            }
-        })
+        rootView.doOnPreDraw { runInvisible() }
         try {
             windowManager.addView(this.rootView, windowParams)
         } catch (e: Exception) {
@@ -177,44 +164,32 @@ internal class FloatWindow(private val context: Context) : GestureDetector.OnGes
         }
     }
 
-    private fun updateLocation(x: Int, y: Int) {
-        val inx = x >= fenceRect.left && x <= fenceRect.right
-        val iny = y >= fenceRect.top && x <= fenceRect.bottom
-        if (inx || iny) {
-            windowParams.x = x.range(fenceRect.left.toInt(), fenceRect.right.toInt())
-            windowParams.y = y.range(fenceRect.top.toInt(), fenceRect.bottom.toInt())
-        } else {
-            scroller.abortAnimation()
-        }
+    private fun updateByXY(x: Int? = null, y: Int? = null) {
+        x?.let { windowParams.x += x }
+        y?.let { windowParams.y += y }
+        update()
     }
 
-    private fun Int.range(from: Int, to: Int) = when {
-        this < from -> from
-        this > to -> to
-        else -> this
+    private fun updateToXY(x: Int? = null, y: Int? = null) {
+        x?.let { windowParams.x = x }
+        y?.let { windowParams.y = y }
+        update()
     }
 
     override fun onDown(e: MotionEvent): Boolean {
+        state = State.IDLE
         runVisible()
-        scroller.abortAnimation()
         return true
     }
 
     private fun onUp(e: MotionEvent) {
-        runInvisible()
-        if (state != State.DRAGGING) {
-            return
+        when (state) {
+            State.DRAGGING -> {
+                state = State.FLING
+                onDragEnd()
+            }
         }
-        state = State.FLING
-        velocityTracker.computeCurrentVelocity(
-            1000,
-            max(fenceRect.width(), fenceRect.height()).toFloat()
-        )
-        val vx = velocityTracker.xVelocity
-        val vy = velocityTracker.yVelocity
-        velocityTracker.clear()
-        onDragEnd(vx, vy)
-        return
+        runInvisible()
     }
 
     override fun onShowPress(e: MotionEvent) {
@@ -225,35 +200,17 @@ internal class FloatWindow(private val context: Context) : GestureDetector.OnGes
         return true
     }
 
-    private fun currRectF(): RectF = RectF(
-        windowParams.x.toFloat(),
-        windowParams.y.toFloat(),
-        windowParams.x.toFloat() + windowParams.width.toFloat(),
-        windowParams.y.toFloat() + windowParams.height.toFloat()
-    )
-
-    override fun onScroll(
-        e1: MotionEvent, e2: MotionEvent, distanceX: Float, distanceY: Float
-    ): Boolean {
-        velocityTracker.addMovement(e2)
-        val touchX = e2.rawX
-        val touchY = e2.rawY
+    override fun onScroll(e1: MotionEvent, e2: MotionEvent, dX: Float, dY: Float): Boolean {
         when (state) {
-            State.FLOAT -> {
+            State.IDLE -> {
                 state = State.DRAGGING
-                dragStartEventX = touchX
-                dragStartEventY = touchY
                 onDragStart()
             }
             State.DRAGGING -> {
-                val dargX = touchX - dragStartEventX
-                val dargY = touchY - dragStartEventY
-                onDragging(dargX, dargY)
+                onDragging(e2.rawX - e1.rawX, e2.rawY - e1.rawY)
             }
             State.FLING -> {
                 state = State.DRAGGING
-                dragStartEventX = touchX
-                dragStartEventY = touchY
                 onDragStart()
             }
         }
@@ -263,86 +220,62 @@ internal class FloatWindow(private val context: Context) : GestureDetector.OnGes
     override fun onLongPress(e: MotionEvent) {
     }
 
-    override fun onFling(
-        e1: MotionEvent,
-        e2: MotionEvent,
-        velocityX: Float,
-        velocityY: Float
-    ): Boolean {
-        return false
+    override fun onFling(e1: MotionEvent, e2: MotionEvent, vX: Float, vY: Float): Boolean {
+        return true
     }
 
     private fun onDragStart() {
         dragStartX = windowParams.x.toFloat()
         dragStartY = windowParams.y.toFloat()
-        dragPath.reset()
-        dragPath.rewind()
-        dragPath.moveTo(windowParams.x.toFloat(), windowParams.y.toFloat())
+        flingAnim?.cancel()
     }
 
     private fun onDragging(moveX: Float, moveY: Float) {
         val x = dragStartX + moveX
         val y = dragStartY + moveY
-        val cX: Float = (x + windowParams.x) / 2f
-        val cY: Float = (y + windowParams.y) / 2f
-        dragPath.quadTo(dragStartX, dragStartY, cX, cY)
-        updateLocation(x.toInt(), y.toInt())
-        update()
+        updateToXY(x.toInt(), y.toInt())
     }
 
-    private fun onDragEnd(velocityX: Float, velocityY: Float) {
+    private fun onDragEnd() {
         val startX: Float = windowParams.x.toFloat()
         val startY: Float = windowParams.y.toFloat()
-        val startCenterX = startX + this.rootView.width / 2f
-        val startCenterY = startY + this.rootView.height / 2f
-        val endX: Float
-        endX = if (startCenterX < fenceRect.width() / 2f) {
-            0f
-        } else {
-            fenceRect.width() - this.rootView.width.toFloat()
+        val endX = when {
+            startX < boundRect.left -> boundRect.left
+            startX > boundRect.right - rootView.width -> boundRect.right - rootView.width
+            else -> startX
         }
-        val endY: Float
-        endY = if (velocityX == 0f && velocityY == 8f) {
-            startY
-        } else {
-            val dx = endX - startX
-            val dy = abs(dx) * (velocityY / abs(velocityX))
-            startY + dy
+        val endY = when {
+            startY < boundRect.top -> boundRect.top
+            startY > boundRect.bottom - rootView.height -> boundRect.bottom - rootView.height
+            else -> startY
         }
-        val pm = PathMeasure(dragPath, false)
-        val pos = FloatArray(2)
-        val tan = FloatArray(2)
-        pm.getPosTan(pm.length, pos, tan)
-        val degrees = (atan2(
-            tan[1].toDouble(),
-            tan[0].toDouble()
-        ) * 180f / Math.PI).toFloat()
-        scroller.startScroll(
-            startX.toInt(),
-            startY.toInt(),
-            (endX - startX).toInt(),
-            (startY - startY).toInt()
-        )
-        computeScroll()
+        flingAnim = AnimatorSet().apply {
+            playTogether(
+                ValueAnimator.ofFloat(startX, endX).apply {
+                    addUpdateListener {
+                        val x = it.animatedValue as Float
+                        updateToXY(x = x.toInt())
+                    }
+                },
+                ValueAnimator.ofFloat(startY, endY).apply {
+                    addUpdateListener {
+                        val y = it.animatedValue as Float
+                        updateToXY(y = y.toInt())
+                    }
+                }
+            )
+            start()
+        }
     }
 
     override fun onGlobalLayout() {
-        panelWindow.updateFloatRect(currRectF())
-        computeScroll()
-    }
-
-    private fun computeScroll() {
-        if (state != State.FLING) {
-            return
-        }
-        if (scroller.computeScrollOffset()) {
-            val x = scroller.currX.toFloat()
-            val y = scroller.currY.toFloat()
-            updateLocation(x.toInt(), y.toInt())
-            update()
-        } else {
-            state = State.FLOAT
-        }
+        currRect.set(
+            windowParams.x.toFloat(),
+            windowParams.y.toFloat(),
+            windowParams.x.toFloat() + windowParams.width.toFloat(),
+            windowParams.y.toFloat() + windowParams.height.toFloat()
+        )
+        panelWindow.updateFloatRect(currRect)
     }
 
     private fun runVisible() {
@@ -506,5 +439,7 @@ internal class FloatWindow(private val context: Context) : GestureDetector.OnGes
                 Mode.ERROR -> 3000L
             }
         }
+
+    private var flingAnim: Animator? = null
 
 }

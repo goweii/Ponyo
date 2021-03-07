@@ -109,8 +109,7 @@ internal class PanelWindow(context: Context) {
         onDetachListener = listener
     }
 
-    fun show(rectF: RectF?) {
-        rectF?.let { floatRectF.set(it) }
+    fun show() {
         if (!rootView.isAttachedToWindow) {
             attach()
         } else {
