@@ -20,37 +20,45 @@ internal object PanelManager {
     private var dialogContainer: FrameLayout? = null
     private var viewPager: ViewPager? = null
 
+    private var pagerAdapter: PanelPagerAdapter? = null
+    private var navigatorAdapter: PanelNavigatorAdapter? = null
+
     private val panels = arrayListOf<Panel>()
 
     init {
-        addPanel(LogPanel())
-        addPanel(TmPanel())
-        addPanel(ActiStackPanel())
-        addPanel(LeakPanel())
-        addPanel(DbPanel())
-        addPanel(SpPanel())
-        addPanel(FilePanel())
-        addPanel(DevicePanel())
+        panels.add(LogPanel())
+        panels.add(TmPanel())
+        panels.add(ActiStackPanel())
+        panels.add(LeakPanel())
+        panels.add(DbPanel())
+        panels.add(SpPanel())
+        panels.add(FilePanel())
+        panels.add(DevicePanel())
     }
 
     fun addPanel(panel: Panel) {
         panels.add(panel)
+        pagerAdapter?.setPanels(panels)
+        navigatorAdapter?.setPanels(panels)
     }
 
     fun attachTo(pager: ViewPager, indicator: MagicIndicator, dialog: FrameLayout) {
         this.dialogContainer = dialog
         this.viewPager = pager
         pager.offscreenPageLimit = panels.size
-        val pagerAdapter = PanelPagerAdapter(panels)
+        pagerAdapter = PanelPagerAdapter()
         pager.adapter = pagerAdapter
         val commonNavigator = CommonNavigator(pager.context)
         commonNavigator.leftPadding =
             indicator.context.resources.getDimension(R.dimen.ponyo_margin_def).toInt()
         commonNavigator.rightPadding =
             indicator.context.resources.getDimension(R.dimen.ponyo_margin_def).toInt()
-        commonNavigator.adapter = PanelNavigatorAdapter(pager, panels)
+        navigatorAdapter = PanelNavigatorAdapter(pager)
+        commonNavigator.adapter = navigatorAdapter
         indicator.navigator = commonNavigator
         ViewPagerHelper.bind(indicator, pager)
+        pagerAdapter?.setPanels(panels)
+        navigatorAdapter?.setPanels(panels)
     }
 
     fun onAttach() {

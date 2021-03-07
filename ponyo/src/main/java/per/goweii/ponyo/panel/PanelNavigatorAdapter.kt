@@ -11,9 +11,15 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.ColorT
 import per.goweii.ponyo.R
 
 class PanelNavigatorAdapter(
-    private val pager: ViewPager,
-    private val panels : List<Panel>
+    private val pager: ViewPager
 ): CommonNavigatorAdapter() {
+    private val panels = arrayListOf<Panel>()
+
+    fun setPanels(data: List<Panel>) {
+        panels.clear()
+        panels.addAll(data)
+        notifyDataSetChanged()
+    }
 
     override fun getCount(): Int {
         return panels.size

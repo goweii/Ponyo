@@ -4,9 +4,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.viewpager.widget.PagerAdapter
 
-class PanelPagerAdapter(
-    private val panels: List<Panel>
-) : PagerAdapter() {
+class PanelPagerAdapter : PagerAdapter() {
+    private val panels = arrayListOf<Panel>()
+
+    fun setPanels(data: List<Panel>) {
+        panels.clear()
+        panels.addAll(data)
+        notifyDataSetChanged()
+    }
 
     override fun getCount(): Int = panels.size
 
