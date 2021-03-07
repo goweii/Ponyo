@@ -1,4 +1,4 @@
-package per.goweii.ponyo
+package per.goweii.ponyo.utils
 
 import android.content.Context
 import android.content.Intent

@@ -9,6 +9,7 @@ import android.graphics.RectF
 import android.os.Build
 import android.view.*
 import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.LinearInterpolator
 import android.widget.FrameLayout
 import androidx.core.animation.doOnEnd
 import androidx.core.view.doOnLayout
@@ -16,6 +17,7 @@ import androidx.viewpager.widget.ViewPager
 import net.lucode.hackware.magicindicator.MagicIndicator
 import per.goweii.ponyo.panel.PanelManager
 import per.goweii.ponyo.widget.FloatRootView
+import per.goweii.ponyo.widget.IconView
 import kotlin.math.min
 import kotlin.math.pow
 
@@ -51,12 +53,14 @@ internal class PanelWindow(context: Context) {
         x = 0
         y = 0
     }
-    private val floatView: FloatRootView =
-        LayoutInflater.from(context).inflate(R.layout.ponyo_panel, null) as FloatRootView
-    private val floatPanel: View = floatView.findViewById(R.id.panel)
-    private val pager: ViewPager = floatView.findViewById(R.id.vp_panel)
-    private val indicator: MagicIndicator = floatView.findViewById(R.id.indicator)
-    private val dialog: FrameLayout = floatView.findViewById(R.id.dialog)
+    private val rootView: FloatRootView = LayoutInflater.from(context)
+        .inflate(R.layout.ponyo_panel, null) as FloatRootView
+    private val wrapperView: FrameLayout = rootView.findViewById(R.id.wrapper)
+    private val iconView: IconView = rootView.findViewById(R.id.icon)
+    private val panelView: FrameLayout = rootView.findViewById(R.id.panel)
+    private val viewPager: ViewPager = rootView.findViewById(R.id.vp_panel)
+    private val indicator: MagicIndicator = rootView.findViewById(R.id.indicator)
+    private val dialogContainer: FrameLayout = rootView.findViewById(R.id.dialog)
 
     private var onAttachListener: (() -> Unit)? = null
     private var onDetachListener: (() -> Unit)? = null
@@ -64,7 +68,7 @@ internal class PanelWindow(context: Context) {
     private var state: State = State.FLOAT
 
     init {
-        floatView.apply {
+        rootView.apply {
             isFocusable = true
             isFocusableInTouchMode = true
             systemUiVisibility = systemUiVisibility or
@@ -92,12 +96,11 @@ internal class PanelWindow(context: Context) {
                 }
             })
         }
-        floatPanel.apply {
-            fitsSystemWindows = true
+        wrapperView.apply {
             clipToOutline = true
             outlineProvider = object : ViewOutlineProvider() {
                 override fun getOutline(view: View, outline: Outline) {
-                    val f = 1F - (view.scaledWidth.toFloat() - floatRectF.width()) /
+                    val f = 1F - (view.scaledWidth - floatRectF.width()) /
                             (panelRectF.width() - floatRectF.width())
                     val radius = (min(view.width, view.height).toFloat() / 2F) * f
                     when {
@@ -116,7 +119,10 @@ internal class PanelWindow(context: Context) {
                 }
             }
         }
-        PanelManager.attachTo(pager, indicator, dialog)
+        panelView.apply {
+            fitsSystemWindows = true
+        }
+        PanelManager.attachTo(viewPager, indicator, dialogContainer)
     }
 
     fun onAttachListener(listener: (() -> Unit)? = null) {
@@ -129,7 +135,7 @@ internal class PanelWindow(context: Context) {
 
     fun show(rectF: RectF?) {
         rectF?.let { floatRectF.set(it) }
-        if (!floatView.isAttachedToWindow) {
+        if (!rootView.isAttachedToWindow) {
             attach()
         } else {
             if (zoomAnimator.isRunning) {
@@ -148,11 +154,11 @@ internal class PanelWindow(context: Context) {
     }
 
     fun isShown(): Boolean {
-        return floatView.isAttachedToWindow
+        return rootView.isAttachedToWindow
     }
 
     fun dismiss() {
-        if (floatView.isAttachedToWindow) {
+        if (rootView.isAttachedToWindow) {
             if (zoomAnimator.isRunning) {
                 when (state) {
                     State.FLOAT -> {
@@ -169,7 +175,7 @@ internal class PanelWindow(context: Context) {
     }
 
     fun toggle() {
-        if (!floatView.isAttachedToWindow) {
+        if (!rootView.isAttachedToWindow) {
             attach()
         } else {
             if (zoomAnimator.isRunning) {
@@ -190,7 +196,7 @@ internal class PanelWindow(context: Context) {
 
     fun update(rectF: RectF) {
         floatRectF.set(rectF)
-        if (floatView.isAttachedToWindow) {
+        if (rootView.isAttachedToWindow) {
             if (zoomAnimator.isRunning) {
                 when (state) {
                     State.FLOAT -> {
@@ -206,17 +212,17 @@ internal class PanelWindow(context: Context) {
 
     private fun attach() {
         if (isShown()) return
-        floatView.doOnLayout {
+        rootView.doOnLayout {
             panelRectF.set(
                 0F, 0F,
-                floatView.width.toFloat(),
-                floatView.height.toFloat()
+                rootView.width.toFloat(),
+                rootView.height.toFloat()
             )
             updateToRectF(floatRectF)
             startZooming2Panel()
         }
         try {
-            windowManager.addView(floatView, windowParams)
+            windowManager.addView(rootView, windowParams)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -225,7 +231,7 @@ internal class PanelWindow(context: Context) {
     private fun detach() {
         if (!isShown()) return
         try {
-            windowManager.removeView(floatView)
+            windowManager.removeView(rootView)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -274,14 +280,15 @@ internal class PanelWindow(context: Context) {
         val currValue = RectF(l, t, l + w, t + h)
         updateToRectF(currValue)
         val p = (currValue.width() - floatRectF.width()) / (panelRectF.width() - floatRectF.width())
-        val minp = 0.0F
-        val maxp = 0.3F
+        val minp = 0.2F
+        val maxp = 0.5F
         val np = when {
             p < minp -> 0F
             p > maxp -> 1F
             else -> (p - minp) / (maxp - minp)
         }
-        floatPanel.alpha = np.dece()
+        panelView.alpha = np.dece()
+        iconView.alpha = (1F - np).dece()
     }
 
     private fun startZooming2Panel() {
@@ -308,25 +315,26 @@ internal class PanelWindow(context: Context) {
     }
 
     private fun toRectF(): RectF = RectF(
-        floatPanel.left.toFloat(),
-        floatPanel.top.toFloat(),
-        floatPanel.left.toFloat() + floatPanel.scaledWidth,
-        floatPanel.top.toFloat() + floatPanel.scaledHeight
+        wrapperView.left.toFloat(),
+        wrapperView.top.toFloat(),
+        wrapperView.left.toFloat() + wrapperView.scaledWidth,
+        wrapperView.top.toFloat() + wrapperView.scaledHeight
     )
 
-    private val View.scaledWidth: Int get() = (scaleX * width).toInt()
-    private val View.scaledHeight: Int get() = (scaleY * height).toInt()
+    private val View.scaledWidth: Float get() = scaleX * width
+    private val View.scaledHeight: Float get() = scaleY * height
 
     private fun updateToRectF(rectF: RectF) {
-        floatPanel.left = rectF.left.toInt()
-        floatPanel.top = rectF.top.toInt()
-        floatPanel.right = rectF.left.toInt() + panelRectF.width().toInt()
-        floatPanel.bottom = rectF.top.toInt() + panelRectF.height().toInt()
         val sx = rectF.width() / panelRectF.width()
-        floatPanel.pivotX = 0F
-        floatPanel.pivotY = 0F
-        floatPanel.scaleX = sx
-        floatPanel.scaleY = sx
-        floatPanel.invalidateOutline()
+        val sy = rectF.height() / panelRectF.height()
+        wrapperView.pivotX = 0F
+        wrapperView.pivotY = 0F
+        wrapperView.scaleX = sx
+        wrapperView.scaleY = sx
+        wrapperView.left = rectF.left.toInt()
+        wrapperView.top = rectF.top.toInt()
+        wrapperView.right = wrapperView.left + panelRectF.width().toInt()
+        wrapperView.bottom = wrapperView.top + panelRectF.height().toInt()
+        wrapperView.invalidateOutline()
     }
 }

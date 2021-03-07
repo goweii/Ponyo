@@ -123,8 +123,6 @@ internal class FloatWindow(private val context: Context) : GestureDetector.OnGes
 
     fun toggle() {
         panelWindow.toggle()
-        detach()
-        rootView.post { attach() }
     }
 
     fun show() {

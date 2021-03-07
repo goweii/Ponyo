@@ -5,6 +5,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.widget.ImageView
 import kotlin.math.max
+import kotlin.math.min
 
 /**
  * @author CuiZhen
@@ -22,9 +23,9 @@ class IconView : ImageView {
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-        val w = MeasureSpec.getSize(widthMeasureSpec)
-        val h = MeasureSpec.getSize(heightMeasureSpec)
-        val s = max(w, h)
-        setMeasuredDimension(s, s)
+        //val w = MeasureSpec.getSize(widthMeasureSpec)
+        //val h = MeasureSpec.getSize(heightMeasureSpec)
+        //val s = min(w, h)
+        //setMeasuredDimension(s, s)
     }
 }

@@ -3,7 +3,6 @@ package per.goweii.ponyo
 import android.app.Application
 import per.goweii.ponyo.appstack.AppStack
 import per.goweii.ponyo.crash.Crash
-import per.goweii.ponyo.dialog.FrameDialog
 import per.goweii.ponyo.log.Logcat
 import per.goweii.ponyo.panel.Panel
 import per.goweii.ponyo.panel.PanelManager
@@ -12,6 +11,7 @@ import per.goweii.ponyo.panel.log.LogManager
 import per.goweii.ponyo.panel.tm.TM
 import per.goweii.ponyo.panel.tm.TmManager
 import per.goweii.ponyo.timemonitor.TimeMonitor
+import per.goweii.ponyo.utils.OverlayUtils
 
 object Ponyo : AppStack.AppLifecycleListener {
     lateinit var application: Application private set
