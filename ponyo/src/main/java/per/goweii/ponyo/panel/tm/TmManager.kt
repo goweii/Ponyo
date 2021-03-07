@@ -6,6 +6,7 @@ import androidx.core.view.doOnPreDraw
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import per.goweii.ponyo.appstack.ActivityLifecycleListener
+import per.goweii.ponyo.panel.log.LogManager
 import per.goweii.ponyo.timemonitor.OnTimeLineEndListener
 import per.goweii.ponyo.timemonitor.TimeLine
 import per.goweii.ponyo.utils.objectSimpleName
@@ -26,9 +27,12 @@ object TmManager : OnTimeLineEndListener, ActivityLifecycleListener {
     override fun onEnd(timeLine: TimeLine) {
         val tmEntity = TmEntity(timeLine)
         datas.remove(tmEntity)
-        datas.add(0, tmEntity)
-        tmAdapter?.set(datas)
-        rv?.smoothScrollToPosition(0)
+        datas.add(tmEntity)
+        val adapter = tmAdapter ?: return
+        adapter.set(datas)
+        if (adapter.itemCount > 0) {
+            rv?.smoothScrollToPosition(adapter.itemCount - 1)
+        }
     }
 
     override fun onCreated(activity: Activity) {
