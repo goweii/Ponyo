@@ -16,7 +16,7 @@
         </provider>
         <provider
             android:name=".panel.file.FileOpenProvider"
-            android:authorities="${applicationId}.panel.file.fileopenprovider"
+            android:authorities="${applicationId}.ponyo.panel.file.fileopenprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

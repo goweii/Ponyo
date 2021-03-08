@@ -4,7 +4,7 @@ import android.text.TextUtils
 import android.util.Log
 import java.util.regex.Pattern
 
-class LogLine private constructor(private val originalLine: String) {
+class LogLine private constructor(val originalLine: String) {
     var pid = -1
     var level = 0
     var tag: String = ""
@@ -14,6 +14,10 @@ class LogLine private constructor(private val originalLine: String) {
 
     fun sameLogLine(line: String?): Boolean {
         return TextUtils.equals(originalLine, line)
+    }
+
+    override fun toString(): String {
+        return originalLine
     }
 
     override fun equals(other: Any?): Boolean {

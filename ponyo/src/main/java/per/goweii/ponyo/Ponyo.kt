@@ -20,14 +20,14 @@ object Ponyo : AppStack.AppLifecycleListener {
     fun initialize(application: Application) {
         if (this::application.isInitialized) return
         this.application = application
-        Logcat.registerCatchListener(LogManager)
-        Logcat.start()
         TM.APP_STARTUP.start("Application onInitialize")
         TimeMonitor.registerTimeLineEndListener(TmManager)
-        Crash.setCrashActivity(CrashActivity::class.java)
+        Logcat.registerCatchListener(LogManager)
+        Logcat.start()
         AppStack.registerAppLifecycleListener(Ponyo)
         AppStack.activityStack.registerActivityLifecycleListener(TmManager)
         AppStack.activityStack.registerStackUpdateListener(ActiStackManager)
+        Crash.setCrashActivity(CrashActivity::class.java)
     }
 
     fun addPanel(panel: Panel) {
