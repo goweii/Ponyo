@@ -1,6 +1,7 @@
 package per.goweii.ponyo
 
 import android.app.Application
+import android.util.Log
 import per.goweii.ponyo.appstack.AppStack
 import per.goweii.ponyo.crash.Crash
 import per.goweii.ponyo.log.Logcat
@@ -28,6 +29,7 @@ object Ponyo : AppStack.AppLifecycleListener {
         AppStack.activityStack.registerActivityLifecycleListener(TmManager)
         AppStack.activityStack.registerStackUpdateListener(ActiStackManager)
         Crash.setCrashActivity(CrashActivity::class.java)
+        floatWindow = FloatWindow(Ponyo.application)
     }
 
     fun addPanel(panel: Panel) {
@@ -36,7 +38,6 @@ object Ponyo : AppStack.AppLifecycleListener {
 
     override fun onCreate() {
         TM.APP_STARTUP.record("Application onCreate")
-        floatWindow = FloatWindow(application)
     }
 
     override fun onStart() {
