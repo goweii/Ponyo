@@ -1,5 +1,7 @@
 package per.goweii.ponyo.net.utils;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,11 +10,11 @@ import okhttp3.Dns;
 import okhttp3.EventListener;
 import okhttp3.Interceptor;
 
-
 public class OkHttpHooker {
 
     public static EventListener.Factory globalEventFactory = new EventListener.Factory() {
-        public EventListener create(Call call) {
+        @NotNull
+        public EventListener create(@NotNull Call call) {
             return EventListener.NONE;
         }
     };;

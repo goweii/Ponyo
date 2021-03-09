@@ -8,6 +8,7 @@ import android.os.Build
 import android.provider.Settings
 import android.telephony.TelephonyManager
 import android.view.WindowManager
+import androidx.annotation.RequiresPermission
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 
@@ -34,108 +35,117 @@ object Device {
 
     fun toMap(): HashMap<String, String> {
         return LinkedHashMap<String, String>().apply {
+            put("应用包名", packageName)
+            put("应用版本名", appVersionName)
+            put("应用版本号", "$appVersionCode")
             put("唯一标识", uniqueId)
+            put("安卓ID", androidId)
             put("手机制造商", manufacturer)
             put("手机品牌", brand)
             put("设备型号", model)
             put("设备名", device)
-            put("安卓ID", androidId)
-            put("屏幕尺寸", Device.size.run { "[$x,$y]" })
+            put("屏幕尺寸", "${screenInch}英寸")
+            put("屏幕分辨率", Device.size.run { "[$x,$y]" })
             put("系统版本", "Android$sysVersionName($sysVersionCode)")
+            put("CPU指令集", supportedAbis.contentToString())
             put("运营商", operatorName)
-            put("应用包名", packageName)
-            put("应用版本名", appVersionName)
-            put("应用版本号", "$appVersionCode")
+            put("WIFI状态", wifiStatus)
+            put("WIFI名", wifiName)
+            put("WIFI IP", wifiIP)
+            put("SD卡空间", sdCardSpace)
+            put("RAM空间", ramSpace)
+            put("是否ROOT", "$isRoot")
         }
     }
 
     val uniqueId: String
-        get() {
-            return md5("$manufacturer-$brand-$model-$device-$androidId-$size")
-        }
+        get() = md5("$manufacturer-$brand-$model-$device-$androidId-$size")
 
     val androidId: String
-        get() {
-            return Settings.System.getString(
-                application.contentResolver,
-                Settings.Secure.ANDROID_ID
-            )
-        }
+        get() = Settings.System.getString(
+            application.contentResolver,
+            Settings.Secure.ANDROID_ID
+        )
 
-    val device: String
-        get() {
-            return Build.DEVICE
-        }
+    val device: String = Build.DEVICE
 
-    val manufacturer: String
-        get() {
-            return Build.MANUFACTURER
-        }
+    val manufacturer: String = Build.MANUFACTURER
 
-    val brand: String
-        get() {
-            return Build.BRAND
-        }
+    val brand: String = Build.BRAND
 
-    val model: String
-        get() {
-            return Build.MODEL
-        }
+    val model: String = Build.MODEL
 
-    val sysVersionName: String
-        get() {
-            return Build.VERSION.RELEASE
-        }
+    val sysVersionName: String = Build.VERSION.RELEASE
 
-    val sysVersionCode: Int
-        get() {
-            return Build.VERSION.SDK_INT
-        }
+    val sysVersionCode: Int = Build.VERSION.SDK_INT
 
-    val operatorName: String
-        get() {
-            return telephonyManager.simOperatorName
-        }
+    val operatorName: String get() = telephonyManager.simOperatorName
 
-    val size: Point
-        get() {
-            return Point().apply { windowManager.defaultDisplay.getRealSize(this) }
-        }
+    val size: Point get() = Point().apply { windowManager.defaultDisplay.getRealSize(this) }
 
-    val packageName: String
-        get() {
-            return application.packageName
-        }
+    val packageName: String get() = application.packageName
 
-    val appVersionName: String
-        get() {
-            packageInfo.firstInstallTime
-            return packageInfo.versionName
-        }
+    val appVersionName: String get() = packageInfo.versionName
 
     val appVersionCode: Long
-        get() {
-            return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
-                packageInfo.versionCode.toLong()
-            } else {
-                packageInfo.longVersionCode
-            }
+        get() = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+            packageInfo.versionCode.toLong()
+        } else {
+            packageInfo.longVersionCode
         }
+
+    val supportedAbis: Array<String> = Build.SUPPORTED_ABIS
+    val supportedAbis32: Array<String> = Build.SUPPORTED_32_BIT_ABIS
+    val supportedAbis64: Array<String> = Build.SUPPORTED_64_BIT_ABIS
+
+    val isRoot: Boolean get() = DeviceUtils.isDeviceRooted()
+
+    val wifiStatus: String
+        @RequiresPermission("android.permission.ACCESS_NETWORK_STATE")
+        get() = DeviceUtils.getWifiState(application)
+
+    val isWifiConnect: Boolean
+        @RequiresPermission("android.permission.ACCESS_NETWORK_STATE")
+        get() = DeviceUtils.isWifiConnect(application)
+
+    val wifiName: String
+        get() = DeviceUtils.getWifiName(application)
+
+    val wifiIP: String
+        get() = DeviceUtils.getWifiIP(application)
+
+    val sdCardSpace: String
+        get() = DeviceUtils.getSDCardSpace(application)
+
+    val sdCardTotalSize: String
+        get() = DeviceUtils.getSDTotalSize(application)
+
+    val sdCardAvailableSize: String
+        get() = DeviceUtils.getSDAvailableSize(application)
+
+    val ramSpace: String
+        get() = DeviceUtils.getMemorySpace(application)
+
+    val ramTotalSize: String
+        get() = DeviceUtils.getMemoryTotalSize(application)
+
+    val ramAvailableSize: String
+        get() = DeviceUtils.getMemoryAvailSize(application)
+
+    val screenInch: Double
+        get() = DeviceUtils.getScreenInch(application)
 
     private val packageInfo: PackageInfo
-        get() {
-            return application.packageManager.getPackageInfo(packageName, 0)!!
-        }
+        get() = application.packageManager.getPackageInfo(
+            packageName,
+            0
+        )!!
 
     private val telephonyManager: TelephonyManager
-        get() {
-            return application.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-        }
+        get() = application.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
 
     private val windowManager: WindowManager
-        get() {
-            return application.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-        }
+        get() = application.getSystemService(Context.WINDOW_SERVICE) as WindowManager
 
     private fun md5(text: String): String {
         return try {
