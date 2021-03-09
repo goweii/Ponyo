@@ -1,12 +1,17 @@
 package per.goweii.ponyo.dialog
 
+import android.animation.Animator
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.annotation.IdRes
 import androidx.annotation.LayoutRes
+import androidx.core.animation.doOnEnd
 import androidx.core.view.doOnPreDraw
 import per.goweii.ponyo.R
 import per.goweii.ponyo.utils.statusBarHeight
@@ -19,6 +24,8 @@ class FrameDialog(
     private val backgroundView: ImageView
     private val contentParent: FrameLayout
     private lateinit var contentView: View
+
+    private var animStyle: AnimStyle = AnimStyle.Scale
 
     private var dataBinder: (FrameDialog.() -> Unit)? = null
 
@@ -41,6 +48,10 @@ class FrameDialog(
             .inflate(contentViewRes, contentParent, false)
     }
 
+    fun animStyle(animStyle: AnimStyle) = apply {
+        this.animStyle = animStyle
+    }
+
     fun show() {
         if (isShown) return
         dataBinder?.invoke(this)
@@ -50,12 +61,19 @@ class FrameDialog(
         contentParams.gravity = Gravity.CENTER
         contentParent.addView(contentView)
         parent.addView(child)
-        child.doOnPreDraw {}
+        child.doOnPreDraw {
+            doAnimIn().apply {
+                start()
+            }
+        }
     }
 
     fun dismiss() {
         if (!isShown) return
-        parent.removeView(child)
+        doAnimOut().apply {
+            doOnEnd { parent.removeView(child) }
+            start()
+        }
     }
 
     fun bindData(dataBinder: FrameDialog.() -> Unit) = apply {
@@ -66,10 +84,128 @@ class FrameDialog(
         return contentView.findViewById(id)
     }
 
+    private fun doAnimIn(): Animator {
+        val backgroundAnim =
+            ObjectAnimator.ofFloat(
+                backgroundView,
+                "alpha",
+                0F, 1F
+            ).apply {
+                duration = ANIM_DURATION
+                interpolator = AccelerateDecelerateInterpolator()
+            }
+        val contentAnim = when (animStyle) {
+            AnimStyle.Scale ->
+                AnimatorSet().apply {
+                    playTogether(
+                        ObjectAnimator.ofFloat(
+                            contentView,
+                            "scaleX",
+                            0.9F, 1F
+                        ).apply {
+                            duration = ANIM_DURATION
+                            interpolator = AccelerateDecelerateInterpolator()
+                        },
+                        ObjectAnimator.ofFloat(
+                            contentView,
+                            "scaleY",
+                            0.9F, 1F
+                        ).apply {
+                            duration = ANIM_DURATION
+                            interpolator = AccelerateDecelerateInterpolator()
+                        },
+                        ObjectAnimator.ofFloat(
+                            contentView,
+                            "alpha",
+                            0F,
+                            1F
+                        ).apply {
+                            duration = ANIM_DURATION
+                            interpolator = AccelerateDecelerateInterpolator()
+                        }
+                    )
+                }
+            AnimStyle.Bottom ->
+                ObjectAnimator.ofFloat(
+                    contentView,
+                    "translationY",
+                    contentParent.height.toFloat() - contentView.top.toFloat(), 0F
+                ).apply {
+                    duration = ANIM_DURATION
+                    interpolator = AccelerateDecelerateInterpolator()
+                }
+        }
+        return AnimatorSet().apply {
+            playTogether(backgroundAnim, contentAnim)
+        }
+    }
+
+    private fun doAnimOut(): Animator {
+        val backgroundAnim =
+            ObjectAnimator.ofFloat(
+                backgroundView, "alpha",
+                backgroundView.alpha, 0F
+            ).apply {
+                duration = ANIM_DURATION
+                interpolator = AccelerateDecelerateInterpolator()
+            }
+        val contentAnim = when (animStyle) {
+            AnimStyle.Scale ->
+                AnimatorSet().apply {
+                    playTogether(
+                        ObjectAnimator.ofFloat(
+                            contentView,
+                            "scaleX",
+                            contentView.scaleX, 0.9F
+                        ).apply {
+                            duration = ANIM_DURATION
+                            interpolator = AccelerateDecelerateInterpolator()
+                        },
+                        ObjectAnimator.ofFloat(
+                            contentView,
+                            "scaleY",
+                            contentView.scaleY, 0.9F
+                        ).apply {
+                            duration = ANIM_DURATION
+                            interpolator = AccelerateDecelerateInterpolator()
+                        },
+                        ObjectAnimator.ofFloat(
+                            contentView,
+                            "alpha",
+                            contentView.alpha, 0F
+                        ).apply {
+                            duration = ANIM_DURATION
+                            interpolator = AccelerateDecelerateInterpolator()
+                        }
+                    )
+                }
+            AnimStyle.Bottom ->
+                ObjectAnimator.ofFloat(
+                    contentView,
+                    "translationY",
+                    contentView.translationY,
+                    contentParent.height.toFloat() - contentView.top.toFloat()
+                ).apply {
+                    duration = ANIM_DURATION
+                    interpolator = AccelerateDecelerateInterpolator()
+                }
+        }
+        return AnimatorSet().apply {
+            playTogether(backgroundAnim, contentAnim)
+        }
+    }
+
     companion object {
+        private const val ANIM_DURATION = 300L
+
         fun with(parent: FrameLayout): FrameDialog {
             return FrameDialog(parent)
         }
+    }
+
+    enum class AnimStyle {
+        Scale,
+        Bottom
     }
 
 }

@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.yuyh.jsonviewer.library.JsonRecyclerView
 import com.yuyh.jsonviewer.library.adapter.BaseJsonViewerAdapter
 import per.goweii.ponyo.R
+import per.goweii.ponyo.dialog.FrameDialog
 import per.goweii.ponyo.net.data.IDataPoolHandleImpl
 import per.goweii.ponyo.net.data.NetworkFeedBean
 import per.goweii.ponyo.panel.Panel
@@ -52,6 +53,7 @@ class NetPanel : Panel() {
     @SuppressLint("SetTextI18n")
     private fun showDetailsDialog(bean: NetworkFeedBean) {
         makeDialog()
+            ?.animStyle(FrameDialog.AnimStyle.Bottom)
             ?.content(R.layout.ponyo_dialog_net_details)
             ?.bindData {
                 val tv_url = getView<TextView>(R.id.ponyo_net_tv_url)
