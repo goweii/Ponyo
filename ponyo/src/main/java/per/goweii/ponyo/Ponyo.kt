@@ -1,7 +1,6 @@
 package per.goweii.ponyo
 
 import android.app.Application
-import android.util.Log
 import okhttp3.OkHttpClient
 import per.goweii.ponyo.appstack.AppStack
 import per.goweii.ponyo.crash.Crash
