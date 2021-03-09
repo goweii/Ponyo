@@ -3,6 +3,7 @@ apply from: "../lib-android.gradle"
 dependencies {
     implementation rootProject.ext.dependencies.recyclerview
     implementation rootProject.ext.dependencies.cardview
+    implementation 'com.squareup.okhttp3:okhttp:4.7.2'
     implementation 'com.github.hackware1993:MagicIndicator:1.7.0'
     implementation 'com.yuyh.json:jsonviewer:1.0.6'
     implementation project(':ponyo-logcat')

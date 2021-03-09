@@ -1,5 +1,6 @@
 package per.goweii.ponyo.panel.net
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -7,10 +8,16 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import per.goweii.ponyo.R
 import per.goweii.ponyo.net.data.NetworkFeedBean
+import java.text.SimpleDateFormat
+import java.util.*
 
-class RequestListAdapter : RecyclerView.Adapter<RequestListAdapter.Holder>() {
+class RequestAdapter : RecyclerView.Adapter<RequestAdapter.Holder>() {
     private val datas by lazy { mutableListOf<NetworkFeedBean>() }
     private var onItemClick: ((NetworkFeedBean) -> Unit)? = null
+
+    @SuppressLint("SimpleDateFormat")
+    private val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
+    private val date = Date()
 
     fun onItemClick(listener: (NetworkFeedBean) -> Unit) {
         onItemClick = listener
@@ -36,7 +43,8 @@ class RequestListAdapter : RecyclerView.Adapter<RequestListAdapter.Holder>() {
 
     inner class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val tv_method by lazy { itemView.findViewById<TextView>(R.id.tv_method) }
-        private val tv_status by lazy { itemView.findViewById<TextView>(R.id.tv_status) }
+        private val tv_time by lazy { itemView.findViewById<TextView>(R.id.tv_time) }
+        private val v_status by lazy { itemView.findViewById<View>(R.id.v_status) }
         private val tv_url by lazy { itemView.findViewById<TextView>(R.id.tv_url) }
 
         init {
@@ -49,7 +57,12 @@ class RequestListAdapter : RecyclerView.Adapter<RequestListAdapter.Holder>() {
 
         fun bindData(data: NetworkFeedBean) {
             tv_method.text = data.method
-            tv_status.text = data.status.toString()
+            tv_time.text = sdf.format(date.also { it.time = data.createTime })
+            if (data.status in 200..299) {
+                v_status.setBackgroundResource(R.color.ponyo_colorLogInfo)
+            } else {
+                v_status.setBackgroundResource(R.color.ponyo_colorLogError)
+            }
             tv_url.text = data.url
         }
     }

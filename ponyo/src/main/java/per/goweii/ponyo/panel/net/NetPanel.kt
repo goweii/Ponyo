@@ -10,16 +10,14 @@ import com.yuyh.jsonviewer.library.JsonRecyclerView
 import com.yuyh.jsonviewer.library.adapter.BaseJsonViewerAdapter
 import per.goweii.ponyo.R
 import per.goweii.ponyo.dialog.BottomAnimStyle
-import per.goweii.ponyo.dialog.FrameDialog
 import per.goweii.ponyo.net.data.IDataPoolHandleImpl
 import per.goweii.ponyo.net.data.NetworkFeedBean
 import per.goweii.ponyo.panel.Panel
-import per.goweii.ponyo.panel.file.fullLength
 import per.goweii.ponyo.widget.HScrollView
 
 class NetPanel : Panel() {
     private var rv: RecyclerView? = null
-    private var requestListAdapter: RequestListAdapter? = null
+    private var requestAdapter: RequestAdapter? = null
 
     override fun getPanelName(): String {
         return "网络"
@@ -33,11 +31,11 @@ class NetPanel : Panel() {
         super.onCreated(view)
         rv = view.findViewById(R.id.ponyo_panel_net_rv)
         rv?.layoutManager = LinearLayoutManager(context)
-        requestListAdapter = RequestListAdapter()
-        requestListAdapter?.onItemClick { bean ->
+        requestAdapter = RequestAdapter()
+        requestAdapter?.onItemClick { bean ->
             showDetailsDialog(bean)
         }
-        rv?.adapter = requestListAdapter
+        rv?.adapter = requestAdapter
     }
 
     override fun onVisible(view: View) {
@@ -47,7 +45,7 @@ class NetPanel : Panel() {
             ?.values
             ?.sortedBy { it.createTime }
             ?.let {
-                requestListAdapter?.set(it)
+                requestAdapter?.set(it)
             }
     }
 

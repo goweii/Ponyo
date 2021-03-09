@@ -2,19 +2,14 @@ package per.goweii.android.ponyo.net
 
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import per.goweii.ponyo.net.stetho.NetworkInterceptor
-import per.goweii.ponyo.net.stetho.NetworkListener
-import per.goweii.ponyo.net.weaknet.WeakNetworkInterceptor
+import per.goweii.ponyo.Ponyo
 import java.io.IOException
 
 object OKHttpUtils {
     private val okHttpClient by lazy {
-        OkHttpClient.Builder()
-            .eventListenerFactory(NetworkListener.get())
-            .addNetworkInterceptor(WeakNetworkInterceptor())
-            .addNetworkInterceptor(NetworkInterceptor())
-            .build()
+        OkHttpClient.Builder().apply {
+            Ponyo.setupNet(this)
+        }.build()
     }
 
     fun get(url: String, onResponse: (String) -> Unit, onFailure: (Exception) -> Unit) {
@@ -37,7 +32,12 @@ object OKHttpUtils {
         })
     }
 
-    fun post(url: String, params: Map<String, Any> , onResponse: (String) -> Unit, onFailure: (Exception) -> Unit) {
+    fun post(
+        url: String,
+        params: Map<String, Any>,
+        onResponse: (String) -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
         val sb = StringBuilder()
         for (key in params.keys) {
             sb.append(key)
