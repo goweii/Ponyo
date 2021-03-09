@@ -15,6 +15,7 @@ import androidx.core.animation.doOnEnd
 import androidx.core.view.doOnLayout
 import androidx.viewpager.widget.ViewPager
 import net.lucode.hackware.magicindicator.MagicIndicator
+import per.goweii.ponyo.dialog.FrameDialog
 import per.goweii.ponyo.panel.PanelManager
 import per.goweii.ponyo.widget.FloatRootView
 import kotlin.math.min
@@ -87,7 +88,7 @@ internal class PanelWindow(context: Context) {
                 override fun dispatchKeyEvent(event: KeyEvent): Boolean {
                     if (event.keyCode == KeyEvent.KEYCODE_BACK) {
                         if (event.action == KeyEvent.ACTION_UP) {
-                            dismiss()
+                            handleBack()
                             return true
                         }
                     }
@@ -99,6 +100,16 @@ internal class PanelWindow(context: Context) {
             fitsSystemWindows = true
         }
         PanelManager.attachTo(viewPager, indicator, dialogContainer)
+    }
+
+    private fun handleBack() {
+        if (dialogContainer.childCount == 0) {
+            dismiss()
+            return
+        }
+        val dialogView = dialogContainer.getChildAt(dialogContainer.childCount - 1)
+        val dialog = dialogView.tag as FrameDialog
+        dialog.dismiss()
     }
 
     fun onAttachListener(listener: (() -> Unit)? = null) {

@@ -20,6 +20,13 @@
             android:textAllCaps="false" />
 
         <Button
+            android:id="@+id/tv_net"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Net"
+            android:textAllCaps="false" />
+
+        <Button
             android:id="@+id/tv_activity_stack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

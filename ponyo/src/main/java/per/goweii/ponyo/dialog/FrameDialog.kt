@@ -9,24 +9,27 @@ import androidx.annotation.IdRes
 import androidx.annotation.LayoutRes
 import androidx.core.view.doOnPreDraw
 import per.goweii.ponyo.R
+import per.goweii.ponyo.utils.statusBarHeight
 
 class FrameDialog(
     private val parent: FrameLayout
 ) {
     private val child: View = LayoutInflater.from(parent.context)
-            .inflate(R.layout.ponyo_frame_dialog, parent, false)
+        .inflate(R.layout.ponyo_frame_dialog, parent, false)
     private val backgroundView: ImageView
     private val contentParent: FrameLayout
     private lateinit var contentView: View
 
     private var dataBinder: (FrameDialog.() -> Unit)? = null
 
+    val isShown: Boolean get() = child.parent == parent
+
     init {
+        child.tag = this
         backgroundView = child.findViewById(R.id.ponyo_frame_dialog_iv_background)
         contentParent = child.findViewById(R.id.ponyo_frame_dialog_fl_content)
-        backgroundView.setOnClickListener {
-            dismiss()
-        }
+        backgroundView.setOnClickListener { dismiss() }
+        contentParent.setPadding(0, contentParent.context.statusBarHeight, 0, 0)
     }
 
     fun content(contentView: View) = apply {
@@ -38,17 +41,16 @@ class FrameDialog(
             .inflate(contentViewRes, contentParent, false)
     }
 
-    val isShown: Boolean get() = child.parent == parent
-
     fun show() {
         if (isShown) return
         dataBinder?.invoke(this)
+        contentView.isFocusable = true
+        contentView.isClickable = true
         val contentParams = contentView.layoutParams as FrameLayout.LayoutParams
         contentParams.gravity = Gravity.CENTER
         contentParent.addView(contentView)
         parent.addView(child)
-        child.doOnPreDraw {
-        }
+        child.doOnPreDraw {}
     }
 
     fun dismiss() {
@@ -60,7 +62,7 @@ class FrameDialog(
         this.dataBinder = dataBinder
     }
 
-    fun <V: View> getView(@IdRes id: Int): V {
+    fun <V : View> getView(@IdRes id: Int): V {
         return contentView.findViewById(id)
     }
 

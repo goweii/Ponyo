@@ -8,6 +8,7 @@ import per.goweii.android.ponyo.appstack.ActiStackActivity
 import per.goweii.android.ponyo.crash.TestCrashActivity
 import per.goweii.android.ponyo.leak.LeakActivity
 import per.goweii.android.ponyo.log.LogActivity
+import per.goweii.android.ponyo.net.NetActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -16,6 +17,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         tv_print_log.setOnClickListener {
             startActivity(Intent(this@MainActivity, LogActivity::class.java))
+        }
+        tv_net.setOnClickListener {
+            startActivity(Intent(this@MainActivity, NetActivity::class.java))
         }
         tv_activity_stack.setOnClickListener {
             startActivity(Intent(this@MainActivity, ActiStackActivity::class.java))

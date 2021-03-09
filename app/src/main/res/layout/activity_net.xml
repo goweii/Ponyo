@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/btn_home_article"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="首页文章列表" />
+
+    <Button
+        android:id="@+id/btn_banner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="首页banner" />
+
+    <Button
+        android:id="@+id/btn_collect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="收藏站外文章" />
+
+    <Button
+        android:id="@+id/btn_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="搜索" />
+
+    <Button
+        android:id="@+id/btn_userinfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="获取个人积分" />
+
+    <Button
+        android:id="@+id/btn_error_url"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="错误链接" />
+
+</LinearLayout>

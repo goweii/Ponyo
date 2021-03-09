@@ -11,7 +11,7 @@ import per.goweii.ponyo.panel.actistack.ActiStackPanel
 import per.goweii.ponyo.panel.db.DbPanel
 import per.goweii.ponyo.panel.device.DevicePanel
 import per.goweii.ponyo.panel.file.FilePanel
-import per.goweii.ponyo.panel.http.HttpPanel
+import per.goweii.ponyo.panel.net.NetPanel
 import per.goweii.ponyo.panel.leak.LeakPanel
 import per.goweii.ponyo.panel.log.LogPanel
 import per.goweii.ponyo.panel.sp.SpPanel
@@ -28,7 +28,7 @@ internal object PanelManager {
 
     init {
         panels.add(LogPanel())
-        panels.add(HttpPanel())
+        panels.add(NetPanel())
         panels.add(TmPanel())
         panels.add(ActiStackPanel())
         panels.add(LeakPanel())

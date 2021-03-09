@@ -11,4 +11,5 @@ dependencies {
     implementation project(':ponyo-crash')
     implementation project(':ponyo-device')
     implementation project(':ponyo-leak')
+    implementation project(':ponyo-net')
 }
