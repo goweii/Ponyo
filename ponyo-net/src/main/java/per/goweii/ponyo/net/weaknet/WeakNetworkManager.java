@@ -64,11 +64,38 @@ public class WeakNetworkManager {
      * @param responseSpeed 响应限速值
      */
     public void setParameter(long timeOutMillis, long requestSpeed, long responseSpeed) {
-        if (timeOutMillis > 0) {
+        if (timeOutMillis >= 0) {
             mTimeOutMillis = timeOutMillis;
         }
         mRequestSpeed = requestSpeed;
         mResponseSpeed = responseSpeed;
+    }
+
+    /**
+     * @param timeOutMillis 超时时间
+     */
+    public void setTimeOutMillis(long timeOutMillis) {
+        if (timeOutMillis >= 0) {
+            mTimeOutMillis = timeOutMillis;
+        }
+    }
+
+    /**
+     * @param requestSpeed  请求限速值
+     */
+    public void setRequestSpeed(long requestSpeed) {
+        if (requestSpeed >= 0) {
+            mRequestSpeed = requestSpeed;
+        }
+    }
+
+    /**
+     * @param responseSpeed 响应限速值
+     */
+    public void setResponseSpeed(long responseSpeed) {
+        if (responseSpeed >= 0) {
+            mResponseSpeed = responseSpeed;
+        }
     }
 
     /**

@@ -8,7 +8,7 @@ import per.goweii.ponyo.net.weaknet.WeakNetworkInterceptor
 object NetManager {
     fun setup(okHttpClientBuilder: OkHttpClient.Builder) {
         okHttpClientBuilder.eventListenerFactory(NetworkListener.get())
-        okHttpClientBuilder.addNetworkInterceptor(WeakNetworkInterceptor())
         okHttpClientBuilder.addNetworkInterceptor(NetworkInterceptor())
+        okHttpClientBuilder.addNetworkInterceptor(WeakNetworkInterceptor())
     }
 }

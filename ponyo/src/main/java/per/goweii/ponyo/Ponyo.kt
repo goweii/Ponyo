@@ -5,6 +5,7 @@ import okhttp3.OkHttpClient
 import per.goweii.ponyo.appstack.AppStack
 import per.goweii.ponyo.crash.Crash
 import per.goweii.ponyo.log.Logcat
+import per.goweii.ponyo.net.utils.NetworkTool
 import per.goweii.ponyo.panel.Panel
 import per.goweii.ponyo.panel.PanelManager
 import per.goweii.ponyo.panel.actistack.ActiStackManager
@@ -38,6 +39,7 @@ object Ponyo : AppStack.AppLifecycleListener {
     }
 
     fun setupNet(okHttpClientBuilder: OkHttpClient.Builder) {
+        NetworkTool.getInstance().init(application)
         NetManager.setup(okHttpClientBuilder)
     }
 

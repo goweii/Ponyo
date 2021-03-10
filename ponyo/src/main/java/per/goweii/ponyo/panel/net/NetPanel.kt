@@ -3,7 +3,10 @@ package per.goweii.ponyo.panel.net
 import android.annotation.SuppressLint
 import android.text.format.Formatter
 import android.view.View
+import android.widget.RadioGroup
+import android.widget.SeekBar
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.yuyh.jsonviewer.library.JsonRecyclerView
@@ -12,11 +15,15 @@ import per.goweii.ponyo.R
 import per.goweii.ponyo.dialog.BottomAnimStyle
 import per.goweii.ponyo.net.data.IDataPoolHandleImpl
 import per.goweii.ponyo.net.data.NetworkFeedBean
+import per.goweii.ponyo.net.weaknet.WeakNetworkManager
 import per.goweii.ponyo.panel.Panel
 import per.goweii.ponyo.widget.HScrollView
 
 class NetPanel : Panel() {
     private var rv: RecyclerView? = null
+    private var tv_net_timeout: TextView? = null
+    private var tv_net_req_limit: TextView? = null
+    private var tv_net_resp_limit: TextView? = null
     private var requestAdapter: RequestAdapter? = null
 
     override fun getPanelName(): String {
@@ -30,12 +37,51 @@ class NetPanel : Panel() {
     override fun onCreated(view: View) {
         super.onCreated(view)
         rv = view.findViewById(R.id.ponyo_panel_net_rv)
+        val rg_net_mode = view.findViewById<RadioGroup>(R.id.rg_net_mode)
+        val cv_net_timeout = view.findViewById<CardView>(R.id.cv_net_timeout)
+        val cv_net_req_limit = view.findViewById<CardView>(R.id.cv_net_req_limit)
+        val cv_net_resp_limit = view.findViewById<CardView>(R.id.cv_net_resp_limit)
+        tv_net_timeout = view.findViewById(R.id.tv_net_timeout)
+        tv_net_req_limit = view.findViewById(R.id.tv_net_req_limit)
+        tv_net_resp_limit = view.findViewById(R.id.tv_net_resp_limit)
         rv?.layoutManager = LinearLayoutManager(context)
         requestAdapter = RequestAdapter()
         requestAdapter?.onItemClick { bean ->
             showDetailsDialog(bean)
         }
         rv?.adapter = requestAdapter
+        rg_net_mode.setOnCheckedChangeListener { _, checkedId ->
+            when (checkedId) {
+                R.id.rb_net_normal -> {
+                    WeakNetworkManager.get().isActive = false
+                }
+                R.id.rb_net_limit -> {
+                    WeakNetworkManager.get().isActive = true
+                    WeakNetworkManager.get().type = WeakNetworkManager.TYPE_SPEED_LIMIT
+                }
+                R.id.rb_net_timeout -> {
+                    WeakNetworkManager.get().isActive = true
+                    WeakNetworkManager.get().type = WeakNetworkManager.TYPE_TIMEOUT
+                }
+                R.id.rb_net_offline -> {
+                    WeakNetworkManager.get().isActive = true
+                    WeakNetworkManager.get().type = WeakNetworkManager.TYPE_OFF_NETWORK
+                }
+            }
+        }
+        rg_net_mode.check(R.id.rb_net_normal)
+        cv_net_timeout.setOnClickListener {
+            showTimeoutChoiceDialog()
+        }
+        cv_net_req_limit.setOnClickListener {
+            showReqLimitChoiceDialog()
+        }
+        cv_net_resp_limit.setOnClickListener {
+            showRespLimitChoiceDialog()
+        }
+        tv_net_timeout?.text = WeakNetworkManager.get().timeOutMillis.toString()
+        tv_net_req_limit?.text = WeakNetworkManager.get().requestSpeed.toString()
+        tv_net_resp_limit?.text = WeakNetworkManager.get().responseSpeed.toString()
     }
 
     override fun onVisible(view: View) {
@@ -106,6 +152,78 @@ class NetPanel : Panel() {
                     hsv_json.visibility = View.GONE
                     tv_text.visibility = View.VISIBLE
                 }
+            }
+            ?.show()
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun showTimeoutChoiceDialog() {
+        val tv_net_timeout_title = view.findViewById<TextView>(R.id.tv_net_timeout_title)
+        showChoiceDialog(
+            tv_net_timeout_title.text.toString(),
+            60_000,
+            WeakNetworkManager.get().timeOutMillis.toInt()
+        ) {
+            WeakNetworkManager.get().timeOutMillis = it.toLong()
+            tv_net_timeout?.text = it.toString()
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun showReqLimitChoiceDialog() {
+        val tv_net_req_limit_title = view.findViewById<TextView>(R.id.tv_net_req_limit_title)
+        showChoiceDialog(
+            tv_net_req_limit_title.text.toString(),
+            1024,
+            WeakNetworkManager.get().requestSpeed.toInt()
+        ) {
+            WeakNetworkManager.get().requestSpeed = it.toLong()
+            tv_net_req_limit?.text = it.toString()
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun showRespLimitChoiceDialog() {
+        val tv_net_resp_limit_title = view.findViewById<TextView>(R.id.tv_net_resp_limit_title)
+        showChoiceDialog(
+            tv_net_resp_limit_title.text.toString(),
+            1024,
+            WeakNetworkManager.get().responseSpeed.toInt()
+        ) {
+            WeakNetworkManager.get().responseSpeed = it.toLong()
+            tv_net_resp_limit?.text = it.toString()
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun showChoiceDialog(title: String, max: Int, curr: Int, callback: (Int) -> Unit) {
+        makeDialog()
+            ?.content(R.layout.ponyo_dialog_net_choice)
+            ?.bindData {
+                val tv_title = getView<TextView>(R.id.ponyo_dialog_net_choice_tv_title)
+                val tv_max = getView<TextView>(R.id.ponyo_dialog_net_choice_tv_max)
+                val tv_value = getView<TextView>(R.id.ponyo_dialog_net_choice_tv_value)
+                val sb = getView<SeekBar>(R.id.ponyo_dialog_net_choice_sb)
+                sb.max = max
+                tv_title.text = title
+                tv_max.text = "${sb.max}ms"
+                sb.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                    override fun onProgressChanged(
+                        seekBar: SeekBar?,
+                        progress: Int,
+                        fromUser: Boolean
+                    ) {
+                        tv_value.text = "${progress}ms"
+                        callback.invoke(progress)
+                    }
+
+                    override fun onStartTrackingTouch(seekBar: SeekBar?) {
+                    }
+
+                    override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                    }
+                })
+                sb.progress = curr
             }
             ?.show()
     }
