@@ -131,7 +131,7 @@ class NetPanel : Panel() {
                 rv_req_headers.layoutManager = LinearLayoutManager(rv_req_headers.context)
                 rv_req_headers.adapter = HeaderAdapter(bean.requestHeadersMap)
                 rv_resp_headers.layoutManager = LinearLayoutManager(rv_req_headers.context)
-                rv_resp_headers.adapter = HeaderAdapter(bean.requestHeadersMap)
+                rv_resp_headers.adapter = HeaderAdapter(bean.responseHeadersMap)
                 json_view.apply {
                     BaseJsonViewerAdapter.KEY_COLOR =
                         context.resources.getColor(R.color.ponyo_colorLogAssert)
@@ -169,7 +169,8 @@ class NetPanel : Panel() {
         showChoiceDialog(
             tv_net_timeout_title.text.toString(),
             60_000,
-            WeakNetworkManager.get().timeOutMillis.toInt()
+            WeakNetworkManager.get().timeOutMillis.toInt(),
+            "ms"
         ) {
             WeakNetworkManager.get().timeOutMillis = it.toLong()
             tv_net_timeout?.text = it.toString()
@@ -182,7 +183,8 @@ class NetPanel : Panel() {
         showChoiceDialog(
             tv_net_req_limit_title.text.toString(),
             1024,
-            WeakNetworkManager.get().requestSpeed.toInt()
+            WeakNetworkManager.get().requestSpeed.toInt(),
+            "KB"
         ) {
             WeakNetworkManager.get().requestSpeed = it.toLong()
             tv_net_req_limit?.text = it.toString()
@@ -195,7 +197,8 @@ class NetPanel : Panel() {
         showChoiceDialog(
             tv_net_resp_limit_title.text.toString(),
             1024,
-            WeakNetworkManager.get().responseSpeed.toInt()
+            WeakNetworkManager.get().responseSpeed.toInt(),
+            "KB"
         ) {
             WeakNetworkManager.get().responseSpeed = it.toLong()
             tv_net_resp_limit?.text = it.toString()
@@ -203,7 +206,13 @@ class NetPanel : Panel() {
     }
 
     @SuppressLint("SetTextI18n")
-    private fun showChoiceDialog(title: String, max: Int, curr: Int, callback: (Int) -> Unit) {
+    private fun showChoiceDialog(
+        title: String,
+        max: Int,
+        curr: Int,
+        unit: String,
+        callback: (Int) -> Unit
+    ) {
         makeDialog()
             ?.content(R.layout.ponyo_dialog_net_choice)
             ?.bindData {
@@ -213,14 +222,14 @@ class NetPanel : Panel() {
                 val sb = getView<SeekBar>(R.id.ponyo_dialog_net_choice_sb)
                 sb.max = max
                 tv_title.text = title
-                tv_max.text = "${sb.max}ms"
+                tv_max.text = "${sb.max}$unit"
                 sb.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                     override fun onProgressChanged(
                         seekBar: SeekBar?,
                         progress: Int,
                         fromUser: Boolean
                     ) {
-                        tv_value.text = "${progress}ms"
+                        tv_value.text = "$progress$unit"
                         callback.invoke(progress)
                     }
 
