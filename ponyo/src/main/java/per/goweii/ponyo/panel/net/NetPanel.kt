@@ -90,8 +90,15 @@ class NetPanel : Panel() {
             .networkFeedMap
             ?.values
             ?.sortedBy { it.createTime }
-            ?.let {
-                requestAdapter?.set(it)
+            ?.let { list ->
+                requestAdapter?.set(list)
+                rv?.let { rv ->
+                    if (!rv.canScrollVertically(1)) {
+                        if (list.isNotEmpty()) {
+                            rv.scrollToPosition(list.lastIndex)
+                        }
+                    }
+                }
             }
     }
 
