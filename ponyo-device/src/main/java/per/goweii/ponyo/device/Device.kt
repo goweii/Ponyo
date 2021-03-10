@@ -1,5 +1,6 @@
 package per.goweii.ponyo.device
 
+import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
 import android.content.pm.PackageInfo
@@ -62,7 +63,8 @@ object Device {
         get() = md5("$manufacturer-$brand-$model-$device-$androidId-$size")
 
     val androidId: String
-        get() = Settings.System.getString(
+        @SuppressLint("HardwareIds")
+        get() = Settings.Secure.getString(
             application.contentResolver,
             Settings.Secure.ANDROID_ID
         )
