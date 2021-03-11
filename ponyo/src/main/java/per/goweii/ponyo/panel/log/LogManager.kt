@@ -181,14 +181,16 @@ object LogManager : Logcat.OnCatchListener {
     private fun addLog(logLines: List<LogLine>) {
         logs.addAll(logLines)
         recyclerView?.let {
-            adapter.addAll(data = logLines)
-            if (!showMore()) {
-                if (adapter.itemCount > prePageCount) {
-                    val count = adapter.itemCount - prePageCount
-                    offset += count
-                    adapter.remove(count = count)
+            logLines.filter { it.match() }.let {
+                adapter.addAll(data = it)
+                if (it.isNotEmpty() && !showMore()) {
+                    if (adapter.itemCount > prePageCount) {
+                        val count = adapter.itemCount - prePageCount
+                        offset += count
+                        adapter.remove(count = count)
+                    }
+                    scrollBottom()
                 }
-                scrollBottom()
             }
         }
         if (recyclerView?.isShown != true) {
