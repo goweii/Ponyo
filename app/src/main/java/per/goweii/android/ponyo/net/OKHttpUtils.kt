@@ -5,7 +5,6 @@ import kotlinx.coroutines.withContext
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
 import per.goweii.ponyo.Ponyo
-import java.io.IOException
 
 object OKHttpUtils {
     private val okHttpClient by lazy {

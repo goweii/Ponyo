@@ -22,12 +22,6 @@ dependencies {
     implementation rootProject.ext.dependencies.room_ktx
     implementation 'com.squareup.okhttp3:okhttp:4.7.2'
     kapt rootProject.ext.dependencies.room_compile
-    implementation project(":ponyo")
-    implementation project(':ponyo-logcat')
-    implementation project(":ponyo-timemonitor")
-    implementation project(':ponyo-appstack')
-    implementation project(':ponyo-crash')
-    implementation project(':ponyo-device')
-    implementation project(':ponyo-leak')
-    implementation project(':ponyo-net')
+    debugImplementation project(":ponyo")
+    releaseImplementation project(":no-op")
 }

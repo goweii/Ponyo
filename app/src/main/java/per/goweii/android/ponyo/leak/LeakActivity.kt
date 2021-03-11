@@ -5,7 +5,6 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_leak.*
 import per.goweii.android.ponyo.R
-import per.goweii.ponyo.leak.Leak
 
 class LeakActivity: AppCompatActivity() {
 
@@ -20,9 +19,6 @@ class LeakActivity: AppCompatActivity() {
             LeakFragmentHolder.leakFragments.clear()
             LeakFragment.leakFragments.clear()
             leakContexts.clear()
-        }
-        btn_dump.setOnClickListener {
-            Leak.dumpAndAnalyze()
         }
         supportFragmentManager.apply {
             beginTransaction().apply {

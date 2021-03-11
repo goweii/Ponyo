@@ -1,0 +1,5 @@
+apply from: "../lib-android.gradle"
+
+dependencies {
+    implementation 'com.squareup.okhttp3:okhttp:4.7.2'
+}

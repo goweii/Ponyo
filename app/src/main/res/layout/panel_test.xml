@@ -9,6 +9,6 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:text="自定义面板"
-        android:textColor="@color/ponyo_colorOnSurface" />
+        android:textColor="#FFFFFF" />
 
 </LinearLayout>

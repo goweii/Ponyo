@@ -16,7 +16,7 @@ import per.goweii.ponyo.panel.tm.TmManager
 import per.goweii.ponyo.timemonitor.TimeMonitor
 import per.goweii.ponyo.utils.OverlayUtils
 
-object Ponyo : AppStack.AppLifecycleListener {
+object Ponyo {
     lateinit var application: Application private set
     private var floatWindow: FloatWindow? = null
 
@@ -27,7 +27,7 @@ object Ponyo : AppStack.AppLifecycleListener {
         TimeMonitor.registerTimeLineEndListener(TmManager)
         Logcat.registerCatchListener(LogManager)
         Logcat.start()
-        AppStack.registerAppLifecycleListener(Ponyo)
+        AppStack.registerAppLifecycleListener(AppLifecycleListener())
         AppStack.activityStack.registerActivityLifecycleListener(TmManager)
         AppStack.activityStack.registerStackUpdateListener(ActiStackManager)
         Crash.setCrashActivity(CrashActivity::class.java)
@@ -43,38 +43,40 @@ object Ponyo : AppStack.AppLifecycleListener {
         NetManager.setup(okHttpClientBuilder)
     }
 
-    override fun onCreate() {
-        TM.APP_STARTUP.record("Application onCreate")
-    }
-
-    override fun onStart() {
-        TM.APP_STARTUP.record("Application onStart")
-    }
-
-    override fun onResume() {
-        TM.APP_STARTUP.record("Application onResume")
-        if (OverlayUtils.canOverlay(application)) {
-            floatWindow?.show()
-        } else {
-            OverlayUtils.requestOverlayPermission(application)
-        }
-    }
-
-    override fun onPause() {
-        floatWindow?.dismiss()
-    }
-
-    override fun onStop() {
-    }
-
-    override fun onDestroy() {
-    }
-
     internal fun onLoggerAssert(count: Int) {
         floatWindow?.setLogAssertCount(count)
     }
 
     internal fun onLoggerError(count: Int) {
         floatWindow?.setLogErrorCount(count)
+    }
+
+    class AppLifecycleListener: AppStack.AppLifecycleListener {
+        override fun onCreate() {
+            TM.APP_STARTUP.record("Application onCreate")
+        }
+
+        override fun onStart() {
+            TM.APP_STARTUP.record("Application onStart")
+        }
+
+        override fun onResume() {
+            TM.APP_STARTUP.record("Application onResume")
+            if (OverlayUtils.canOverlay(application)) {
+                floatWindow?.show()
+            } else {
+                OverlayUtils.requestOverlayPermission(application)
+            }
+        }
+
+        override fun onPause() {
+            floatWindow?.dismiss()
+        }
+
+        override fun onStop() {
+        }
+
+        override fun onDestroy() {
+        }
     }
 }

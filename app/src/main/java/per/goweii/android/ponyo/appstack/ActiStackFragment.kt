@@ -26,8 +26,7 @@ class ActiStackFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
         view.setBackgroundColor(Color.rgb(Random.nextInt(255), Random.nextInt(255), Random.nextInt(255)))
         tv_add.setOnClickListener {
-            val actiStackFragment =
-                ActiStackFragment()
+            val actiStackFragment = ActiStackFragment()
             actiStackFragments.add(actiStackFragment)
             childFragmentManager.apply {
                 beginTransaction().apply {

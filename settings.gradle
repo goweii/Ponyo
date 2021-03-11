@@ -1,5 +1,6 @@
 rootProject.name='Ponyo'
 include ':app'
+include ':no-op'
 include ':ponyo'
 include ':ponyo-device'
 include ':ponyo-leak'
