@@ -129,9 +129,9 @@ class NetPanel : Panel() {
                 tv_size.text = Formatter.formatFileSize(context, bean.size.toLong())
                 tv_cost.text = "${bean.costTime} ms"
                 rv_req_headers.layoutManager = LinearLayoutManager(rv_req_headers.context)
-                rv_req_headers.adapter = HeaderAdapter(bean.requestHeadersMap)
+                rv_req_headers.adapter = HeaderAdapter(bean.requestHeadersMap ?: emptyMap())
                 rv_resp_headers.layoutManager = LinearLayoutManager(rv_req_headers.context)
-                rv_resp_headers.adapter = HeaderAdapter(bean.responseHeadersMap)
+                rv_resp_headers.adapter = HeaderAdapter(bean.responseHeadersMap ?: emptyMap())
                 json_view.apply {
                     BaseJsonViewerAdapter.KEY_COLOR =
                         context.resources.getColor(R.color.ponyo_colorLogAssert)
