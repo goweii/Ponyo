@@ -9,7 +9,7 @@ dependencies {
     implementation project(':ponyo-logcat')
     implementation project(":ponyo-timemonitor")
     implementation project(':ponyo-appstack')
-    implementation project(':ponyo-crash')
+    //implementation project(':ponyo-crash')
     implementation project(':ponyo-device')
     implementation project(':ponyo-leak')
     implementation project(':ponyo-net')

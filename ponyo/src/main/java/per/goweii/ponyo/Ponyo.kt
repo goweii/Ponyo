@@ -3,7 +3,6 @@ package per.goweii.ponyo
 import android.app.Application
 import okhttp3.OkHttpClient
 import per.goweii.ponyo.appstack.AppStack
-import per.goweii.ponyo.crash.Crash
 import per.goweii.ponyo.log.Logcat
 import per.goweii.ponyo.net.utils.NetworkTool
 import per.goweii.ponyo.panel.Panel
@@ -30,7 +29,6 @@ object Ponyo {
         AppStack.registerAppLifecycleListener(AppLifecycleListener())
         AppStack.activityStack.registerActivityLifecycleListener(TmManager)
         AppStack.activityStack.registerStackUpdateListener(ActiStackManager)
-        Crash.setCrashActivity(CrashActivity::class.java)
         floatWindow = FloatWindow(Ponyo.application)
     }
 

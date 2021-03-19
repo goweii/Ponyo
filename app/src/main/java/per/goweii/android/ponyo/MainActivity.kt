@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import kotlinx.android.synthetic.main.activity_main.*
 import per.goweii.android.ponyo.appstack.ActiStackActivity
-import per.goweii.android.ponyo.crash.TestCrashActivity
 import per.goweii.android.ponyo.leak.LeakActivity
 import per.goweii.android.ponyo.log.LogActivity
 import per.goweii.android.ponyo.net.NetActivity
@@ -23,9 +22,6 @@ class MainActivity : AppCompatActivity() {
         }
         tv_activity_stack.setOnClickListener {
             startActivity(Intent(this@MainActivity, ActiStackActivity::class.java))
-        }
-        tv_crash.setOnClickListener {
-            startActivity(Intent(this@MainActivity, TestCrashActivity::class.java))
         }
         tv_leak.setOnClickListener {
             startActivity(Intent(this@MainActivity, LeakActivity::class.java))

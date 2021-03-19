@@ -26,10 +26,5 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/ponyo_file_paths" />
         </provider>
-
-        <activity
-            android:name=".CrashActivity"
-            android:process=":ponyocrash"
-            android:theme="@style/ponyo_CrashTheme" />
     </application>
 </manifest>
