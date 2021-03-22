@@ -52,13 +52,13 @@ class CatchRunnable(
                 lastLogLine = logLine
                 cacheLines.add(logLine)
                 val currTime = System.currentTimeMillis()
-                if (currTime - lastPublishTime > 100) {
+                if (currTime - lastPublishTime > 500) {
                     handler.removeCallbacks(delayPublishRunnable)
                     handler.publish(cacheLines)
                     cacheLines.clear()
                     lastPublishTime = currTime
                 } else {
-                    handler.postDelayed(delayPublishRunnable, 100)
+                    handler.postDelayed(delayPublishRunnable, 500)
                 }
             }
         } catch (e: IOException) {
