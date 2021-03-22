@@ -3,8 +3,7 @@ package per.goweii.ponyo.log
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
-import java.util.*
-import java.util.concurrent.locks.ReentrantLock
+import java.util.concurrent.ConcurrentLinkedQueue
 
 class CatchRunnable(
     private val handler: CatchHandler,
@@ -13,17 +12,14 @@ class CatchRunnable(
 ) : Runnable {
     private var isRunning = false
     private var isShutdown = false
-    private val cacheLines = LinkedList<LogLine>()
+    private val cacheLines = ConcurrentLinkedQueue<LogLine>()
     private var lastLogLine: LogLine? = null
     private var foundLastLogLine = false
     private var lastPublishTime = 0L
-    private val publishLock = ReentrantLock()
     private val delayPublishRunnable = Runnable {
-        publishLock.lock()
         handler.publish(cacheLines)
         cacheLines.clear()
         lastPublishTime = System.currentTimeMillis()
-        publishLock.unlock()
     }
 
     fun copy(): CatchRunnable {
@@ -53,31 +49,25 @@ class CatchRunnable(
                 reader.readLine().also { line = it } ?: break
                 val logLine = LogLine.newLogLine(line) ?: continue
                 if (logLine.pid != pid) continue
-                publishLock.lock()
                 lastLogLine = logLine
                 cacheLines.add(logLine)
-                publishLock.unlock()
                 val currTime = System.currentTimeMillis()
-                if (currTime - lastPublishTime > 500) {
+                if (currTime - lastPublishTime > 200) {
                     handler.removeCallbacks(delayPublishRunnable)
-                    publishLock.lock()
                     handler.publish(cacheLines)
                     cacheLines.clear()
                     lastPublishTime = currTime
-                    publishLock.unlock()
                 } else {
-                    handler.postDelayed(delayPublishRunnable, 500)
+                    handler.postDelayed(delayPublishRunnable, 300)
                 }
             }
         } catch (e: IOException) {
         } finally {
             if (cacheLines.isNotEmpty()) {
                 handler.removeCallbacks(delayPublishRunnable)
-                publishLock.lock()
                 handler.publish(cacheLines)
                 cacheLines.clear()
                 lastPublishTime = System.currentTimeMillis()
-                publishLock.unlock()
             }
             isRunning = false
             try {
