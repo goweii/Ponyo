@@ -4,6 +4,8 @@
     <color name="ponyo_colorPrimaryDark">#56A3AB</color>
     <color name="ponyo_colorAccent">#E6595A</color>
 
+    <color name="ponyo_colorTransparent">@android:color/transparent</color>
+    <color name="ponyo_colorSurfaceTop">#FF333333</color>
     <color name="ponyo_colorSurface">#FF222222</color>
     <color name="ponyo_colorBackground">#FF111111</color>
     <color name="ponyo_colorBackgroundMask">#55FFFFFF</color>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:orientation="vertical"
+    app:cardBackgroundColor="@color/ponyo_colorSurface"
+    app:cardCornerRadius="@dimen/ponyo_corner_radius">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/ponyo_panel_padding"
+        android:paddingBottom="@dimen/ponyo_panel_padding">
+
+        <TextView
+            android:id="@+id/ponyo_dialog_net_choice_tv_title"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/ponyo_button_height"
+            android:gravity="center"
+            android:text="超时时长"
+            android:textColor="@color/ponyo_colorOnSurface"
+            android:textSize="@dimen/ponyo_text_size_btn" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/ponyo_button_height"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/ponyo_dialog_net_choice_tv_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/ponyo_margin_def"
+                android:layout_gravity="center_vertical|start"
+                android:gravity="center"
+                tools:text="2000ms"
+                android:textColor="@color/ponyo_colorOnSurface"
+                android:textSize="@dimen/ponyo_text_size_net" />
+
+            <TextView
+                android:id="@+id/ponyo_dialog_net_choice_tv_max"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:layout_marginEnd="@dimen/ponyo_margin_def"
+                android:gravity="center"
+                tools:text="60000ms"
+                android:textColor="@color/ponyo_colorOnSurface"
+                android:textSize="@dimen/ponyo_text_size_net" />
+
+        </FrameLayout>
+
+        <SeekBar
+            android:id="@+id/ponyo_dialog_net_choice_sb"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/ponyo_button_height"
+            android:progressBackgroundTint="@color/ponyo_colorBackgroundMask"
+            android:progressTint="@color/ponyo_colorPrimaryDark"
+            android:thumbTint="@color/ponyo_colorPrimary"
+            tools:progress="50" />
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

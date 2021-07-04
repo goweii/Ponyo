@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:background="@color/ponyo_colorBackground">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/ponyo_tab_height"
+        android:layout_margin="@dimen/ponyo_panel_padding"
+        android:alpha="0.9"
+        app:cardBackgroundColor="@color/ponyo_colorBackgroundMask"
+        app:cardCornerRadius="@dimen/ponyo_corner_radius"
+        app:cardElevation="0dp">
+
+        <RadioGroup
+            android:id="@+id/rg_net_mode"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/ponyo_tab_height"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/rb_net_normal"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/ponyo_selector_net_mode_bg"
+                android:button="@null"
+                android:checked="true"
+                android:gravity="center"
+                android:text="正常" />
+
+            <RadioButton
+                android:id="@+id/rb_net_limit"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/ponyo_selector_net_mode_bg"
+                android:button="@null"
+                android:gravity="center"
+                android:text="限速" />
+
+            <RadioButton
+                android:id="@+id/rb_net_timeout"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/ponyo_selector_net_mode_bg"
+                android:button="@null"
+                android:gravity="center"
+                android:text="超时" />
+
+            <RadioButton
+                android:id="@+id/rb_net_offline"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/ponyo_selector_net_mode_bg"
+                android:button="@null"
+                android:gravity="center"
+                android:text="断网" />
+
+        </RadioGroup>
+
+    </androidx.cardview.widget.CardView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/ponyo_tab_height"
+        android:layout_marginStart="@dimen/ponyo_panel_padding"
+        android:layout_marginEnd="@dimen/ponyo_panel_padding"
+        android:layout_marginBottom="@dimen/ponyo_panel_padding"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cv_net_req_limit"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:alpha="0.9"
+            app:cardBackgroundColor="@color/ponyo_colorBackgroundMask"
+            app:cardCornerRadius="@dimen/ponyo_corner_radius"
+            app:cardElevation="0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/tv_net_req_limit_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:paddingStart="@dimen/ponyo_panel_padding"
+                    android:paddingEnd="@dimen/ponyo_panel_padding"
+                    android:text="请求限速"
+                    android:textColor="@color/ponyo_colorOnBackgroundMask"
+                    android:textSize="@dimen/ponyo_text_size_tab" />
+
+                <TextView
+                    android:id="@+id/tv_net_req_limit"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="#00000000"
+                    android:gravity="center_vertical|end"
+                    android:textColor="@color/ponyo_colorOnBackgroundMask"
+                    android:textSize="@dimen/ponyo_text_size_tab"
+                    tools:text="1" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:paddingStart="@dimen/ponyo_panel_padding"
+                    android:paddingEnd="@dimen/ponyo_panel_padding"
+                    android:text="KB"
+                    android:textColor="@color/ponyo_colorOnBackgroundMask"
+                    android:textSize="@dimen/ponyo_text_size_tab" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <View
+            android:layout_width="@dimen/ponyo_panel_padding"
+            android:layout_height="0dp"
+            android:visibility="invisible" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cv_net_resp_limit"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:alpha="0.9"
+            app:cardBackgroundColor="@color/ponyo_colorBackgroundMask"
+            app:cardCornerRadius="@dimen/ponyo_corner_radius"
+            app:cardElevation="0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/tv_net_resp_limit_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:paddingStart="@dimen/ponyo_panel_padding"
+                    android:paddingEnd="@dimen/ponyo_panel_padding"
+                    android:text="响应限速"
+                    android:textColor="@color/ponyo_colorOnBackgroundMask"
+                    android:textSize="@dimen/ponyo_text_size_tab" />
+
+                <TextView
+                    android:id="@+id/tv_net_resp_limit"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="#00000000"
+                    android:gravity="center_vertical|end"
+                    android:textColor="@color/ponyo_colorOnBackgroundMask"
+                    android:textSize="@dimen/ponyo_text_size_tab"
+                    tools:text="1" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:paddingStart="@dimen/ponyo_panel_padding"
+                    android:paddingEnd="@dimen/ponyo_panel_padding"
+                    android:text="KB"
+                    android:textColor="@color/ponyo_colorOnBackgroundMask"
+                    android:textSize="@dimen/ponyo_text_size_tab" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <View
+            android:layout_width="@dimen/ponyo_panel_padding"
+            android:layout_height="0dp"
+            android:visibility="invisible" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cv_net_timeout"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:alpha="0.9"
+            app:cardBackgroundColor="@color/ponyo_colorBackgroundMask"
+            app:cardCornerRadius="@dimen/ponyo_corner_radius"
+            app:cardElevation="0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/tv_net_timeout_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:alpha="0.8"
+                    android:gravity="center"
+                    android:paddingStart="@dimen/ponyo_panel_padding"
+                    android:paddingEnd="@dimen/ponyo_panel_padding"
+                    android:text="超时时长"
+                    android:textColor="@color/ponyo_colorOnBackgroundMask"
+                    android:textSize="@dimen/ponyo_text_size_tab" />
+
+                <TextView
+                    android:id="@+id/tv_net_timeout"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="#00000000"
+                    android:gravity="center_vertical|end"
+                    android:textColor="@color/ponyo_colorOnBackgroundMask"
+                    android:textSize="@dimen/ponyo_text_size_tab"
+                    tools:text="2000" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:paddingStart="@dimen/ponyo_panel_padding"
+                    android:paddingEnd="@dimen/ponyo_panel_padding"
+                    android:text="MS"
+                    android:textColor="@color/ponyo_colorOnBackgroundMask"
+                    android:textSize="@dimen/ponyo_text_size_tab" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/ponyo_panel_net_rv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="@dimen/ponyo_panel_padding_half"
+        android:paddingBottom="@dimen/ponyo_panel_padding_half"
+        android:clipToPadding="false"
+        tools:listitem="@layout/ponyo_item_request" />
+
+</LinearLayout>

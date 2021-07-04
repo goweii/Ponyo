@@ -3,7 +3,7 @@ package per.goweii.ponyo.log
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
-import java.util.*
+import java.util.concurrent.ConcurrentLinkedQueue
 
 class CatchRunnable(
     private val handler: CatchHandler,
@@ -12,7 +12,7 @@ class CatchRunnable(
 ) : Runnable {
     private var isRunning = false
     private var isShutdown = false
-    private val cacheLines = LinkedList<LogLine>()
+    private val cacheLines = ConcurrentLinkedQueue<LogLine>()
     private var lastLogLine: LogLine? = null
     private var foundLastLogLine = false
     private var lastPublishTime = 0L

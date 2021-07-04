@@ -180,17 +180,6 @@ object LogManager : Logcat.OnCatchListener {
 
     private fun addLog(logLines: List<LogLine>) {
         logs.addAll(logLines)
-        recyclerView?.let {
-            adapter.addAll(data = logLines)
-            if (!showMore()) {
-                if (adapter.itemCount > prePageCount) {
-                    val count = adapter.itemCount - prePageCount
-                    offset += count
-                    adapter.remove(count = count)
-                }
-                scrollBottom()
-            }
-        }
         if (recyclerView?.isShown != true) {
             var assertCount = 0
             var errorCount = 0
@@ -202,6 +191,17 @@ object LogManager : Logcat.OnCatchListener {
             }
             unreadAssertCount += assertCount
             unreadErrorCount += errorCount
+        }
+        logLines.filter { it.match() }.let { lines ->
+            adapter.addAll(data = lines)
+            if (lines.isNotEmpty() && !showMore()) {
+                if (adapter.itemCount > prePageCount) {
+                    val count = adapter.itemCount - prePageCount
+                    offset += count
+                    adapter.remove(count = count)
+                }
+                scrollBottom()
+            }
         }
     }
 

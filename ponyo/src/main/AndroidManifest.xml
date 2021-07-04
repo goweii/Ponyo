@@ -3,6 +3,9 @@
     package="per.goweii.ponyo">
 
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application>
         <provider
@@ -16,17 +19,12 @@
         </provider>
         <provider
             android:name=".panel.file.FileOpenProvider"
-            android:authorities="${applicationId}.panel.file.fileopenprovider"
+            android:authorities="${applicationId}.ponyo.panel.file.fileopenprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/ponyo_file_paths" />
         </provider>
-
-        <activity
-            android:name=".CrashActivity"
-            android:process=":ponyocrash"
-            android:theme="@style/ponyo_CrashTheme" />
     </application>
 </manifest>

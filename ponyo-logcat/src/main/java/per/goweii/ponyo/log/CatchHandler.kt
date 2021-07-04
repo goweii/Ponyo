@@ -15,13 +15,15 @@ class CatchHandler(
         }
     }
 
-    fun publish(lines: List<LogLine>) {
+    @Synchronized
+    fun publish(lines: Collection<LogLine>) {
         val message = Message.obtain()
         message.what = MESSAGE_PUBLISH
         message.obj = ArrayList(lines)
         sendMessage(message)
     }
 
+    @Synchronized
     fun restart() {
         val message = Message.obtain()
         message.what = MESSAGE_RESTART

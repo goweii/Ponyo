@@ -22,6 +22,7 @@
     <dimen name="ponyo_text_size_tm">12sp</dimen>
     <dimen name="ponyo_text_size_appstack">12sp</dimen>
     <dimen name="ponyo_text_size_db">12sp</dimen>
+    <dimen name="ponyo_text_size_net">12sp</dimen>
     <dimen name="ponyo_text_size_device">12sp</dimen>
     <dimen name="ponyo_text_size_file">12sp</dimen>
     <dimen name="ponyo_text_size_leak">12sp</dimen>

@@ -29,10 +29,4 @@
         android:layout_height="wrap_content"
         android:text="clear"/>
 
-    <Button
-        android:id="@+id/btn_dump"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="dump"/>
-
 </LinearLayout>

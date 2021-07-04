@@ -14,6 +14,6 @@ sealed class TM(val name: String) {
     fun end(tag: String) = TimeMonitor.end(name, tag)
 
     object APP_STARTUP : TM("Start Application")
-    class ACTIVITY_STARTUP(activity: Activity) : TM("Start: ${activity.objectSimpleName}")
-    class ACTIVITY_FINISH(activity: Activity) : TM("Finish: ${activity.objectSimpleName}")
+    class ACTIVITY_STARTUP(activity: Activity) : TM("Start ${activity.objectSimpleName}")
+    class ACTIVITY_FINISH(activity: Activity) : TM("Finish ${activity.objectSimpleName}")
 }
