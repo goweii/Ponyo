@@ -1,11 +1,11 @@
 package per.goweii.ponyo
 
-import android.animation.Animator
-import android.animation.AnimatorSet
-import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.*
+import android.graphics.Color
+import android.graphics.Outline
+import android.graphics.PixelFormat
+import android.graphics.RectF
 import android.os.Build
 import android.util.DisplayMetrics
 import android.util.TypedValue
@@ -15,7 +15,10 @@ import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.doOnPreDraw
-import kotlin.math.*
+import androidx.dynamicanimation.animation.FloatValueHolder
+import androidx.dynamicanimation.animation.SpringAnimation
+import androidx.dynamicanimation.animation.SpringForce
+import kotlin.math.min
 
 @SuppressLint("ClickableViewAccessibility", "InflateParams")
 internal class FloatWindow(private val context: Context) : GestureDetector.OnGestureListener,
@@ -66,6 +69,7 @@ internal class FloatWindow(private val context: Context) : GestureDetector.OnGes
     private val gestureDetector: GestureDetector by lazy {
         GestureDetector(context, this)
     }
+    private val velocityTracker: VelocityTracker = VelocityTracker.obtain()
 
     private val rootView: View = LayoutInflater.from(context).inflate(R.layout.ponyo_float, null)
     private val iconView: ImageView = rootView.findViewById(R.id.ponyo_iv_icon)
@@ -82,6 +86,9 @@ internal class FloatWindow(private val context: Context) : GestureDetector.OnGes
     private var lastSwitchModeTime = 0L
     private var switchModeAnimRunning = false
     private val autoSwitchModeRunnable = Runnable { autoSwitchMode() }
+
+    private val x: Int get() = windowParams.x
+    private val y: Int get() = windowParams.y
 
     init {
         rootView.apply {
@@ -177,12 +184,22 @@ internal class FloatWindow(private val context: Context) : GestureDetector.OnGes
     }
 
     override fun onDown(e: MotionEvent): Boolean {
+        MotionEvent.obtain(e).also {
+            it.setLocation(it.rawX, it.rawY)
+            velocityTracker.addMovement(it)
+            it.recycle()
+        }
         state = State.IDLE
         runVisible()
         return true
     }
 
     private fun onUp(e: MotionEvent) {
+        MotionEvent.obtain(e).also {
+            it.setLocation(it.rawX, it.rawY)
+            velocityTracker.addMovement(it)
+            it.recycle()
+        }
         when (state) {
             State.DRAGGING -> {
                 state = State.FLING
@@ -201,6 +218,11 @@ internal class FloatWindow(private val context: Context) : GestureDetector.OnGes
     }
 
     override fun onScroll(e1: MotionEvent, e2: MotionEvent, dX: Float, dY: Float): Boolean {
+        MotionEvent.obtain(e2).also {
+            it.setLocation(it.rawX, it.rawY)
+            velocityTracker.addMovement(it)
+            it.recycle()
+        }
         when (state) {
             State.IDLE -> {
                 state = State.DRAGGING
@@ -227,7 +249,8 @@ internal class FloatWindow(private val context: Context) : GestureDetector.OnGes
     private fun onDragStart() {
         dragStartX = windowParams.x.toFloat()
         dragStartY = windowParams.y.toFloat()
-        flingAnim?.cancel()
+        flingAnimationX?.cancel()
+        flingAnimationY?.cancel()
     }
 
     private fun onDragging(moveX: Float, moveY: Float) {
@@ -236,35 +259,110 @@ internal class FloatWindow(private val context: Context) : GestureDetector.OnGes
         updateToXY(x.toInt(), y.toInt())
     }
 
+    private val flingAnimationX: SpringAnimation by lazy {
+        SpringAnimation(object : FloatValueHolder() {
+            override fun setValue(value: Float) {
+                updateToXY(x = value.toInt())
+            }
+
+            override fun getValue(): Float {
+                return x.toFloat()
+            }
+        }).apply {
+            addUpdateListener { _, value, _ ->
+                if (value < 0F) {
+                    animateToFinalPosition(0F)
+                } else if (value > boundRect.right - defSize) {
+                    animateToFinalPosition(boundRect.right - defSize)
+                }
+            }
+            spring = SpringForce().also {
+                it.stiffness = SpringForce.STIFFNESS_LOW
+                it.dampingRatio = SpringForce.DAMPING_RATIO_NO_BOUNCY
+            }
+            minimumVisibleChange = 1F
+        }
+    }
+
+    private val flingAnimationY: SpringAnimation by lazy {
+        SpringAnimation(object : FloatValueHolder() {
+            override fun setValue(value: Float) {
+                updateToXY(y = value.toInt())
+            }
+
+            override fun getValue(): Float {
+                return y.toFloat()
+            }
+        }).apply {
+            addUpdateListener { _, value, _ ->
+                if (value < 0F) {
+                    animateToFinalPosition(0F)
+                } else if (value > boundRect.bottom - defSize) {
+                    animateToFinalPosition(boundRect.bottom - defSize)
+                }
+            }
+            spring = SpringForce().also {
+                it.stiffness = SpringForce.STIFFNESS_LOW
+                it.dampingRatio = SpringForce.DAMPING_RATIO_NO_BOUNCY
+            }
+            minimumVisibleChange = 1F
+        }
+    }
+
     private fun onDragEnd() {
-        val startX: Float = windowParams.x.toFloat()
-        val startY: Float = windowParams.y.toFloat()
-        val endX = when {
-            startX < boundRect.left -> boundRect.left
-            startX > boundRect.right - rootView.width -> boundRect.right - rootView.width
-            else -> startX
-        }
-        val endY = when {
-            startY < boundRect.top -> boundRect.top
-            startY > boundRect.bottom - rootView.height -> boundRect.bottom - rootView.height
-            else -> startY
-        }
-        flingAnim = AnimatorSet().apply {
-            playTogether(
-                ValueAnimator.ofFloat(startX, endX).apply {
-                    addUpdateListener {
-                        val x = it.animatedValue as Float
-                        updateToXY(x = x.toInt())
+        velocityTracker.computeCurrentVelocity(1000)
+        val vx = velocityTracker.xVelocity
+        val vy = velocityTracker.yVelocity
+        val minx = boundRect.left
+        val miny = boundRect.top
+        val maxx = boundRect.right - defSize
+        val maxy = boundRect.bottom - defSize
+        val startx = x.toFloat()
+        val starty = y.toFloat()
+        var finalx = x + vx * 0.1f
+        var finaly = y + vy * 0.1f
+        val centerx = (maxx - minx) * 0.5f
+        val centery = (miny - maxy) * 0.5f
+        if (finalx > minx && finalx < maxx && finaly > miny && finaly < maxy) {
+            if (finalx < centerx) {
+                if (centery < centery) {
+                    if (finalx - minx < finaly - miny) {
+                        finalx = minx
+                    } else {
+                        finaly = miny
                     }
-                },
-                ValueAnimator.ofFloat(startY, endY).apply {
-                    addUpdateListener {
-                        val y = it.animatedValue as Float
-                        updateToXY(y = y.toInt())
+                } else {
+                    if (finalx - minx < maxy - finaly) {
+                        finalx = minx
+                    } else {
+                        finaly = maxy
                     }
                 }
-            )
-            start()
+            } else {
+                if (centery < centery) {
+                    if (maxx - finalx < finaly - miny) {
+                        finalx = maxx
+                    } else {
+                        finaly = miny
+                    }
+                } else {
+                    if (maxx - finalx < maxy - finaly) {
+                        finalx = maxx
+                    } else {
+                        finaly = maxy
+                    }
+                }
+            }
+        }
+        flingAnimationX.apply {
+            setStartValue(startx)
+            setStartVelocity(vx)
+            animateToFinalPosition(finalx)
+        }
+        flingAnimationY.apply {
+            setStartValue(starty)
+            setStartVelocity(vy)
+            animateToFinalPosition(finaly)
         }
     }
 
@@ -439,7 +537,5 @@ internal class FloatWindow(private val context: Context) : GestureDetector.OnGes
                 Mode.ERROR -> 3000L
             }
         }
-
-    private var flingAnim: Animator? = null
 
 }
