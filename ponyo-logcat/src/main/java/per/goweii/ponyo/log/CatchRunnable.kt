@@ -21,6 +21,8 @@ class CatchRunnable(
         cacheLines.clear()
         lastPublishTime = System.currentTimeMillis()
     }
+    private var publishDelay = 300L
+    private var bufferSize = 8192
 
     fun copy(): CatchRunnable {
         return CatchRunnable(handler, pid, buffers)
@@ -43,7 +45,7 @@ class CatchRunnable(
             }
             process = command.exec()
             val inputStream = process.inputStream
-            reader = BufferedReader(InputStreamReader(inputStream), 8192)
+            reader = BufferedReader(InputStreamReader(inputStream), bufferSize)
             var line: String?
             while (!isShutdown) {
                 reader.readLine().also { line = it } ?: break
@@ -52,13 +54,13 @@ class CatchRunnable(
                 lastLogLine = logLine
                 cacheLines.add(logLine)
                 val currTime = System.currentTimeMillis()
-                if (currTime - lastPublishTime > 100) {
-                    handler.removeCallbacks(delayPublishRunnable)
+                handler.removeCallbacks(delayPublishRunnable)
+                if (currTime - lastPublishTime > publishDelay) {
                     handler.publish(cacheLines)
                     cacheLines.clear()
                     lastPublishTime = currTime
                 } else {
-                    handler.postDelayed(delayPublishRunnable, 100)
+                    handler.postDelayed(delayPublishRunnable, publishDelay)
                 }
             }
         } catch (e: IOException) {
