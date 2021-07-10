@@ -25,6 +25,7 @@
     <dimen name="ponyo_text_size_net">12sp</dimen>
     <dimen name="ponyo_text_size_device">12sp</dimen>
     <dimen name="ponyo_text_size_file">12sp</dimen>
+    <dimen name="ponyo_text_size_shell">12sp</dimen>
     <dimen name="ponyo_text_size_leak">12sp</dimen>
     <dimen name="ponyo_text_size_sp">12sp</dimen>
 </resources>

@@ -1,4 +1,3 @@
 apply plugin: 'java-library'
 apply from: "../basic-java.gradle"
-//apply from: "../bintray.gradle"
 apply from: "../maven-upload.gradle"

@@ -4,12 +4,17 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import per.goweii.ponyo.dialog.FrameDialog
 
 @Suppress("MemberVisibilityCanBePrivate")
 abstract class Panel {
     lateinit var view: View private set
     val context: Context get() = view.context
+    var scope: CoroutineScope? = null
     var isCreated = false
         private set
     var isAttached = false
@@ -35,7 +40,10 @@ abstract class Panel {
         dispatchDestroy()
     }
 
-    open fun onCreated(view: View) {}
+    open fun onCreated(view: View) {
+        scope?.cancel()
+        scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
+    }
 
     open fun onAttached(view: View) {}
 
@@ -45,7 +53,10 @@ abstract class Panel {
 
     open fun onDetached(view: View) {}
 
-    open fun onDestroy(view: View) {}
+    open fun onDestroy(view: View) {
+        scope?.cancel()
+        scope = null
+    }
 
     private fun dispatchCreated() {
         if (isCreated) return

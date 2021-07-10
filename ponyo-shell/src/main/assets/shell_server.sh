@@ -1,0 +1,1 @@
+adb shell app_process -Djava.class.path=/data/local/tmp/shell_server.dex /system/bin --nice-name=ponyoshell per.goweii.ponyo.shell.server.ShellServer

@@ -1,5 +1,6 @@
 package per.goweii.ponyo.panel
 
+import android.annotation.SuppressLint
 import android.widget.FrameLayout
 import androidx.viewpager.widget.ViewPager
 import net.lucode.hackware.magicindicator.MagicIndicator
@@ -14,9 +15,11 @@ import per.goweii.ponyo.panel.file.FilePanel
 import per.goweii.ponyo.panel.net.NetPanel
 import per.goweii.ponyo.panel.leak.LeakPanel
 import per.goweii.ponyo.panel.log.LogPanel
+import per.goweii.ponyo.panel.shell.ShellPanel
 import per.goweii.ponyo.panel.sp.SpPanel
 import per.goweii.ponyo.panel.tm.TmPanel
 
+@SuppressLint("StaticFieldLeak")
 internal object PanelManager {
     private var dialogContainer: FrameLayout? = null
     private var viewPager: ViewPager? = null
@@ -36,6 +39,7 @@ internal object PanelManager {
         panels.add(SpPanel())
         panels.add(FilePanel())
         panels.add(DevicePanel())
+        panels.add(ShellPanel())
     }
 
     fun addPanel(panel: Panel) {

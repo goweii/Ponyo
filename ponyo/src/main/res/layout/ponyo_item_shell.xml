@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    tools:showIn="@layout/ponyo_panel_shell">
+
+    <per.goweii.ponyo.widget.AutoSplitTextView
+        android:id="@+id/tv_shell"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/ponyo_colorOnSurface"
+        android:textSize="@dimen/ponyo_text_size_shell"
+        android:typeface="monospace" />
+
+</LinearLayout>
