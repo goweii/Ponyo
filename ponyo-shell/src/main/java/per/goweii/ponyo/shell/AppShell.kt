@@ -50,6 +50,7 @@ object AppShell {
                     postOnDisconnect()
                 }
             })
+            thread?.start()
         }
         return thread != null
     }

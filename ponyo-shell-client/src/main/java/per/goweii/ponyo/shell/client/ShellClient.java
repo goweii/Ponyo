@@ -5,7 +5,10 @@ import java.net.Socket;
 
 public class ShellClient {
     public static void main(String[] args) {
-        connectServer();
+        ShellSocketThread thread = connectServer();
+        if (thread != null) {
+            thread.start();
+        }
     }
 
     public static ShellSocketThread connectServer() {
@@ -13,9 +16,7 @@ public class ShellClient {
         try {
             Socket socket = new Socket(InetAddress.getLocalHost(), 41142);
             System.out.println("Shell client connect server succeed");
-            ShellSocketThread thread = new ShellSocketThread(socket);
-            thread.start();
-            return thread;
+            return new ShellSocketThread(socket);
         } catch (Throwable e) {
             System.out.println("Shell client connect server error:" + e.toString());
             return null;
