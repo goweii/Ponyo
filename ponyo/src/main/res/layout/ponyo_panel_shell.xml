@@ -6,20 +6,14 @@
     android:orientation="vertical"
     tools:background="@color/ponyo_colorBackground">
 
-    <HorizontalScrollView
-        android:id="@+id/hsv_shell_output"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_shell_output"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:fillViewport="true">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_shell_output"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:listitem="@layout/ponyo_item_shell" />
-
-    </HorizontalScrollView>
+        android:clipToPadding="false"
+        android:padding="@dimen/ponyo_margin_thin"
+        tools:listitem="@layout/ponyo_item_shell_input" />
 
     <EditText
         android:id="@+id/et_shell_input"
@@ -30,6 +24,6 @@
         android:inputType="text"
         android:padding="@dimen/ponyo_margin_middle"
         android:textColor="@color/ponyo_colorOnSurface"
-        android:textSize="@dimen/ponyo_text_size_shell" />
+        android:textSize="@dimen/ponyo_text_size_btn" />
 
 </LinearLayout>

@@ -15,8 +15,9 @@
 
     <per.goweii.ponyo.widget.HScrollView
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:fillViewport="true"
-        android:layout_height="wrap_content">
+        android:scrollbars="none">
 
         <TextView
             android:id="@+id/tv_tm_info"

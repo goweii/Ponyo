@@ -6,6 +6,7 @@ import android.os.Looper
 import android.os.Message
 import per.goweii.ponyo.shell.client.ShellClient
 import per.goweii.ponyo.shell.client.ShellCommand
+import per.goweii.ponyo.shell.client.ShellConnectStateListener
 import per.goweii.ponyo.shell.client.ShellSocketThread
 import java.io.File
 import java.io.FileOutputStream
@@ -13,61 +14,64 @@ import java.io.IOException
 import java.io.InputStream
 
 object AppShell {
-    private val clientHandler = object : Handler(Looper.getMainLooper()) {
-        override fun handleMessage(msg: Message) {
-            val result = msg.obj?.toString()
-            if (!result.isNullOrEmpty()) {
-                resultCallback?.invoke(result)
-            }
-        }
-    }
+    private val handler = H()
+    private var thread: ShellSocketThread? = null
 
-    private var socketThread: ShellSocketThread? = null
+    val isConnected: Boolean get() = thread?.isAlive == true
 
-    var forkByAdb = true
-
-    val isConnect: Boolean get() = socketThread?.isAlive == true
-
-    var resultCallback: ((String) -> Unit)? = null
+    var onConnected: (() -> Unit)? = null
+    var onDisconnect: (() -> Unit)? = null
+    var onResult: ((String) -> Unit)? = null
 
     fun forkShellProcess(context: Context) {
         val dexFile = prepareDexFile(context)
-        if (forkByAdb) return
-        ShellCommand("app_process")
+        ShellCommand("nohup")
+            .append("app_process")
             .append("-Djava.class.path=${dexFile.path}")
             .append("/system/bin")
             .append("--nice-name=ponyoshell")
             .append("per.goweii.ponyo.shell.server.ShellServer")
+            .append(">/dev/null 2>&1 &")
             .exec()
     }
 
-    fun connectShellProcess(callback: (String) -> Unit): Boolean {
-        resultCallback = callback
-        if (isConnect) {
-            socketThread?.setCallback { postMsg(it) }
-            return true
+    fun connectShellProcess(): Boolean {
+        if (!isConnected) {
+            thread = ShellClient.connectServer()
+            thread?.setResultCallback {
+                postOnResult(it)
+            }
+            thread?.setConnectStateListener(object : ShellConnectStateListener {
+                override fun onConnected() {
+                    postOnConnected()
+                }
+
+                override fun onDisconnect() {
+                    postOnDisconnect()
+                }
+            })
         }
-        socketThread = ShellClient.connectServer()?.also { thread ->
-            thread.setCallback { postMsg(it) }
-            postMsg("**********************************")
-            postMsg("********** Hello shell! **********")
-            postMsg("**********************************")
-        }
-        return socketThread != null
+        return thread != null
     }
 
-    fun exec(cmd: String) {
-        val thread = socketThread ?: return
-        if (cmd.isEmpty()) return
-        if (thread.exec(cmd)) {
-            postMsg(":/ $ $cmd")
-        }
+    fun exec(cmd: String): Boolean {
+        if (cmd.isEmpty()) return false
+        val thread = thread ?: return false
+        return thread.exec(cmd)
     }
 
-    private fun postMsg(result: String?) {
+    private fun postOnConnected() {
+        handler.sendEmptyMessage(WHAT_ON_CONNECTED)
+    }
+
+    private fun postOnDisconnect() {
+        handler.sendEmptyMessage(WHAT_ON_DISCONNECT)
+    }
+
+    private fun postOnResult(result: String?) {
         if (result.isNullOrEmpty()) return
-        val handler = clientHandler
-        val msg = handler.obtainMessage().also { it.obj = result }
+        val msg = handler.obtainMessage(WHAT_ON_RESULT)
+        msg.obj = result
         handler.sendMessage(msg)
     }
 
@@ -95,5 +99,28 @@ object AppShell {
             }
         }
         return dexFile
+    }
+
+    private const val WHAT_ON_CONNECTED = 1
+    private const val WHAT_ON_DISCONNECT = 2
+    private const val WHAT_ON_RESULT = 3
+
+    private class H : Handler(Looper.getMainLooper()) {
+        override fun handleMessage(msg: Message) {
+            when (msg.what) {
+                WHAT_ON_CONNECTED -> {
+                    onConnected?.invoke()
+                }
+                WHAT_ON_DISCONNECT -> {
+                    onDisconnect?.invoke()
+                }
+                WHAT_ON_RESULT -> {
+                    val result = msg.obj?.toString()
+                    if (!result.isNullOrEmpty()) {
+                        onResult?.invoke(result)
+                    }
+                }
+            }
+        }
     }
 }

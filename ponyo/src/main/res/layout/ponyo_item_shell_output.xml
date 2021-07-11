@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<per.goweii.ponyo.widget.HScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
+    android:scrollbars="none"
     tools:showIn="@layout/ponyo_panel_shell">
 
     <per.goweii.ponyo.widget.AutoSplitTextView
-        android:id="@+id/tv_shell"
+        android:id="@+id/tv_shell_output"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/ponyo_colorOnSurface"
         android:textSize="@dimen/ponyo_text_size_shell"
         android:typeface="monospace" />
 
-</LinearLayout>
+</per.goweii.ponyo.widget.HScrollView>

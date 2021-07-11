@@ -12,7 +12,8 @@ public class ShellSocketThread extends Thread {
     private final BufferedReader reader;
     private final BufferedWriter writer;
 
-    private ShellResultCallback callback = null;
+    private ShellConnectStateListener connectStateListener = null;
+    private ShellResultCallback resultCallback = null;
 
     public ShellSocketThread(Socket socket) throws IOException {
         this.socket = socket;
@@ -22,19 +23,26 @@ public class ShellSocketThread extends Thread {
         writer = new BufferedWriter(osw);
     }
 
-    public void setCallback(ShellResultCallback callback) {
-        this.callback = callback;
+    public void setResultCallback(ShellResultCallback resultCallback) {
+        this.resultCallback = resultCallback;
+    }
+
+    public void setConnectStateListener(ShellConnectStateListener connectStateListener) {
+        this.connectStateListener = connectStateListener;
     }
 
     @Override
     public void run() {
+        if (connectStateListener != null) {
+            connectStateListener.onConnected();
+        }
         while (true) {
             try {
                 String line = reader.readLine();
                 if (line == null) break;
                 System.out.println("Shell client received cmd result:" + line);
-                if (callback != null) {
-                    callback.onResult(line);
+                if (resultCallback != null) {
+                    resultCallback.onResult(line);
                 }
             } catch (IOException e) {
                 System.out.println("Shell client error:" + e.toString());
@@ -55,6 +63,9 @@ public class ShellSocketThread extends Thread {
             socket.close();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+        if (connectStateListener != null) {
+            connectStateListener.onDisconnect();
         }
     }
 
