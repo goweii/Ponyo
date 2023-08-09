@@ -17,7 +17,7 @@ class DefaultPoolExecutor private constructor(
     workQueue,
     threadFactory,
     RejectedExecutionHandler { _, _ -> }) {
-    override fun afterExecute(r: Runnable, t: Throwable) {
+    override fun afterExecute(r: Runnable, t: Throwable?) {
         var e: Throwable? = t
         super.afterExecute(r, t)
         if (e == null && r is Future<*>) {
