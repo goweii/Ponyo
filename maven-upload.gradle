@@ -20,8 +20,8 @@ uploadArchives {
                     )
                 }
             } else {
-                snapshotRepository(url: uri("$LOCAL_SNAPSHOT"))
-                repository(url: uri("$LOCAL_RELEASE"))
+                snapshotRepository(url: uri(LOCAL_SNAPSHOT))
+                repository(url: uri(LOCAL_RELEASE))
             }
             pom.packaging = PROJ_PACKAGING
         }

@@ -22,8 +22,8 @@ allprojects {
             maven { url uri(NEXUS_RELEASE) }
             maven { url uri(NEXUS_SNAPSHOT) }
         } else {
-            maven { url uri("$LOCAL_RELEASE") }
-            maven { url uri("$LOCAL_SNAPSHOT") }
+            maven { url uri(LOCAL_RELEASE) }
+            maven { url uri(LOCAL_SNAPSHOT) }
         }
         maven { url "https://jitpack.io" }
         google()
